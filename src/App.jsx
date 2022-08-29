@@ -21,18 +21,7 @@ const App = () => {
           <Navbar />
           <Dashboard />
         </UserContextProvider>
-        {/*<div id="signInDiv">GoogleButton</div>
-        // {user && (
-        //   <div>
-        //     <h3>{user.name}</h3>
-        //   </div>
-        // )}
-        <button type="button" onClick={e => handleSignOut(e)}>
-          Sign Out
-        </button>*/}
-        {/*<Welcome /> <Login /> */}
       </div>
-      {/*<Services />*/}
       <Footer />
     </div>
   );
