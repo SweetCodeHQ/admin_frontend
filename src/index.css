@@ -34,7 +34,7 @@ body {
     radial-gradient(at 50% 100%, hsla(225, 39%, 25%, 1) 0, transparent 50%);
 }
 
-.gradient-bg-transactions {
+.gradient-bg-entities {
   background-color: #0f0e13;
   background-image: radial-gradient(
       at 0% 100%,
