@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
+import { Entities } from "../components";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import jwt_decode from "jwt-decode";
 
@@ -26,7 +27,7 @@ const CREATE_USER = gql`
   }
 `;
 
-const User = () => {
+const Dashboard = () => {
   const {
     handleCallbackResponse,
     handleSignOut,
@@ -58,7 +59,18 @@ const User = () => {
     <div className="flex w-full justify-center items-center">
       <div className="flex mf:flex-row flex-col items-start justify-between md:p-20 py-12 px-4">
         <div className="flex flex-1 justify-start flex-col mf:mr-10">
-          {!user?.user && (
+          {data?.user?.isAdmin ? (
+            <>
+              <h1 className="text-3xl sm:text-5xl text-white text-gradient py-1">
+                Welcome back, <br /> {user.user.given_name}!
+              </h1>
+              <p className="text-left mt-5 text-white font-light md:w-9/12 w-11/12 text-base">
+                Use this portal to manage administrators, entities, users, and
+                more.
+              </p>
+              <Entities />
+            </>
+          ) : (
             <>
               <h1 className="text-3xl sm:text-5xl text-white text-gradient py-1">
                 Empowered <br /> Practitioner Marketing
@@ -68,6 +80,12 @@ const User = () => {
                 strategically selected topics and blog posts written by the
                 experts at Fixate.
               </p>
+              {data?.user?.isAdmin === false && (
+                <p className="text-left mt-5 text-white font-light md:w-9/12 w-11/12 text-base">
+                  Hi, {user?.user?.given_name}! Visit "this link" to use this
+                  service.
+                </p>
+              )}
               <div className="grid sm:grid-cols-3 grid-cols-2 w-full mt-10">
                 <div className={`rounded-tl-2xl ${commonStyles}`}>
                   Marketing
@@ -103,4 +121,4 @@ const User = () => {
     </div>
   );
 };
-export default User;
+export default Dashboard;
