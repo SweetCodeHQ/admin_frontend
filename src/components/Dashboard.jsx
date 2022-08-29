@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
-import { Entities } from "../components";
+import { EntityContext, EntityContextProvider } from "../context/EntityContext";
+import { EntityDashboard } from "../components";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import jwt_decode from "jwt-decode";
 
@@ -37,6 +38,7 @@ const Dashboard = () => {
   const user = useContext(UserContext);
   const email = user?.user?.email;
 
+  const formData = useContext(EntityContext);
   const { data } = useQuery(GET_USER_PROFILE, { variables: { email } });
 
   useEffect(() => {
@@ -68,7 +70,9 @@ const Dashboard = () => {
                 Use this portal to manage administrators, entities, users, and
                 more.
               </p>
-              <Entities />
+              <EntityContextProvider formData={formData}>
+                <EntityDashboard />
+              </EntityContextProvider>
             </>
           ) : (
             <>
