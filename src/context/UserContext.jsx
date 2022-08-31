@@ -28,18 +28,15 @@ export const UserContextProvider = ({ children }) => {
   });
 
   const userCallback = response => {
-    handleCallbackResponse(response);
-
-    var email = jwt_decode(response.credential).email;
-    createUserMutation(email);
-  };
-  const handleCallbackResponse = response => {
     console.log("logged in");
     var userObject = jwt_decode(response.credential);
     setUser(userObject);
+
+    createUserMutation(userObject.email);
     {
-      document.getElementById("signInDiv").hidden = true;
+      /*Need to reset this to userObject.user. Then, I need to change every mention of user.user on the dashboard.*/
     }
+    return userObject;
   };
 
   const handleSignOut = event => {
@@ -50,27 +47,11 @@ export const UserContextProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    {
-      /*global google*/
-    }
-    google?.accounts.id.initialize({
-      client_id:
-        "370692924501-o701jqakpplacn0r5cohmiv7q6firec5.apps.googleusercontent.com",
-      callback: userCallback
-    });
-
-    google?.accounts.id.renderButton(document.getElementById("signInDiv"), {
-      theme: "outline",
-      size: "large"
-    });
-  }, []);
-
   return (
     <UserContext.Provider
       value={{
-        handleCallbackResponse,
         handleSignOut,
+        userCallback,
         user
       }}
     >

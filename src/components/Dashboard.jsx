@@ -18,28 +18,76 @@ const GET_USER_PROFILE = gql`
   }
 `;
 
-const CREATE_USER = gql`
-  mutation createUser($email: String!) {
-    createUser(input: { email: $email }) {
+const CREATE_USER_ENTITY = gql`
+  mutation CreateUserEntity($userId: ID!, $entityId: ID!) {
+    createUserEntity(input: { userId: $userId, entityId: $entityId }) {
       id
-      email
-      isAdmin
+    }
+  }
+`;
+
+const GET_ENTITY = gql`
+  query entityByUrl($url: String!) {
+    entity(url: $url) {
+      id
+      name
+      url
     }
   }
 `;
 
 const Dashboard = () => {
-  const {
-    handleCallbackResponse,
-    handleSignOut,
-    createUserMutation,
-    userCallback
-  } = useContext(UserContext);
+  const { handleSignOut, userCallback } = useContext(UserContext);
+
   const user = useContext(UserContext);
   const email = user?.user?.email;
+  const userHd = user?.user?.hd;
 
   const formData = useContext(EntityContext);
-  const { data } = useQuery(GET_USER_PROFILE, { variables: { email } });
+
+  const { data: userData, refetch: refetchUser } = useQuery(GET_USER_PROFILE, {
+    variables: { email }
+  });
+
+  const { data: entityData, refetch: refetchEntity } = useQuery(GET_ENTITY, {
+    variables: { url: userHd },
+    onError: error => console.log(error)
+  });
+
+  const loginCallback = response => {
+    const currentUser = userCallback(response);
+    {
+      document.getElementById("signInDiv").hidden = true;
+    }
+    userEntityCallback(currentUser);
+  };
+
+  const userEntityCallback = async currentUser => {
+    const megaphoneUserResponse = await refetchUser({
+      email: currentUser.email
+    });
+
+    const userId = megaphoneUserResponse.data.user.id;
+
+    const megaphoneEntityResponse = await refetchEntity({
+      url: currentUser.hd
+    });
+
+    const entityId = megaphoneEntityResponse.data.entity.id;
+
+    createUserEntityMutation(userId, entityId);
+  };
+
+  const [
+    userEntityMutationData,
+    { loading, error }
+  ] = useMutation(CREATE_USER_ENTITY, { onError: error => console.log(error) });
+
+  const createUserEntityMutation = (userId, entityId) => {
+    const input = { userId: userId, entityId: entityId };
+
+    userEntityMutationData({ variables: input });
+  };
 
   useEffect(() => {
     {
@@ -48,7 +96,7 @@ const Dashboard = () => {
     google.accounts.id.initialize({
       client_id:
         "370692924501-o701jqakpplacn0r5cohmiv7q6firec5.apps.googleusercontent.com",
-      callback: userCallback
+      callback: loginCallback
     });
 
     google.accounts.id.renderButton(document.getElementById("signInDiv"), {
@@ -61,7 +109,7 @@ const Dashboard = () => {
     <div className="flex w-full justify-center items-center">
       <div className="flex mf:flex-row flex-col items-start justify-between md:p-20 py-12 px-4">
         <div className="flex flex-1 justify-start flex-col mf:mr-10">
-          {data?.user?.isAdmin ? (
+          {userData?.user?.isAdmin ? (
             <>
               <h1 className="text-3xl sm:text-5xl text-white text-gradient py-1">
                 Welcome back, <br /> {user.user.given_name}!
@@ -84,7 +132,7 @@ const Dashboard = () => {
                 strategically selected topics and blog posts written by the
                 experts at Fixate.
               </p>
-              {data?.user?.isAdmin === false && (
+              {userData?.user?.isAdmin === false && (
                 <p className="text-left mt-5 text-white font-light md:w-9/12 w-11/12 text-base">
                   Hi, {user?.user?.given_name}! Visit "this link" to use this
                   service.

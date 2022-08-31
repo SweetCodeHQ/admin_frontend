@@ -1,14 +1,6 @@
-import {
-  Navbar,
-  Welcome,
-  Footer,
-  Services,
-  Loader,
-  Dashboard
-} from "./components";
+import { Navbar, Welcome, Footer, Loader, Dashboard } from "./components";
 import { UserContext, UserContextProvider } from "./context/UserContext";
 import { useEffect, useState, useContext } from "react";
-import jwt_decode from "jwt-decode";
 import { useQuery, gql } from "@apollo/client";
 
 const App = () => {
