@@ -4,3 +4,4 @@ export { default as Navbar } from "./Navbar";
 export { default as Welcome } from "./Welcome";
 export { default as Dashboard } from "./Dashboard";
 export { default as EntityDashboard } from "./EntityDashboard";
+export { default as AdminUserDashboard } from "./AdminUserDashboard";
