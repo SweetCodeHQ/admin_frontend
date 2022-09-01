@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
 import { EntityContext, EntityContextProvider } from "../context/EntityContext";
-import { EntityDashboard } from "../components";
+import { EntityDashboard, AdminUserDashboard } from "../components";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import jwt_decode from "jwt-decode";
 
@@ -106,11 +106,11 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="flex w-full justify-center items-center">
+    <div className="flex w-full justify-center items-baseline">
       <div className="flex mf:flex-row flex-col items-start justify-between md:p-20 py-12 px-4">
         <div className="flex flex-1 justify-start flex-col mf:mr-10">
           {userData?.user?.isAdmin ? (
-            <>
+            <div>
               <h1 className="text-3xl sm:text-5xl text-white text-gradient py-1">
                 Welcome back, <br /> {user.user.given_name}!
               </h1>
@@ -121,7 +121,7 @@ const Dashboard = () => {
               <EntityContextProvider formData={formData}>
                 <EntityDashboard />
               </EntityContextProvider>
-            </>
+            </div>
           ) : (
             <>
               <h1 className="text-3xl sm:text-5xl text-white text-gradient py-1">
@@ -168,6 +168,11 @@ const Dashboard = () => {
           >
             Login With Google
           </div>
+        </div>
+      </div>
+      <div className="flex mf:flex-row flex-col items-start justify-between md:p-20 py-12 px-4">
+        <div className="flex flex-1 justify-start flex-col mf:mr-10">
+          {userData?.user?.isAdmin && <AdminUserDashboard />}
         </div>
       </div>
     </div>
