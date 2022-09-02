@@ -9,6 +9,7 @@ const GET_ENTITIES = gql`
       id
       url
       name
+      userCount
     }
   }
 `;
@@ -24,14 +25,14 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
   />
 );
 
-const EntityTableItem = ({ name, url }) => {
+const EntityTableItem = ({ name, url, userCount }) => {
   return (
     <div className="table-row">
       <div className="table-cell text-white text-center">
         {shortenName(name)}
       </div>
       <div className="table-cell text-white text-center">{url}</div>
-      <div className="table-cell text-white text-center">10</div>
+      <div className="table-cell text-white text-center">{userCount}</div>
     </div>
   );
 };
