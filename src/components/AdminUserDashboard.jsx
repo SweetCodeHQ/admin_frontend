@@ -46,16 +46,11 @@ const UserTable = ({ users }) => {
     <div className="table mt-5 blue-glassmorphism p-5">
       <div className="table-header-group">
         <div className="table-row">
-          <div className="table-cell text-center text-gray-300">
-            Email
-            <div className="h-[1px] w-full bg-gray-400 my-2" />
-          </div>
-          <div className="table-cell text-center text-gray-300">
-            Admin?
-            <div className="h-[1px] w-full bg-gray-400 my-2" />
-          </div>
+          <div className="table-cell text-center text-gray-300">Email</div>
+          <div className="table-cell text-center text-gray-300">Admin?</div>
         </div>
       </div>
+      <div className="h-[1px] w-5/6 bg-gray-400 my-2 absolute inset-x-5 top-9" />
       <div className="table-row-group">
         {users?.map((user, i) => {
           return (
