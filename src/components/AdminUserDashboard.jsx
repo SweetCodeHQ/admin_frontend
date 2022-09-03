@@ -1,5 +1,4 @@
 import { gql, useQuery, useMutation } from "@apollo/client";
-import { shortenName } from "../utils/shortenName";
 import { AdminSwitch } from "../components/AdminSwitch";
 
 const GET_ADMIN_USERS = gql`
