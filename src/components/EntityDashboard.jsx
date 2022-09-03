@@ -1,6 +1,5 @@
 import { useState, useContext, useEffect } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
-import { shortenName } from "../utils/shortenName";
 import { EntityContext } from "../context/EntityContext";
 
 const GET_ENTITIES = gql`
@@ -28,29 +27,27 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
 const EntityTableItem = ({ name, url, userCount }) => {
   return (
     <div className="table-row">
-      <div className="table-cell text-white text-center">
-        {shortenName(name)}
-      </div>
-      <div className="table-cell text-white text-center">{url}</div>
-      <div className="table-cell text-white text-center">{userCount}</div>
+      <div className="table-cell text-white text-left">{name}</div>
+      <div className="table-cell text-white text-left pl-5">{url}</div>
+      <div className="table-cell text-white text-center pl-5">{userCount}</div>
     </div>
   );
 };
 
 const EntityTable = ({ entities }) => {
   return (
-    <div className="table w-full mt-5 blue-glassmorphism p-5">
+    <div className="table w-full mt-5 blue-glassmorphism p-5 w-max">
       <div className="table-header-group">
         <div className="table-row">
-          <div className="table-cell text-center text-gray-300">
+          <div className="table-cell text-left text-gray-300">
             Name
             <div className="h-[1px] w-full bg-gray-400 my-2" />
           </div>
-          <div className="table-cell text-center text-gray-300">
+          <div className="table-cell text-left text-gray-300 pl-5">
             URL
             <div className="h-[1px] w-full bg-gray-400 my-2" />
           </div>
-          <div className="table-cell text-center text-gray-300">
+          <div className="table-cell text-left text-gray-300 pl-5">
             Users
             <div className="h-[1px] w-full bg-gray-400 my-2" />
           </div>
@@ -114,7 +111,7 @@ const EntityDashboard = () => {
           <button
             type="button"
             onClick={handleSubmit}
-            className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] rounded-full cursor-pointer"
+            className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-purple-800"
           >
             Create
           </button>
