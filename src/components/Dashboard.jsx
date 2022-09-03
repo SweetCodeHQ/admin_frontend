@@ -157,7 +157,7 @@ const Dashboard = () => {
               id="signOutDiv"
               type="button"
               onClick={e => handleSignOut(e)}
-              className="flex flex-row justify-center items-center my-5 bg-[#2952e3] p-3 rounded-full cursor-pointer hover:bg-[#2546bd]"
+              className="flex flex-row justify-center items-center my-5 bg-[#2952e3] p-3 rounded-full cursor-pointer hover:bg-purple-800"
             >
               <p className="text-white text-base font-semibold">Logout</p>
             </button>
