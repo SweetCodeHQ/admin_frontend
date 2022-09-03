@@ -11,8 +11,8 @@ const NavbarItem = ({ title, classProps }) => {
 
 const Navbar = () => {
   const [toggleMenu, setToggleMenu] = useState(false);
-  const user = useContext(UserContext);
-  const handleSignOut = useContext(UserContext);
+  const { handleSignOut, user } = useContext(UserContext);
+  console.log(user);
   return (
     <nav className="w-full flex md:justify-center justify-between items-center p-4">
       <div className="md:flex-[0.5] flex-initial justify-center items-center">
@@ -23,22 +23,22 @@ const Navbar = () => {
           data-cy="HLogo"
         />
       </div>
-      <ul className="text-white md:flex hidden list-none flex-row justify-between items-center flex-initial object-left">
-        {["My Topics", "Request Topics", "Share of Conversation"].map(
-          (item, index) => (
-            <NavbarItem key={item + index} title={item} />
-          )
-        )}
-      </ul>
-      {/*{user != null && (
-        <button
-          className="bg-[#2952e3] py-2 px-7 mx-4 rounded-full cursor-pointer hover:bg-[#2546bd]"
-          type="button"
-          onClick={e => handleSignOut(e)}
-        >
-          Logout
-        </button>
-      )}*/}
+      {user && (
+        <>
+          <ul className="text-white md:flex hidden list-none flex-row justify-between items-center flex-initial object-left">
+            {["GitHub Repo", "Fixate", "Main App"].map((item, index) => (
+              <NavbarItem key={item + index} title={item} />
+            ))}
+          </ul>
+          <button
+            className="bg-[#2952e3] py-2 px-7 mx-4 rounded-full cursor-pointer hover:bg-purple-800 text-white transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
+            type="button"
+            onClick={e => handleSignOut(e)}
+          >
+            Logout
+          </button>
+        </>
+      )}
       <div className="flex relative">
         {toggleMenu ? (
           <AiOutlineClose

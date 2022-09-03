@@ -14,22 +14,22 @@ const Footer = () => {
         </div>
         <div className="flex flex-1 justify-evenly items-center flex-wrap sm:mt-0 mt-5 w-full">
           <p className="text-white text-base text-center mx-2 cursor-pointer">
-            My Topics
-          </p>
-          <p className="text-white text-base text-center mx-2 cursor-pointer">
-            Request Topics
-          </p>
-          <p className="text-white text-base text-center mx-2 cursor-pointer">
-            Share of Conversation
-          </p>
-          <p className="text-white text-base text-center mx-2 cursor-pointer">
             About
+          </p>
+          <p className="text-white text-base text-center mx-2 cursor-pointer">
+            Main App
+          </p>
+          <p className="text-white text-base text-center mx-2 cursor-pointer">
+            SweetCode
+          </p>
+          <p className="text-white text-base text-center mx-2 cursor-pointer">
+            Fixate
           </p>
         </div>
       </div>
       <div className="flex justify-center items-center flex-col mt-5">
         <p className="text-white text-small text-center">
-          Empowering Content Marketing Since 2022
+          Empowering Content Marketers Since 2022
         </p>
         <p className="text-white text-small text-center">
           Built By Fixate, Powered by OpenAI
