@@ -21,7 +21,28 @@ const GET_FIXATE_USERS = gql`
   }
 `;
 
-const UserTableItem = props => {
+const GET_PAGINATED_USERS = gql`
+  query UsersConnection($after: String, $before: String) {
+    usersConnection(after: $after, before: $before) {
+      pageInfo {
+        endCursor
+        startCursor
+        hasPreviousPage
+        hasNextPage
+      }
+      edges {
+        cursor
+        node {
+          id
+          email
+          isBlocked
+        }
+      }
+    }
+  }
+`;
+
+const FixateUsersTableItem = props => {
   return (
     <div className="table-row">
       <div className="table-cell text-white text-center">{props.email}</div>
@@ -34,13 +55,14 @@ const UserTableItem = props => {
           userId={props.userId}
           index={props.index}
           isOn={props.isAdmin}
+          forAdmin={true}
         />
       </div>
     </div>
   );
 };
 
-const UserTable = ({ users }) => {
+const FixateUsersTable = ({ users }) => {
   return (
     <div className="table mt-5 blue-glassmorphism p-5">
       <div className="table-header-group">
@@ -53,7 +75,7 @@ const UserTable = ({ users }) => {
       <div className="table-row-group">
         {users?.map((user, i) => {
           return (
-            <UserTableItem
+            <FixateUsersTableItem
               key={i}
               index={i}
               userId={user.id}
@@ -67,17 +89,76 @@ const UserTable = ({ users }) => {
   );
 };
 
+const NormalUsersTableItem = props => {
+  return (
+    <div className="table-row">
+      <div className="table-cell text-white text-left pr-5">{props.email}</div>
+      <div className="table-cell text-white text-center">
+        {props.isBlocked ? "Yes" : "No"}
+      </div>
+      <AdminSwitch
+        key={props.index}
+        userId={props.userId}
+        index={props.index}
+        isOn={props.isBlocked}
+        forAdmin={false}
+      />
+    </div>
+  );
+};
+
+const NormalUsersTable = ({ edges }) => {
+  console.log(edges);
+  return (
+    <div className="table mt-5 blue-glassmorphism p-5">
+      <div className="table-header-group">
+        <div className="table-row">
+          <div className="table-cell text-left text-gray-300">Email</div>
+          <div className="table-cell text-center text-gray-300">Blocked?</div>
+        </div>
+      </div>
+      <div className="h-[1px] w-7/8 bg-gray-400 my-2 absolute inset-x-5 top-9" />
+      <div className="table-row-group">
+        {edges?.map((edge, i) => {
+          return (
+            <NormalUsersTableItem
+              key={i}
+              index={i}
+              userId={edge.node.id}
+              email={edge.node.email}
+              isBlocked={edge.node.isBlocked}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
 const AdminUserDashboard = () => {
   const {
-    data: fixateUserData,
+    data: fixateUsersData,
     refetch: fixateUsersRefetch
   } = useQuery(GET_FIXATE_USERS, { onError: error => console.log(error) });
+
+  const {
+    data: allUsersData,
+    error: allUsersError,
+    refetch: allUsersRefetch
+  } = useQuery(GET_PAGINATED_USERS, {
+    onError: error => console.log(error)
+  });
 
   return (
     <div className="w-full justify-center items-center 2xl:px20">
       <div className="flex flex-col items-center md:p-12 py-12 px-4 w-full">
         <h3 className="text-white text-3xl text-center my-2">Fixate Users</h3>
-        <UserTable users={fixateUserData?.fixateUsers} />
+        <FixateUsersTable users={fixateUsersData?.fixateUsers} />
+        <h3 className="text-white text-3xl text-center my-2 pt-10">
+          All Users
+        </h3>
+
+        <NormalUsersTable {...allUsersData?.usersConnection} />
       </div>
     </div>
   );
