@@ -157,7 +157,6 @@ const AdminUserDashboard = () => {
         <h3 className="text-white text-3xl text-center my-2 pt-10">
           All Users
         </h3>
-
         <NormalUsersTable {...allUsersData?.usersConnection} />
       </div>
     </div>
