@@ -11,6 +11,16 @@ const CREATE_ENTITY = gql`
   }
 `;
 
+const EDIT_ENTITY = gql`
+  mutation EditEntity($id: ID!, $name: String, $url: String) {
+    updateEntity(input: { id: $id, name: $name, url: $url }) {
+      id
+      name
+      url
+    }
+  }
+`;
+
 export const EntityContext = React.createContext();
 
 export const EntityContextProvider = ({ children }) => {
@@ -27,8 +37,20 @@ export const EntityContextProvider = ({ children }) => {
     entityMutationData({ variables: input });
   };
 
+  const editEntity = updateInfo => {
+    const input = updateInfo;
+    entityUpdateData({ variables: input });
+  };
+
   const [entityMutationData, { loading, error }] = useMutation(CREATE_ENTITY, {
     onCompleted: data => setEntities(data.entities),
+    onError: error => console.log(error)
+  });
+
+  const [
+    entityUpdateData,
+    { loading: updateLoading, error: updateError }
+  ] = useMutation(EDIT_ENTITY, {
     onError: error => console.log(error)
   });
 
@@ -39,6 +61,7 @@ export const EntityContextProvider = ({ children }) => {
         setFormData,
         handleChange,
         sendEntity,
+        editEntity,
         entities,
         setEntities
       }}
