@@ -3,7 +3,7 @@ import { UserContext } from "../context/UserContext";
 import { EntityContext, EntityContextProvider } from "../context/EntityContext";
 import { EntityDashboard, AdminUserDashboard } from "../components";
 import { gql, useQuery, useMutation } from "@apollo/client";
-import jwt_decode from "jwt-decode";
+import { GoogleLogin } from "@react-oauth/google";
 
 const commonStyles =
   "min-h-[70px] sm:px-0 px-2 sm:min-w-[120px] flex justify-center items-center border-[0.5px] border-gray-400 text-sm font-light text-white";
@@ -56,9 +56,6 @@ const Dashboard = () => {
 
   const loginCallback = response => {
     const currentUser = userCallback(response);
-    {
-      document.getElementById("signInDiv").hidden = true;
-    }
     userEntityCallback(currentUser);
   };
 
@@ -88,22 +85,6 @@ const Dashboard = () => {
 
     userEntityMutationData({ variables: input });
   };
-
-  useEffect(() => {
-    {
-      /*global google*/
-    }
-    google.accounts.id.initialize({
-      client_id:
-        "370692924501-o701jqakpplacn0r5cohmiv7q6firec5.apps.googleusercontent.com",
-      callback: loginCallback
-    });
-
-    google.accounts.id.renderButton(document.getElementById("signInDiv"), {
-      theme: "outline",
-      size: "large"
-    });
-  }, []);
 
   return (
     <div className="flex w-full justify-center items-center">
@@ -152,7 +133,7 @@ const Dashboard = () => {
               </div>
             </>
           )}
-          {user.user && (
+          {user.user ? (
             <button
               id="signOutDiv"
               type="button"
@@ -161,13 +142,18 @@ const Dashboard = () => {
             >
               <p className="text-white text-base font-semibold">Logout</p>
             </button>
+          ) : (
+            <div className="p-5 w-full items-center flex flex-col">
+              <GoogleLogin
+                onSuccess={credentialResponse => {
+                  loginCallback(credentialResponse);
+                }}
+                onError={() => {
+                  console.log("Login Failed");
+                }}
+              />
+            </div>
           )}
-          <div
-            id="signInDiv"
-            className="p-3 flex-row justify-center items-center mt-6 mx-auto"
-          >
-            Login With Google
-          </div>
         </div>
         <div className="flex flex-col flex-1 items-center justify-start mf:mt-0 mt-10">
           {userData?.user?.isAdmin && <AdminUserDashboard />}
