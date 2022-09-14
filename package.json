@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "start": "run build"
+    "start": "vite"
   },
   "dependencies": {
     "@apollo/client": "^3.6.9",
