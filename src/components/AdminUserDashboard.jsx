@@ -1,15 +1,6 @@
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { AdminSwitch } from "../components/AdminSwitch";
-
-const GET_ADMIN_USERS = gql`
-  query AdminUsers {
-    adminUsers {
-      id
-      email
-      isAdmin
-    }
-  }
-`;
+import { ImBullhorn } from "react-icons/im";
 
 const GET_FIXATE_USERS = gql`
   query FixateUsers {
@@ -108,9 +99,8 @@ const NormalUsersTableItem = props => {
 };
 
 const NormalUsersTable = ({ edges }) => {
-  console.log(edges);
   return (
-    <div className="table mt-5 blue-glassmorphism p-5">
+    <div className="table">
       <div className="table-header-group">
         <div className="table-row">
           <div className="table-cell text-left text-gray-300">Email</div>
@@ -144,10 +134,24 @@ const AdminUserDashboard = () => {
   const {
     data: allUsersData,
     error: allUsersError,
-    refetch: allUsersRefetch
+    refetch: allUsersRefetch,
+    fetchMore
   } = useQuery(GET_PAGINATED_USERS, {
     onError: error => console.log(error)
   });
+
+  const updateQuery = (prev, { fetchMoreResult }) => {
+    return fetchMoreResult.usersConnection.edges.length
+      ? fetchMoreResult
+      : prev;
+  };
+
+  const flipUserPage = params => {
+    fetchMore({
+      variables: params,
+      updateQuery
+    });
+  };
 
   return (
     <div className="w-full justify-center items-center 2xl:px20">
@@ -157,7 +161,47 @@ const AdminUserDashboard = () => {
         <h3 className="text-white text-3xl text-center my-2 pt-10">
           All Users
         </h3>
-        <NormalUsersTable {...allUsersData?.usersConnection} />
+        <div className="w-full blue-glassmorphism mt-5 justify-between p-5">
+          <NormalUsersTable {...allUsersData?.usersConnection} />
+          <div className="flex justify-between content-end pl-5 pr-5">
+            <div className="text-left text-blue-400 pt-3">
+              {allUsersData?.usersConnection?.pageInfo.hasPreviousPage ? (
+                <p
+                  className="hover:text-purple-600 cursor-pointer"
+                  onClick={() =>
+                    flipUserPage({
+                      after: null,
+                      before: allUsersData.usersConnection.pageInfo.startCursor
+                    })
+                  }
+                >
+                  {"<<<"}
+                </p>
+              ) : (
+                <p></p>
+              )}
+            </div>
+            <div className="text-blue-300 pt-3">
+              <ImBullhorn />
+            </div>
+            <div className=" text-blue-400 pt-3">
+              {allUsersData?.usersConnection?.pageInfo.hasNextPage ? (
+                <p
+                  className="hover:text-purple-600 cursor-pointer"
+                  onClick={() =>
+                    flipUserPage({
+                      after: allUsersData.usersConnection.pageInfo.endCursor
+                    })
+                  }
+                >
+                  {">>>"}
+                </p>
+              ) : (
+                <p></p>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
