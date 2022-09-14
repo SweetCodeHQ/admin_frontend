@@ -34,7 +34,7 @@ export const UserContextProvider = ({ children }) => {
 
     createUserMutation(userObject.email);
     {
-      /*Need to reset this to userObject.user. Then, I need to change every mention of user.user on the dashboard.*/
+      /*Need to reset this to userObject.user. Then, I need to change every mention of user.user  the dashboard.*/
     }
     return userObject;
   };
