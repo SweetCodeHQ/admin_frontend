@@ -1,28 +1,32 @@
 import { useState, useEffect } from "react";
 import { gql, useMutation } from "@apollo/client";
 
-const CHANGE_ADMIN_STATUS = gql`
-  mutation updateUser($id: ID!, $isAdmin: Boolean!) {
-    updateUser(input: { id: $id, isAdmin: $isAdmin }) {
+const UPDATE_ADMIN_STATUS = gql`
+  mutation updateUser($id: ID!, $isAdmin: Boolean, $isBlocked: Boolean) {
+    updateUser(input: { id: $id, isAdmin: $isAdmin, isBlocked: $isBlocked }) {
       id
       email
       isAdmin
+      isBlocked
     }
   }
 `;
 
-export const AdminSwitch = ({ isOn, index, userId }) => {
+export const AdminSwitch = ({ isOn, index, userId, forAdmin }) => {
   const [isEnabled, setIsEnabled] = useState(true);
 
   const enabledClass = "transform translate-x-5 bg-purple-500";
 
-  const changeAdmin = changeStatusTo => {
-    const input = { id: userId, isAdmin: changeStatusTo };
+  const flipStatus = changeStatusTo => {
+    const input = forAdmin
+      ? { id: userId, isAdmin: changeStatusTo }
+      : { id: userId, isBlocked: changeStatusTo };
+    console.log(input);
     userUpdateData({ variables: input });
   };
 
   const [userUpdateData, { loading, mutationError }] = useMutation(
-    CHANGE_ADMIN_STATUS,
+    UPDATE_ADMIN_STATUS,
     {
       onCompleted: data => console.log(data),
       onError: error => console.log(error)
@@ -32,7 +36,7 @@ export const AdminSwitch = ({ isOn, index, userId }) => {
   const handleEnableClick = () => {
     var newEnabled = !isEnabled;
     setIsEnabled(newEnabled);
-    changeAdmin(newEnabled);
+    flipStatus(newEnabled);
   };
 
   useEffect(() => {

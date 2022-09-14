@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { EntityContext } from "../context/EntityContext";
 import { ImBullhorn } from "react-icons/im";
-import { HiPencilAlt } from "react-icons/hi";
+import { HiPencilAlt, HiOutlineX } from "react-icons/hi";
 
 const GET_PAGINATED_ENTITIES = gql`
   query EntitiesConnection($after: String, $before: String) {
@@ -86,11 +86,22 @@ const EntityTableItem = ({ node, editEntity }) => {
             />
           </div>
           <button
-            className="table-cell border-none text-white-300 bg-blue-500 text-sm p-1 w-full border-[1px] border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-purple-500"
+            className="table-cell border-none text-white-300 bg-blue-500 text-sm font-bold italic p-1 w-full border-[1px] border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-purple-700"
             onClick={handleSubmit}
           >
             Update
           </button>
+          <div className="table-cell text-white text-center pl-5">
+            <button
+              type="button"
+              className="text-blue-300 w-full  border-[1px] border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-500"
+              onClick={() => {
+                setClicked(prevState => !clicked);
+              }}
+            >
+              <HiOutlineX />
+            </button>
+          </div>
         </div>
       ) : (
         <div className="table-row">
@@ -102,7 +113,7 @@ const EntityTableItem = ({ node, editEntity }) => {
           <div className="table-cell text-white text-center pl-5">
             <button
               type="button"
-              className="text-blue-300 w-full border-[1px] border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-400"
+              className="text-blue-300 w-full border-[1px] border-[#3d4f7c] outline-none rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-400"
               onClick={() => {
                 setClicked(prevState => !clicked);
               }}
@@ -116,7 +127,7 @@ const EntityTableItem = ({ node, editEntity }) => {
   );
 };
 
-const EntityTable = ({ edges, pageInfo, editEntity }) => {
+const EntityTable = ({ edges, editEntity }) => {
   return (
     <div className="table w-full p-5 w-max">
       <div className="table-header-group">
@@ -220,7 +231,6 @@ const EntityDashboard = () => {
         <div className="w-full blue-glassmorphism mt-5 h-[375px] justify-between">
           <EntityTable
             edges={entities?.entitiesConnection?.edges}
-            pageInfo={entities?.entitiesConnection?.pageInfo}
             editEntity={editEntity}
           />
           <div className="flex justify-between content-end pl-5 pr-5">
