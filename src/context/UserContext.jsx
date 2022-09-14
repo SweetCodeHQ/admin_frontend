@@ -42,9 +42,6 @@ export const UserContextProvider = ({ children }) => {
   const handleSignOut = event => {
     console.log("logged out");
     setUser(null);
-    {
-      document.getElementById("signInDiv").hidden = false;
-    }
   };
 
   return (
