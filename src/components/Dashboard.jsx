@@ -1,7 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
 import { EntityContext, EntityContextProvider } from "../context/EntityContext";
-import { EntityDashboard, AdminUserDashboard } from "../components";
+import {
+  EntityDashboard,
+  AdminUserDashboard,
+  TopicDashboard
+} from "../components";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { GoogleLogin } from "@react-oauth/google";
 
@@ -114,23 +118,13 @@ const Dashboard = () => {
                 experts at Fixate.
               </p>
               {userData?.user?.isAdmin === false && (
-                <p className="text-left mt-5 text-white font-light md:w-9/12 w-11/12 text-base">
-                  Hi, {user?.user?.given_name}! Visit "this link" to use this
-                  service.
-                </p>
+                <>
+                  <p className="text-left mt-5 text-white font-light md:w-9/12 w-11/12 text-base">
+                    Hi, {user?.user?.given_name}! Want some topic suggestions?
+                  </p>
+                  <TopicDashboard />
+                </>
               )}
-              <div className="grid sm:grid-cols-3 grid-cols-2 w-full mt-10">
-                <div className={`rounded-tl-2xl ${commonStyles}`}>
-                  Marketing
-                </div>
-                <div className={commonStyles}>AI Powered</div>
-                <div className={`rounded-tr-2xl ${commonStyles}`}>Fun</div>
-                <div className={`rounded-bl-2xl ${commonStyles}`}>Organic</div>
-                <div className={commonStyles}>Easy</div>
-                <div className={`rounded-br-2xl ${commonStyles}`}>
-                  Intuitive
-                </div>
-              </div>
             </>
           )}
           {user.user ? (
@@ -143,16 +137,30 @@ const Dashboard = () => {
               <p className="text-white text-base font-semibold">Logout</p>
             </button>
           ) : (
-            <div className="p-5 w-full items-center flex flex-col">
-              <GoogleLogin
-                onSuccess={credentialResponse => {
-                  loginCallback(credentialResponse);
-                }}
-                onError={() => {
-                  console.log("Login Failed");
-                }}
-              />
-            </div>
+            <>
+              <div className="grid sm:grid-cols-3 grid-cols-2 w-full mt-10">
+                <div className={`rounded-tl-2xl ${commonStyles}`}>
+                  Marketing
+                </div>
+                <div className={commonStyles}>AI Powered</div>
+                <div className={`rounded-tr-2xl ${commonStyles}`}>Fun</div>
+                <div className={`rounded-bl-2xl ${commonStyles}`}>Organic</div>
+                <div className={commonStyles}>Easy</div>
+                <div className={`rounded-br-2xl ${commonStyles}`}>
+                  Intuitive
+                </div>
+              </div>
+              <div className="p-5 w-full items-center flex flex-col">
+                <GoogleLogin
+                  onSuccess={credentialResponse => {
+                    loginCallback(credentialResponse);
+                  }}
+                  onError={() => {
+                    console.log("Login Failed");
+                  }}
+                />
+              </div>
+            </>
           )}
         </div>
         <div className="flex flex-col flex-1 items-center justify-start mf:mt-0 mt-10">
