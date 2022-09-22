@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { gql, useQuery, useMutation } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 
 const Input = ({ placeholder, name, type, value, handleChange }) => (
   <input
@@ -88,6 +88,26 @@ const TopicDashboard = () => {
           >
             See My Topic Suggestions
           </button>
+        </div>
+        <h3 className="text-white text-3xl text-center my-2 pt-10">
+          My Last Five Topics
+        </h3>
+        <div className="blue-glassmorphism mt-5">
+          <ul className="p-5 flex flex-col items-left space-y-2 list-disc pl-10">
+            <li className="text-white">
+              "Why You Should Move to Tailwinds Now"
+            </li>
+            <li className="text-white">
+              "Fixate Makes Content Marketing Easier"
+            </li>
+            <li className="text-white">
+              "Scalability and Utility-First Frameworks"
+            </li>
+            <li className="text-white">
+              "React, Vue, and Angular: Judgment Made"
+            </li>
+            <li className="text-white">"Cybersecurity Means Cyberawareness"</li>
+          </ul>
         </div>
       </div>
     </div>
