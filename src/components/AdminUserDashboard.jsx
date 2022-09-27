@@ -154,7 +154,7 @@ const AdminUserDashboard = () => {
   };
 
   return (
-    <div className="w-full justify-center items-center 2xl:px20">
+    <div className="justify-center items-center 2xl:px20">
       <div className="flex flex-col items-center md:p-12 py-12 px-4 w-full">
         <h3 className="text-white text-3xl text-center my-2">Fixate Users</h3>
         <FixateUsersTable users={fixateUsersData?.fixateUsers} />
