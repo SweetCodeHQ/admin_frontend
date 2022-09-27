@@ -129,18 +129,18 @@ const EntityTableItem = ({ node, editEntity }) => {
 
 const EntityTable = ({ edges, editEntity }) => {
   return (
-    <div className="table w-full p-5 w-max">
+    <div className="table w-full p-5">
       <div className="table-header-group">
         <div className="table-row">
-          <div className="table-cell text-left text-gray-300 w-[225px]">
+          <div className="table-cell text-left text-gray-300 w-full">
             Name
             <div className="h-[1px] w-full bg-gray-400 my-2" />
           </div>
-          <div className="table-cell text-left text-gray-300 pl-5 w-[200px]">
+          <div className="table-cell text-left text-gray-300 pl-5">
             URL
             <div className="h-[1px] w-full bg-gray-400 my-2" />
           </div>
-          <div className="table-cell text-left text-gray-300 pl-5 w-75">
+          <div className="table-cell text-left text-gray-300 pl-5">
             Users
             <div className="h-[1px] w-full bg-gray-400 my-2" />
           </div>
@@ -228,7 +228,7 @@ const EntityDashboard = () => {
             Create
           </button>
         </div>
-        <div className="w-full blue-glassmorphism mt-5 h-[375px] justify-between">
+        <div className="w-full blue-glassmorphism mt-5 justify-between">
           <EntityTable
             edges={entities?.entitiesConnection?.edges}
             editEntity={editEntity}
@@ -251,7 +251,7 @@ const EntityDashboard = () => {
                 <p></p>
               )}
             </div>
-            <div className="text-blue-300">
+            <div className="text-blue-300 pb-8">
               <ImBullhorn />
             </div>
             <div className=" text-blue-400">
