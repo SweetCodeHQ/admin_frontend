@@ -1,5 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/client";
+import { Loader } from "../components";
 
 const Input = ({ placeholder, name, type, value, handleChange }) => (
   <input
@@ -23,21 +24,44 @@ const TopicDashboard = () => {
     word5: ""
   });
 
+  const [lastFive, setLastFive] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleChange = (e, name) => {
     setFormData(prevState => ({ ...prevState, [name]: e.target.value }));
   };
 
-  const getTopicSuggestions = formData => {
-    const input = formData;
+  const handleResponse = response => {
+    const topics = response.data.attributes.text;
+    const formattedTopics = topics.split("\n").splice(2, 5);
+
+    setIsLoading(false);
+    setLastFive(formattedTopics);
+  };
+
+  console.log(lastFive);
+
+  const getTopicSuggestions = () => {
+    const url = "https://megaphone-ai-api.herokuapp.com/api/v1/topics?";
+
+    const fullUrl = `${url}keywords="${formData.word1} ${formData.word2} ${formData.word3} ${formData.word4} ${formData.word5}"`;
+    console.log(fullUrl);
+
+    fetch(fullUrl)
+      .then(response => response.json())
+      .then(response => handleResponse(response))
+      .then(error => console.log(error));
+
     {
-      /*call API method here*/
+      /*call API method here ALso have to do a mutation to create the topic in the */
     }
   };
 
   const handleSubmit = e => {
     if (!formData.word1 || !formData.word2 || !formData.word3) return;
 
-    getTopicSuggestions(formData);
+    getTopicSuggestions();
+    setIsLoading(true);
     setFormData({ word1: "", word2: "", word3: "", word4: "", word5: "" });
   };
   return (
@@ -90,24 +114,20 @@ const TopicDashboard = () => {
           </button>
         </div>
         <h3 className="text-white text-3xl text-center my-2 pt-10">
-          My Last Five Topics
+          Generated Topics
         </h3>
-        <div className="blue-glassmorphism mt-5">
-          <ul className="p-5 flex flex-col items-left space-y-2 list-disc pl-10">
-            <li className="text-white">
-              "Why You Should Move to Tailwinds Now"
-            </li>
-            <li className="text-white">
-              "Fixate Makes Content Marketing Easier"
-            </li>
-            <li className="text-white">
-              "Scalability and Utility-First Frameworks"
-            </li>
-            <li className="text-white">
-              "React, Vue, and Angular: Judgment Made"
-            </li>
-            <li className="text-white">"Cybersecurity Means Cyberawareness"</li>
-          </ul>
+        <div className="blue-glassmorphism mt-5 w-full">
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <ul className="p-5 flex flex-col items-left space-y-2 pl-10">
+              {lastFive?.map((topic, i) => (
+                <li key={i} className="text-white">
+                  {topic}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </div>
