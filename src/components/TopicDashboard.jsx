@@ -1,6 +1,17 @@
 import { useState, useContext, useEffect } from "react";
-import { useQuery, useMutation } from "@apollo/client";
-import { Loader } from "../components";
+import { gql, useQuery, useMutation } from "@apollo/client";
+import { Loader, TopicRow } from "../components";
+
+const GET_USER_TOPICS = gql`
+  query UserTopics($email: String!) {
+    user(email: $email) {
+      topics {
+        id
+        text
+      }
+    }
+  }
+`;
 
 const Input = ({ placeholder, name, type, value, handleChange }) => (
   <input
@@ -14,8 +25,10 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
     }
   />
 );
-
-const TopicDashboard = () => {
+{
+  /*Consider pulling form into its own component so that the Topic Dashboard doesn't re-render everytime someone types a character*/
+}
+const TopicDashboard = ({ userId, userEmail }) => {
   const [formData, setFormData] = useState({
     word1: "",
     word2: "",
@@ -24,8 +37,15 @@ const TopicDashboard = () => {
     word5: ""
   });
 
-  const [lastFive, setLastFive] = useState([]);
+  const [freshTopics, setFreshTopics] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [userTopics, setUserTopics] = useState([]);
+
+  const { data, error, loading, refetch } = useQuery(GET_USER_TOPICS, {
+    variables: { email: userEmail },
+    onError: error => console.log(error),
+    onCompleted: data => setUserTopics(data.user.topics)
+  });
 
   const handleChange = (e, name) => {
     setFormData(prevState => ({ ...prevState, [name]: e.target.value }));
@@ -36,25 +56,18 @@ const TopicDashboard = () => {
     const formattedTopics = topics.split("\n").splice(2, 5);
 
     setIsLoading(false);
-    setLastFive(formattedTopics);
+    setFreshTopics(formattedTopics);
   };
-
-  console.log(lastFive);
 
   const getTopicSuggestions = () => {
     const url = "https://megaphone-ai-api.herokuapp.com/api/v1/topics?";
 
     const fullUrl = `${url}keywords="${formData.word1} ${formData.word2} ${formData.word3} ${formData.word4} ${formData.word5}"`;
-    console.log(fullUrl);
 
     fetch(fullUrl)
       .then(response => response.json())
       .then(response => handleResponse(response))
       .then(error => console.log(error));
-
-    {
-      /*call API method here ALso have to do a mutation to create the topic in the */
-    }
   };
 
   const handleSubmit = e => {
@@ -120,14 +133,36 @@ const TopicDashboard = () => {
           {isLoading ? (
             <Loader />
           ) : (
-            <ul className="p-5 flex flex-col items-left space-y-2 pl-10">
-              {lastFive?.map((topic, i) => (
-                <li key={i} className="text-white">
-                  {topic}
-                </li>
-              ))}
+            <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
+              {freshTopics.length != 0 ? (
+                freshTopics.map((topic, i) => (
+                  <TopicRow
+                    topic={topic}
+                    key={i}
+                    userId={userId}
+                    i={i}
+                    refetch={refetch}
+                  />
+                ))
+              ) : (
+                <h1 className="text-purple-400/70 text-center text-xl animate-pulse">
+                  Make Topics Using Our Generator
+                </h1>
+              )}
             </ul>
           )}
+        </div>
+        <h3 className="text-white text-3xl text-center my-2 pt-10">
+          My Saved Topics
+        </h3>
+        <div className="blue-glassmorphism mt-5 w-full">
+          <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
+            {userTopics.map((topic, i) => (
+              <li className="text-white" key={i}>
+                {topic.text}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>
