@@ -46,7 +46,6 @@ const Dashboard = () => {
   const user = useContext(UserContext);
   const email = user?.user?.email;
   const userHd = user?.user?.hd;
-
   const formData = useContext(EntityContext);
 
   const { data: userData, refetch: refetchUser } = useQuery(GET_USER_PROFILE, {
@@ -118,7 +117,7 @@ const Dashboard = () => {
                     Use this portal to get topic suggestions and more using the
                     latest in artificial intelligence.
                   </p>
-                  <TopicDashboard />
+                  <TopicDashboard userId={userData.user.id} />
                 </>
               )}
               <button

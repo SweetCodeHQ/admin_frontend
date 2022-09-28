@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
-import { useQuery, useMutation } from "@apollo/client";
-import { Loader } from "../components";
+import { gql, useQuery, useMutation } from "@apollo/client";
+import { Loader, TopicRow } from "../components";
 
 const Input = ({ placeholder, name, type, value, handleChange }) => (
   <input
@@ -15,7 +15,7 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
   />
 );
 
-const TopicDashboard = () => {
+const TopicDashboard = ({ userId }) => {
   const [formData, setFormData] = useState({
     word1: "",
     word2: "",
@@ -39,22 +39,15 @@ const TopicDashboard = () => {
     setLastFive(formattedTopics);
   };
 
-  console.log(lastFive);
-
   const getTopicSuggestions = () => {
     const url = "https://megaphone-ai-api.herokuapp.com/api/v1/topics?";
 
     const fullUrl = `${url}keywords="${formData.word1} ${formData.word2} ${formData.word3} ${formData.word4} ${formData.word5}"`;
-    console.log(fullUrl);
 
     fetch(fullUrl)
       .then(response => response.json())
       .then(response => handleResponse(response))
       .then(error => console.log(error));
-
-    {
-      /*call API method here ALso have to do a mutation to create the topic in the */
-    }
   };
 
   const handleSubmit = e => {
@@ -120,12 +113,17 @@ const TopicDashboard = () => {
           {isLoading ? (
             <Loader />
           ) : (
-            <ul className="p-5 flex flex-col items-left space-y-2 pl-10">
-              {lastFive?.map((topic, i) => (
-                <li key={i} className="text-white">
-                  {topic}
-                </li>
-              ))}
+            <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
+              {/* Create a TopicRow component with state (isSaved??). Pull the mutation out to this component. When user clicks 'save', it runs the mutation.The data flow: user clicks "save". Mutation runs. Then, save => Saved!*/}
+              {lastFive.length != 0 ? (
+                lastFive.map((topic, i) => (
+                  <TopicRow topic={topic} key={i} userId={userId} i={i} />
+                ))
+              ) : (
+                <h1 className="text-purple-400/70 text-center text-xl animate-pulse">
+                  Make Topics Using Our Generator
+                </h1>
+              )}
             </ul>
           )}
         </div>
