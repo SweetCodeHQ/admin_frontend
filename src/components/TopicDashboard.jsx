@@ -25,7 +25,9 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
     }
   />
 );
-
+{
+  /*Consider pulling form into its own component so that the Topic Dashboard doesn't re-render everytime someone types a character*/
+}
 const TopicDashboard = ({ userId, userEmail }) => {
   const [formData, setFormData] = useState({
     word1: "",
