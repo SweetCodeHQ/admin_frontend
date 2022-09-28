@@ -2,6 +2,17 @@ import { useState, useContext, useEffect } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { Loader, TopicRow } from "../components";
 
+const GET_USER_TOPICS = gql`
+  query UserTopics($email: String!) {
+    user(email: $email) {
+      topics {
+        id
+        text
+      }
+    }
+  }
+`;
+
 const Input = ({ placeholder, name, type, value, handleChange }) => (
   <input
     placeholder={placeholder}
@@ -15,7 +26,7 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
   />
 );
 
-const TopicDashboard = ({ userId }) => {
+const TopicDashboard = ({ userId, userEmail }) => {
   const [formData, setFormData] = useState({
     word1: "",
     word2: "",
@@ -24,8 +35,17 @@ const TopicDashboard = ({ userId }) => {
     word5: ""
   });
 
-  const [lastFive, setLastFive] = useState([]);
+  const [freshTopics, setFreshTopics] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [userTopics, setUserTopics] = useState([]);
+
+  console.log(userTopics);
+
+  const { data, error, loading } = useQuery(GET_USER_TOPICS, {
+    variables: { email: userEmail },
+    onError: error => console.log(error),
+    onCompleted: data => setUserTopics(data.user.topics)
+  });
 
   const handleChange = (e, name) => {
     setFormData(prevState => ({ ...prevState, [name]: e.target.value }));
@@ -36,7 +56,7 @@ const TopicDashboard = ({ userId }) => {
     const formattedTopics = topics.split("\n").splice(2, 5);
 
     setIsLoading(false);
-    setLastFive(formattedTopics);
+    setFreshTopics(formattedTopics);
   };
 
   const getTopicSuggestions = () => {
@@ -114,9 +134,8 @@ const TopicDashboard = ({ userId }) => {
             <Loader />
           ) : (
             <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
-              {/* Create a TopicRow component with state (isSaved??). Pull the mutation out to this component. When user clicks 'save', it runs the mutation.The data flow: user clicks "save". Mutation runs. Then, save => Saved!*/}
-              {lastFive.length != 0 ? (
-                lastFive.map((topic, i) => (
+              {freshTopics.length != 0 ? (
+                freshTopics.map((topic, i) => (
                   <TopicRow topic={topic} key={i} userId={userId} i={i} />
                 ))
               ) : (
@@ -126,6 +145,18 @@ const TopicDashboard = ({ userId }) => {
               )}
             </ul>
           )}
+        </div>
+        <h3 className="text-white text-3xl text-center my-2 pt-10">
+          My Saved Topics
+        </h3>
+        <div className="blue-glassmorphism mt-5 w-full">
+          <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
+            {userTopics.map((topic, i) => (
+              <li className="text-white" key={i}>
+                {topic.text}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>

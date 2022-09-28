@@ -26,7 +26,7 @@ const TopicRow = ({ topic, userId, i }) => {
 
   const handleSaveTopic = () => {
     const stringified = JSON.stringify(topic);
-    createTopicMutation(stringified.slice(4));
+    createTopicMutation(stringified.slice(4, -1));
     setHasBeenSaved(true);
   };
 

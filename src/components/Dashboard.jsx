@@ -117,7 +117,10 @@ const Dashboard = () => {
                     Use this portal to get topic suggestions and more using the
                     latest in artificial intelligence.
                   </p>
-                  <TopicDashboard userId={userData.user.id} />
+                  <TopicDashboard
+                    userId={userData.user.id}
+                    userEmail={userData.user.email}
+                  />
                 </>
               )}
               <button
