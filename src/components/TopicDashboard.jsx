@@ -41,9 +41,7 @@ const TopicDashboard = ({ userId, userEmail }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [userTopics, setUserTopics] = useState([]);
 
-  console.log(userTopics);
-
-  const { data, error, loading } = useQuery(GET_USER_TOPICS, {
+  const { data, error, loading, refetch } = useQuery(GET_USER_TOPICS, {
     variables: { email: userEmail },
     onError: error => console.log(error),
     onCompleted: data => setUserTopics(data.user.topics)
@@ -138,7 +136,13 @@ const TopicDashboard = ({ userId, userEmail }) => {
             <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
               {freshTopics.length != 0 ? (
                 freshTopics.map((topic, i) => (
-                  <TopicRow topic={topic} key={i} userId={userId} i={i} />
+                  <TopicRow
+                    topic={topic}
+                    key={i}
+                    userId={userId}
+                    i={i}
+                    refetch={refetch}
+                  />
                 ))
               ) : (
                 <h1 className="text-purple-400/70 text-center text-xl animate-pulse">

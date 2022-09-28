@@ -10,11 +10,11 @@ const CREATE_TOPIC = gql`
   }
 `;
 
-const TopicRow = ({ topic, userId, i }) => {
+const TopicRow = ({ topic, userId, i, refetch }) => {
   const [hasBeenSaved, setHasBeenSaved] = useState(false);
 
   const [topicCreationData, { loading, error }] = useMutation(CREATE_TOPIC, {
-    onCompleted: data => console.log(data),
+    onCompleted: refetch,
     onError: error => console.log(error)
   });
 
