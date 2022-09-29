@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
-import { Loader, TopicRow } from "../components";
+import { Loader, TopicRow, UserTopic } from "../components";
 
 const GET_USER_TOPICS = gql`
   query UserTopics($email: String!) {
@@ -47,10 +47,6 @@ const TopicDashboard = ({ userId, userEmail }) => {
     onCompleted: data => setUserTopics(data.user.topics)
   });
 
-  const handleChange = (e, name) => {
-    setFormData(prevState => ({ ...prevState, [name]: e.target.value }));
-  };
-
   const handleResponse = response => {
     const topics = response.data.attributes.text;
     const formattedTopics = topics.split("\n").splice(2, 5);
@@ -68,6 +64,10 @@ const TopicDashboard = ({ userId, userEmail }) => {
       .then(response => response.json())
       .then(response => handleResponse(response))
       .then(error => console.log(error));
+  };
+
+  const handleChange = (e, name) => {
+    setFormData(prevState => ({ ...prevState, [name]: e.target.value }));
   };
 
   const handleSubmit = e => {
@@ -158,9 +158,7 @@ const TopicDashboard = ({ userId, userEmail }) => {
         <div className="blue-glassmorphism mt-5 w-full">
           <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
             {userTopics.map((topic, i) => (
-              <li className="text-white" key={i}>
-                {topic.text}
-              </li>
+              <UserTopic key={i} topic={topic} refetch={refetch} />
             ))}
           </ul>
         </div>
