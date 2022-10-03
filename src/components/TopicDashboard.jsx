@@ -4,8 +4,18 @@ import { Loader, TopicRow, UserTopic } from "../components";
 import { ImBullhorn } from "react-icons/im";
 
 const GET_PAGINATED_TOPICS = gql`
-  query TopicsConnection($userId: ID!, $after: String, $before: String) {
-    userTopicsConnection(userId: $userId, after: $after, before: $before) {
+  query TopicsConnection(
+    $userId: ID!
+    $after: String
+    $before: String
+    $last: Int
+  ) {
+    userTopicsConnection(
+      userId: $userId
+      after: $after
+      before: $before
+      last: $last
+    ) {
       pageInfo {
         endCursor
         startCursor
@@ -204,7 +214,7 @@ const TopicDashboard = ({ userId, userEmail }) => {
                   className="hover:text-purple-600 cursor-pointer"
                   onClick={() =>
                     flipTopicPage({
-                      after: null,
+                      last: 10,
                       before: userTopicsConnection.pageInfo.startCursor
                     })
                   }

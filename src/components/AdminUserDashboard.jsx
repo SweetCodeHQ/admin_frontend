@@ -13,8 +13,8 @@ const GET_FIXATE_USERS = gql`
 `;
 
 const GET_PAGINATED_USERS = gql`
-  query UsersConnection($after: String, $before: String) {
-    usersConnection(after: $after, before: $before) {
+  query UsersConnection($after: String, $before: String, $last: Int) {
+    usersConnection(after: $after, before: $before, last: $last) {
       pageInfo {
         endCursor
         startCursor
@@ -170,7 +170,7 @@ const AdminUserDashboard = () => {
                   className="hover:text-purple-600 cursor-pointer"
                   onClick={() =>
                     flipUserPage({
-                      after: null,
+                      last: 10,
                       before: allUsersData.usersConnection.pageInfo.startCursor
                     })
                   }

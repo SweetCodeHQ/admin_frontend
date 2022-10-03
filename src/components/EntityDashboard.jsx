@@ -5,8 +5,8 @@ import { ImBullhorn } from "react-icons/im";
 import { HiPencilAlt, HiOutlineX } from "react-icons/hi";
 
 const GET_PAGINATED_ENTITIES = gql`
-  query EntitiesConnection($after: String, $before: String) {
-    entitiesConnection(after: $after, before: $before) {
+  query EntitiesConnection($after: String, $before: String, $last: Int) {
+    entitiesConnection(after: $after, before: $before, last: $last) {
       pageInfo {
         endCursor
         startCursor
@@ -240,7 +240,7 @@ const EntityDashboard = () => {
                   className="hover:text-purple-600 cursor-pointer"
                   onClick={() =>
                     flipEntityPage({
-                      after: null,
+                      last: 10,
                       before: entities.entitiesConnection.pageInfo.startCursor
                     })
                   }
