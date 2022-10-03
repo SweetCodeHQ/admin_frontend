@@ -17,10 +17,7 @@ const Footer = () => {
             About
           </p>
           <p className="text-white text-base text-center mx-2 cursor-pointer">
-            Main App
-          </p>
-          <p className="text-white text-base text-center mx-2 cursor-pointer">
-            SweetCode
+            Sweet Code
           </p>
           <p className="text-white text-base text-center mx-2 cursor-pointer">
             Fixate

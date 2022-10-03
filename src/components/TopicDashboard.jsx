@@ -1,13 +1,23 @@
 import { useState, useContext, useEffect } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { Loader, TopicRow, UserTopic } from "../components";
+import { ImBullhorn } from "react-icons/im";
 
-const GET_USER_TOPICS = gql`
-  query UserTopics($email: String!) {
-    user(email: $email) {
-      topics {
-        id
-        text
+const GET_PAGINATED_TOPICS = gql`
+  query TopicsConnection($userId: ID!, $after: String, $before: String) {
+    userTopicsConnection(userId: $userId, after: $after, before: $before) {
+      pageInfo {
+        endCursor
+        startCursor
+        hasPreviousPage
+        hasNextPage
+      }
+      edges {
+        cursor
+        node {
+          id
+          text
+        }
       }
     }
   }
@@ -39,13 +49,35 @@ const TopicDashboard = ({ userId, userEmail }) => {
 
   const [freshTopics, setFreshTopics] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [userTopics, setUserTopics] = useState([]);
+  const [userTopicsConnection, setUserTopicsConnection] = useState([]);
 
-  const { data, error, loading, refetch } = useQuery(GET_USER_TOPICS, {
+  const { data, refetch, fetchMore } = useQuery(GET_PAGINATED_TOPICS, {
+    variables: { userId: userId },
+    onError: error => console.log(error),
+    onCompleted: data => setUserTopicsConnection(data.userTopicsConnection),
+    fetchPolicy: "network-first"
+  });
+
+  const updateQuery = (prev, { fetchMoreResult }) => {
+    return fetchMoreResult.userTopicsConnection.edges.length
+      ? fetchMoreResult
+      : prev;
+  };
+
+  const flipTopicPage = params => {
+    fetchMore({
+      variables: params,
+      updateQuery
+    });
+  };
+
+  {
+    /*const { data, error, loading, refetch } = useQuery(GET_USER_TOPICS, {
     variables: { email: userEmail },
     onError: error => console.log(error),
     onCompleted: data => setUserTopics(data.user.topics)
-  });
+  });*/
+  }
 
   const handleResponse = response => {
     const topics = response.data.attributes.text;
@@ -157,10 +189,52 @@ const TopicDashboard = ({ userId, userEmail }) => {
         </h3>
         <div className="blue-glassmorphism mt-5 w-full">
           <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
-            {userTopics.map((topic, i) => (
-              <UserTopic key={i} topic={topic} refetch={refetch} />
+            {userTopicsConnection?.edges?.map((edge, i) => (
+              <UserTopic
+                key={edge.node.id}
+                topic={edge.node}
+                refetch={refetch}
+              />
             ))}
           </ul>
+          <div className="flex justify-between content-end pl-5 pr-5">
+            <div className="text-left text-blue-400">
+              {userTopicsConnection?.pageInfo?.hasPreviousPage ? (
+                <p
+                  className="hover:text-purple-600 cursor-pointer"
+                  onClick={() =>
+                    flipTopicPage({
+                      after: null,
+                      before: userTopicsConnection.pageInfo.startCursor
+                    })
+                  }
+                >
+                  {"<<<"}
+                </p>
+              ) : (
+                <p></p>
+              )}
+            </div>
+            <div className="text-blue-300 pb-8">
+              <ImBullhorn />
+            </div>
+            <div className=" text-blue-400">
+              {userTopicsConnection?.pageInfo?.hasNextPage ? (
+                <p
+                  className="hover:text-purple-600 cursor-pointer"
+                  onClick={() =>
+                    flipTopicPage({
+                      after: userTopicsConnection.pageInfo.endCursor
+                    })
+                  }
+                >
+                  {">>>"}
+                </p>
+              ) : (
+                <p></p>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
