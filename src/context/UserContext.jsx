@@ -15,7 +15,7 @@ const CREATE_USER = gql`
 export const UserContext = React.createContext();
 
 export const UserContextProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [googleUser, setGoogleUser] = useState(null);
 
   const createUserMutation = email => {
     const input = { email: email };
@@ -30,7 +30,7 @@ export const UserContextProvider = ({ children }) => {
   const userCallback = response => {
     console.log("logged in");
     var userObject = jwt_decode(response.credential);
-    setUser(userObject);
+    setGoogleUser(userObject);
 
     createUserMutation(userObject.email);
     {
@@ -41,7 +41,7 @@ export const UserContextProvider = ({ children }) => {
 
   const handleSignOut = event => {
     console.log("logged out");
-    setUser(null);
+    setGoogleUser(null);
   };
 
   return (
@@ -49,7 +49,7 @@ export const UserContextProvider = ({ children }) => {
       value={{
         handleSignOut,
         userCallback,
-        user
+        googleUser
       }}
     >
       {children}
