@@ -42,18 +42,23 @@ const GET_ENTITY = gql`
 const Dashboard = () => {
   const { handleSignOut, userCallback } = useContext(UserContext);
 
-  const user = useContext(UserContext);
-  const email = user?.user?.email;
-  const userHd = user?.user?.hd;
+  const googleUser = useContext(UserContext);
+  const email = googleUser?.googleUser?.email;
+  const userHd = googleUser?.googleUser?.hd;
+
   const formData = useContext(EntityContext);
 
-  const { data: userData, refetch: refetchUser } = useQuery(GET_USER_PROFILE, {
-    variables: { email }
-  });
+  const { data: megaphoneUserData, refetch: refetchUser } = useQuery(
+    GET_USER_PROFILE,
+    {
+      variables: { email }
+    }
+  );
 
   const { data: entityData, refetch: refetchEntity } = useQuery(GET_ENTITY, {
     variables: { url: userHd },
-    onError: error => console.log(error)
+    onError: error => console.log(error),
+    onCompleted: data => console.log(data)
   });
 
   const loginCallback = response => {
@@ -66,7 +71,7 @@ const Dashboard = () => {
       email: currentUser.email
     });
 
-    const userId = megaphoneUserResponse.data.user.id;
+    const megaphoneUserId = megaphoneUserResponse.data.user.id;
 
     const megaphoneEntityResponse = await refetchEntity({
       url: currentUser.hd
@@ -74,16 +79,19 @@ const Dashboard = () => {
 
     const entityId = megaphoneEntityResponse.data.entity.id;
 
-    createUserEntityMutation(userId, entityId);
+    createUserEntityMutation(megaphoneUserId, entityId);
   };
 
-  const [
-    userEntityMutationData,
-    { loading, error }
-  ] = useMutation(CREATE_USER_ENTITY, { onError: error => console.log(error) });
+  const [userEntityMutationData, { loading, error }] = useMutation(
+    CREATE_USER_ENTITY,
+    {
+      onError: error => console.log(error),
+      onCompleted: data => console.log(data)
+    }
+  );
 
-  const createUserEntityMutation = (userId, entityId) => {
-    const input = { userId: userId, entityId: entityId };
+  const createUserEntityMutation = (megaphoneUserId, entityId) => {
+    const input = { userId: megaphoneUserId, entityId: entityId };
 
     userEntityMutationData({ variables: input });
   };
@@ -92,12 +100,13 @@ const Dashboard = () => {
     <div className="flex w-full justify-center items-center">
       <div className="flex mf:flex-row flex-col items-start justify-between md:p-20 py-12 px-4">
         <div className="flex flex-1 justify-start flex-col mf:mr-10">
-          {userData?.user ? (
+          {googleUser?.googleUser ? (
             <>
               <h1 className="text-3xl sm:text-5xl text-white text-gradient py-1">
-                Welcome back, <br /> {user.user.given_name}!
+                Welcome back, <br />
+                {googleUser?.googleUser?.given_name}!
               </h1>
-              {userData?.user?.isAdmin ? (
+              {megaphoneUserData?.user?.isAdmin ? (
                 <>
                   <p className="text-left mt-5 text-white font-light md:w-9/12 w-11/12 text-base">
                     Use this portal to manage administrators, entities, users,
@@ -117,8 +126,8 @@ const Dashboard = () => {
                     latest in artificial intelligence.
                   </p>
                   <TopicDashboard
-                    userId={userData.user.id}
-                    userEmail={userData.user.email}
+                    userId={megaphoneUserData?.user?.id}
+                    userEmail={megaphoneUserData?.user?.email}
                   />
                 </>
               )}
