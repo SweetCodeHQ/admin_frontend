@@ -13,8 +13,8 @@ const App = () => {
           <Navbar />
           <Dashboard />
         </UserContextProvider>
+        <Footer />
       </div>
-      <Footer />
     </div>
   );
 };

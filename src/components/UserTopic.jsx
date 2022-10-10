@@ -35,7 +35,7 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
   />
 );
 
-const UserTopic = ({ topic, refetch }) => {
+const UserTopic = ({ topic, refetch, id }) => {
   const [clicked, setClicked] = useState(false);
 
   const [topicFormData, setTopicFormData] = useState({
