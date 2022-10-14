@@ -33,6 +33,53 @@ const GET_PAGINATED_TOPICS = gql`
   }
 `;
 
+const GET_RANDOM_KEYWORDS = gql`
+  query RandomKeywords {
+    randomKeywords {
+      word
+    }
+  }
+`;
+
+const GET_TOP_FIVE_KEYWORDS = gql`
+  query Top5 {
+    topFiveKeywords {
+      word
+    }
+  }
+`;
+
+const CREATE_KEYWORD = gql`
+  mutation CreateKeyword($word: String!) {
+    createKeyword(input: { word: $word }) {
+      id
+      word
+    }
+  }
+`;
+
+const UPDATE_KEYWORD = gql`
+  mutation UpdateKeyword($word: String!) {
+    updateKeyword(input: { word: $word }) {
+      id
+      word
+    }
+  }
+`;
+
+const CREATE_USER_KEYWORD = gql`
+  mutation CreateUserKeyword($userId: ID!, $word: String!) {
+    createUserKeyword(input: { userId: $userId, word: $word }) {
+      id
+    }
+  }
+`;
+
+{
+  /*
+  Add user-keyword mutation and random keywords as suggestions
+  */
+}
 const Input = ({ placeholder, name, type, value, handleChange }) => (
   <input
     placeholder={placeholder}
@@ -41,7 +88,7 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
     value={value}
     onChange={e => handleChange(e, name)}
     className={
-      "my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
+      "my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism shadow-inner shadow-lg"
     }
   />
 );
@@ -57,6 +104,8 @@ const TopicDashboard = ({ userId, userEmail }) => {
     word5: ""
   });
 
+  const [inputKeywords, setInputKeywords] = useState(null);
+
   const [freshTopics, setFreshTopics] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [userTopicsConnection, setUserTopicsConnection] = useState([]);
@@ -67,6 +116,47 @@ const TopicDashboard = ({ userId, userEmail }) => {
     onCompleted: data => setUserTopicsConnection(data.userTopicsConnection),
     fetchPolicy: "network-first"
   });
+
+  const { data: randomKeywordsData, refetch: refetchRandomKeywords } = useQuery(
+    GET_RANDOM_KEYWORDS,
+    {
+      onError: error => console.log(error)
+    }
+  );
+
+  const { data: topFiveKeywordsData } = useQuery(GET_TOP_FIVE_KEYWORDS, {
+    onError: error => console.log(error)
+  });
+
+  const [keywordMutationData] = useMutation(CREATE_KEYWORD, {
+    onCompleted: data => console.log(data),
+    onError: error => console.log(error)
+  });
+
+  const createKeyword = keyword => {
+    const input = { word: keyword };
+    keywordMutationData({ variables: input });
+  };
+
+  const [updateKeywordData] = useMutation(UPDATE_KEYWORD, {
+    onCompleted: data => console.log(data),
+    onError: error => console.log(error)
+  });
+
+  const updateKeyword = keyword => {
+    const input = { word: keyword };
+    updateKeywordData({ variables: input });
+  };
+
+  const [userKeywordMutationData] = useMutation(CREATE_USER_KEYWORD, {
+    onCompleted: data => console.log(data),
+    onError: error => console.log(error)
+  });
+
+  const createUserKeyword = word => {
+    const input = { userId: userId, word: word };
+    userKeywordMutationData({ variables: input });
+  };
 
   const updateQuery = (prev, { fetchMoreResult }) => {
     return fetchMoreResult.userTopicsConnection.edges.length
@@ -81,15 +171,10 @@ const TopicDashboard = ({ userId, userEmail }) => {
     });
   };
 
-  {
-    /*const { data, error, loading, refetch } = useQuery(GET_USER_TOPICS, {
-    variables: { email: userEmail },
-    onError: error => console.log(error),
-    onCompleted: data => setUserTopics(data.user.topics)
-  });*/
-  }
-
   const handleResponse = response => {
+    {
+      /*Add response in case of dashes and no numbers or bullets*/
+    }
     const topics = response.data.attributes.text;
     const formattedTopics = topics.split("\n").splice(2, 5);
 
@@ -113,65 +198,128 @@ const TopicDashboard = ({ userId, userEmail }) => {
   };
 
   const handleSubmit = e => {
-    if (!formData.word1 || !formData.word2 || !formData.word3) return;
+    if (!formData.word1 || !formData.word2 || !formData.word3)
+      return alert("Please provide at least three keywords.");
+    {
+      /*Add something that normalizes the formatting here for words--remove spaces, downcase*/
+    }
+    const words = Object.values(formData);
 
     getTopicSuggestions();
     setIsLoading(true);
+    setInputKeywords(words);
     setFormData({ word1: "", word2: "", word3: "", word4: "", word5: "" });
+
+    keywordActions(words);
   };
+
+  const handleSuggest = e => {
+    const words = randomKeywordsData.randomKeywords;
+
+    setFormData({
+      word1: words[0].word,
+      word2: words[1].word,
+      word3: words[2].word,
+      word4: words[3].word,
+      word5: words[4].word
+    });
+    refetchRandomKeywords();
+  };
+
+  const keywordActions = async words => {
+    for (const word of words) {
+      await createKeyword(word);
+      await createUserKeyword(word);
+      await updateKeyword(word);
+    }
+  };
+
   return (
-    <div className="flex w-full justify-center items-center 2xl:px20">
-      <div className="flex flex-col items-center md:p-12 py-12 px-4 w-full">
-        <h3 className="text-white text-3xl text-center my-2">Make Topics</h3>
-        <div className="p-5 pt-3 mt-3 sm:w-96 w-full flex flex-col justify-start items-start blue-glassmorphism">
-          <Input
-            placeholder="Word 1"
-            name="word1"
-            value={formData.word1}
-            type="text"
-            handleChange={handleChange}
-          />
-          <Input
-            placeholder="Word 2"
-            name="word2"
-            value={formData.word2}
-            type="text"
-            handleChange={handleChange}
-          />
-          <Input
-            placeholder="Word 3"
-            name="word3"
-            value={formData.word3}
-            type="text"
-            handleChange={handleChange}
-          />
-          <Input
-            placeholder="Word 4 (optional)"
-            name="word4"
-            value={formData.word4}
-            type="text"
-            handleChange={handleChange}
-          />
-          <Input
-            placeholder="Word 5 (optional)"
-            name="word5"
-            value={formData.word5}
-            type="text"
-            handleChange={handleChange}
-          />
-          <div className="h-[1px] w-full bg-gray-400 my-2" />
-          <button
-            type="button"
-            onClick={handleSubmit}
-            className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-purple-800"
-          >
-            See My Topic Suggestions
-          </button>
+    <div className="w-full justify-center items-center 2xl:px20">
+      <div className="flex flex-col items-center md:p-12 py-12 px-4">
+        <div className="flex w-full justify-between">
+          <div>
+            <h3 className="text-white text-3xl text-center my-2">
+              Make Topics
+            </h3>
+            <div className="p-5 pt-3 mt-3 sm:w-96 w-full flex flex-col justify-start items-start blue-glassmorphism">
+              <Input
+                placeholder="Word 1"
+                name="word1"
+                value={formData.word1}
+                type="text"
+                handleChange={handleChange}
+              />
+              <Input
+                placeholder="Word 2"
+                name="word2"
+                value={formData.word2}
+                type="text"
+                handleChange={handleChange}
+              />
+              <Input
+                placeholder="Word 3"
+                name="word3"
+                value={formData.word3}
+                type="text"
+                handleChange={handleChange}
+              />
+              <Input
+                placeholder="Word 4 (optional)"
+                name="word4"
+                value={formData.word4}
+                type="text"
+                handleChange={handleChange}
+              />
+              <Input
+                placeholder="Word 5 (optional)"
+                name="word5"
+                value={formData.word5}
+                type="text"
+                handleChange={handleChange}
+              />
+              <div className="h-[1px] w-full bg-gray-400 my-2" />
+              <div className="w-full flex justify-between">
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  className="text-white shadow-sm shadow-blue-400 mt-2 border-[1px] p-3 border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-purple-800 hover:shadow-sm"
+                >
+                  Show Me Topics!
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSuggest}
+                  className="text-white shadow-sm shadow-blue-400 mt-2 border-[1px] p-3 border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-purple-800 hover:shadow-sm"
+                >
+                  Suggest Keywords
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="self-center">
+            <h2 className="text-yellow-500">Trending Keywords</h2>
+            {topFiveKeywordsData?.topFiveKeywords.map((keyword, i) => (
+              <p className="text-yellow-300" key={i}>
+                {keyword.word.toLowerCase()}
+              </p>
+            ))}
+          </div>
         </div>
         <h3 className="text-white text-3xl text-center my-2 pt-10">
           Generated Topics
         </h3>
-        <div className="blue-glassmorphism mt-5 w-full">
+        {inputKeywords && (
+          <div className="text-white mb-2 blue-glassmorphism">
+            <p className="mt-3 mb-3 mr-10 ml-10">You used these keywords: </p>
+            <div className="mb-5">
+              {inputKeywords.map((keyword, i) => (
+                <p className="text-yellow-400 text-center">{keyword} </p>
+              ))}
+            </div>
+          </div>
+        )}
+        <div className="blue-glassmorphism mt-2 w-full">
           {isLoading ? (
             <Loader />
           ) : (
@@ -194,58 +342,63 @@ const TopicDashboard = ({ userId, userEmail }) => {
             </ul>
           )}
         </div>
-        <h3 className="text-white text-3xl text-center my-2 pt-10">
-          My Saved Topics
-        </h3>
-        <div className="blue-glassmorphism mt-5 w-full">
-          <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
-            {userTopicsConnection?.edges?.map((edge, i) => (
-              <UserTopic
-                key={edge.node.id}
-                topic={edge.node}
-                refetch={refetch}
-              />
-            ))}
-          </ul>
-          <div className="flex justify-between content-end pl-5 pr-5">
-            <div className="text-left text-blue-400">
-              {userTopicsConnection?.pageInfo?.hasPreviousPage ? (
-                <p
-                  className="hover:text-purple-600 cursor-pointer"
-                  onClick={() =>
-                    flipTopicPage({
-                      last: 10,
-                      before: userTopicsConnection.pageInfo.startCursor
-                    })
-                  }
-                >
-                  {"<<<"}
-                </p>
-              ) : (
-                <p></p>
-              )}
+        {userTopicsConnection?.edges?.length != 0 && (
+          <>
+            <h3 className="text-white text-3xl text-center my-2 pt-10">
+              My Saved Topics
+            </h3>
+            <div className="blue-glassmorphism mt-2 w-full">
+              <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
+                {userTopicsConnection?.edges?.map((edge, i) => (
+                  <UserTopic
+                    id={i}
+                    key={edge.node.id}
+                    topic={edge.node}
+                    refetch={refetch}
+                  />
+                ))}
+              </ul>
+              <div className="flex justify-between content-end pl-5 pr-5">
+                <div className="text-left text-blue-400">
+                  {userTopicsConnection?.pageInfo?.hasPreviousPage ? (
+                    <p
+                      className="hover:text-purple-600 cursor-pointer"
+                      onClick={() =>
+                        flipTopicPage({
+                          last: 10,
+                          before: userTopicsConnection.pageInfo.startCursor
+                        })
+                      }
+                    >
+                      {"<<<"}
+                    </p>
+                  ) : (
+                    <p></p>
+                  )}
+                </div>
+                <div className="text-blue-300 pb-8">
+                  <ImBullhorn />
+                </div>
+                <div className=" text-blue-400">
+                  {userTopicsConnection?.pageInfo?.hasNextPage ? (
+                    <p
+                      className="hover:text-purple-600 cursor-pointer"
+                      onClick={() =>
+                        flipTopicPage({
+                          after: userTopicsConnection.pageInfo.endCursor
+                        })
+                      }
+                    >
+                      {">>>"}
+                    </p>
+                  ) : (
+                    <p></p>
+                  )}
+                </div>
+              </div>
             </div>
-            <div className="text-blue-300 pb-8">
-              <ImBullhorn />
-            </div>
-            <div className=" text-blue-400">
-              {userTopicsConnection?.pageInfo?.hasNextPage ? (
-                <p
-                  className="hover:text-purple-600 cursor-pointer"
-                  onClick={() =>
-                    flipTopicPage({
-                      after: userTopicsConnection.pageInfo.endCursor
-                    })
-                  }
-                >
-                  {">>>"}
-                </p>
-              ) : (
-                <p></p>
-              )}
-            </div>
-          </div>
-        </div>
+          </>
+        )}
       </div>
     </div>
   );
