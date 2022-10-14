@@ -41,6 +41,14 @@ const GET_RANDOM_KEYWORDS = gql`
   }
 `;
 
+const GET_TOP_FIVE_KEYWORDS = gql`
+  query Top5 {
+    topFiveKeywords {
+      word
+    }
+  }
+`;
+
 const CREATE_KEYWORD = gql`
   mutation CreateKeyword($word: String!) {
     createKeyword(input: { word: $word }) {
@@ -112,10 +120,13 @@ const TopicDashboard = ({ userId, userEmail }) => {
   const { data: randomKeywordsData, refetch: refetchRandomKeywords } = useQuery(
     GET_RANDOM_KEYWORDS,
     {
-      onError: error => console.log(error),
-      onCompleted: data => console.log(data)
+      onError: error => console.log(error)
     }
   );
+
+  const { data: topFiveKeywordsData } = useQuery(GET_TOP_FIVE_KEYWORDS, {
+    onError: error => console.log(error)
+  });
 
   const [keywordMutationData] = useMutation(CREATE_KEYWORD, {
     onCompleted: data => console.log(data),
@@ -225,60 +236,74 @@ const TopicDashboard = ({ userId, userEmail }) => {
 
   return (
     <div className="w-full justify-center items-center 2xl:px20">
-      <div className="flex flex-col items-center md:p-12 py-12 px-4 w-full">
-        <h3 className="text-white text-3xl text-center my-2">Make Topics</h3>
-        <div className="p-5 pt-3 mt-3 sm:w-96 w-full flex flex-col justify-start items-start blue-glassmorphism">
-          <Input
-            placeholder="Word 1"
-            name="word1"
-            value={formData.word1}
-            type="text"
-            handleChange={handleChange}
-          />
-          <Input
-            placeholder="Word 2"
-            name="word2"
-            value={formData.word2}
-            type="text"
-            handleChange={handleChange}
-          />
-          <Input
-            placeholder="Word 3"
-            name="word3"
-            value={formData.word3}
-            type="text"
-            handleChange={handleChange}
-          />
-          <Input
-            placeholder="Word 4 (optional)"
-            name="word4"
-            value={formData.word4}
-            type="text"
-            handleChange={handleChange}
-          />
-          <Input
-            placeholder="Word 5 (optional)"
-            name="word5"
-            value={formData.word5}
-            type="text"
-            handleChange={handleChange}
-          />
-          <div className="h-[1px] w-full bg-gray-400 my-2" />
-          <div className="w-full flex justify-between">
-            <button
-              type="button"
-              onClick={handleSubmit}
-              className="text-white shadow-sm shadow-blue-400 mt-2 border-[1px] p-2 border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-purple-800 hover:shadow-sm"
-            >
-              Show Me Topics!
-            </button>
-            <button
-              type="button"
-              onClick={handleSuggest}
-              className="text-white shadow-sm shadow-blue-400 mt-2 border-[1px] p-2 border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-purple-800 hover:shadow-sm"
-            >
-              Suggest Keywords
-            </button>
+      <div className="flex flex-col items-center md:p-12 py-12 px-4">
+        <div className="flex w-full justify-between">
+          <div>
+            <h3 className="text-white text-3xl text-center my-2">
+              Make Topics
+            </h3>
+            <div className="p-5 pt-3 mt-3 sm:w-96 w-full flex flex-col justify-start items-start blue-glassmorphism">
+              <Input
+                placeholder="Word 1"
+                name="word1"
+                value={formData.word1}
+                type="text"
+                handleChange={handleChange}
+              />
+              <Input
+                placeholder="Word 2"
+                name="word2"
+                value={formData.word2}
+                type="text"
+                handleChange={handleChange}
+              />
+              <Input
+                placeholder="Word 3"
+                name="word3"
+                value={formData.word3}
+                type="text"
+                handleChange={handleChange}
+              />
+              <Input
+                placeholder="Word 4 (optional)"
+                name="word4"
+                value={formData.word4}
+                type="text"
+                handleChange={handleChange}
+              />
+              <Input
+                placeholder="Word 5 (optional)"
+                name="word5"
+                value={formData.word5}
+                type="text"
+                handleChange={handleChange}
+              />
+              <div className="h-[1px] w-full bg-gray-400 my-2" />
+              <div className="w-full flex justify-between">
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  className="text-white shadow-sm shadow-blue-400 mt-2 border-[1px] p-3 border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-purple-800 hover:shadow-sm"
+                >
+                  Show Me Topics!
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSuggest}
+                  className="text-white shadow-sm shadow-blue-400 mt-2 border-[1px] p-3 border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-purple-800 hover:shadow-sm"
+                >
+                  Suggest Keywords
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="self-center">
+            <h2 className="text-yellow-500">Trending Keywords</h2>
+            {topFiveKeywordsData?.topFiveKeywords.map((keyword, i) => (
+              <p className="text-yellow-300" key={i}>
+                {keyword.word.toLowerCase()}
+              </p>
+            ))}
           </div>
         </div>
         <h3 className="text-white text-3xl text-center my-2 pt-10">
