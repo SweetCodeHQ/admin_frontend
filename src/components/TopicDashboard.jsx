@@ -33,6 +33,45 @@ const GET_PAGINATED_TOPICS = gql`
   }
 `;
 
+const GET_RANDOM_KEYWORDS = gql`
+  query RandomKeywords {
+    randomKeywords {
+      word
+    }
+  }
+`;
+
+const CREATE_KEYWORD = gql`
+  mutation CreateKeyword($word: String!) {
+    createKeyword(input: { word: $word }) {
+      id
+      word
+    }
+  }
+`;
+
+const UPDATE_KEYWORD = gql`
+  mutation UpdateKeyword($word: String!) {
+    updateKeyword(input: { word: $word }) {
+      id
+      word
+    }
+  }
+`;
+
+const CREATE_USER_KEYWORD = gql`
+  mutation CreateUserKeyword($userId: ID!, $word: String!) {
+    createUserKeyword(input: { userId: $userId, word: $word }) {
+      id
+    }
+  }
+`;
+
+{
+  /*
+  Add user-keyword mutation and random keywords as suggestions
+  */
+}
 const Input = ({ placeholder, name, type, value, handleChange }) => (
   <input
     placeholder={placeholder}
@@ -57,7 +96,7 @@ const TopicDashboard = ({ userId, userEmail }) => {
     word5: ""
   });
 
-  const [previousKeywords, setPreviousKeywords] = useState([]);
+  const [inputKeywords, setInputKeywords] = useState(null);
 
   const [freshTopics, setFreshTopics] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -69,6 +108,44 @@ const TopicDashboard = ({ userId, userEmail }) => {
     onCompleted: data => setUserTopicsConnection(data.userTopicsConnection),
     fetchPolicy: "network-first"
   });
+
+  const { data: randomKeywordsData, refetch: refetchRandomKeywords } = useQuery(
+    GET_RANDOM_KEYWORDS,
+    {
+      onError: error => console.log(error),
+      onCompleted: data => console.log(data)
+    }
+  );
+
+  const [keywordMutationData] = useMutation(CREATE_KEYWORD, {
+    onCompleted: data => console.log(data),
+    onError: error => console.log(error)
+  });
+
+  const createKeyword = keyword => {
+    const input = { word: keyword };
+    keywordMutationData({ variables: input });
+  };
+
+  const [updateKeywordData] = useMutation(UPDATE_KEYWORD, {
+    onCompleted: data => console.log(data),
+    onError: error => console.log(error)
+  });
+
+  const updateKeyword = keyword => {
+    const input = { word: keyword };
+    updateKeywordData({ variables: input });
+  };
+
+  const [userKeywordMutationData] = useMutation(CREATE_USER_KEYWORD, {
+    onCompleted: data => console.log(data),
+    onError: error => console.log(error)
+  });
+
+  const createUserKeyword = word => {
+    const input = { userId: userId, word: word };
+    userKeywordMutationData({ variables: input });
+  };
 
   const updateQuery = (prev, { fetchMoreResult }) => {
     return fetchMoreResult.userTopicsConnection.edges.length
@@ -112,11 +189,38 @@ const TopicDashboard = ({ userId, userEmail }) => {
   const handleSubmit = e => {
     if (!formData.word1 || !formData.word2 || !formData.word3)
       return alert("Please provide at least three keywords.");
+    {
+      /*Add something that normalizes the formatting here for words--remove spaces, downcase*/
+    }
+    const words = Object.values(formData);
 
     getTopicSuggestions();
     setIsLoading(true);
-    setPreviousKeywords(Object.values(formData));
+    setInputKeywords(words);
     setFormData({ word1: "", word2: "", word3: "", word4: "", word5: "" });
+
+    keywordActions(words);
+  };
+
+  const handleSuggest = e => {
+    const words = randomKeywordsData.randomKeywords;
+
+    setFormData({
+      word1: words[0].word,
+      word2: words[1].word,
+      word3: words[2].word,
+      word4: words[3].word,
+      word5: words[4].word
+    });
+    refetchRandomKeywords();
+  };
+
+  const keywordActions = async words => {
+    for (const word of words) {
+      await createKeyword(word);
+      await createUserKeyword(word);
+      await updateKeyword(word);
+    }
   };
 
   return (
@@ -160,25 +264,36 @@ const TopicDashboard = ({ userId, userEmail }) => {
             handleChange={handleChange}
           />
           <div className="h-[1px] w-full bg-gray-400 my-2" />
-          <button
-            type="button"
-            onClick={handleSubmit}
-            className="text-white w-full shadow-sm shadow-blue-400 mt-2 border-[1px] p-2 border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-purple-800 hover:shadow-sm"
-          >
-            See My Topic Suggestions
-          </button>
+          <div className="w-full flex justify-between">
+            <button
+              type="button"
+              onClick={handleSubmit}
+              className="text-white shadow-sm shadow-blue-400 mt-2 border-[1px] p-2 border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-purple-800 hover:shadow-sm"
+            >
+              Show Me Topics!
+            </button>
+            <button
+              type="button"
+              onClick={handleSuggest}
+              className="text-white shadow-sm shadow-blue-400 mt-2 border-[1px] p-2 border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-purple-800 hover:shadow-sm"
+            >
+              Suggest Keywords
+            </button>
+          </div>
         </div>
         <h3 className="text-white text-3xl text-center my-2 pt-10">
           Generated Topics
         </h3>
-        <div className="text-white mb-2 blue-glassmorphism">
-          <p className="mt-3 mb-3 mr-10 ml-10">You used these keywords: </p>
-          <div className="mb-5">
-            {previousKeywords.map((keyword, i) => (
-              <p className="text-yellow-400 text-center">{keyword} </p>
-            ))}
+        {inputKeywords && (
+          <div className="text-white mb-2 blue-glassmorphism">
+            <p className="mt-3 mb-3 mr-10 ml-10">You used these keywords: </p>
+            <div className="mb-5">
+              {inputKeywords.map((keyword, i) => (
+                <p className="text-yellow-400 text-center">{keyword} </p>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
         <div className="blue-glassmorphism mt-2 w-full">
           {isLoading ? (
             <Loader />
