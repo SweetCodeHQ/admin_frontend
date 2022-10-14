@@ -11,11 +11,11 @@ const NavbarItem = ({ title, classProps }) => {
 
 const Navbar = () => {
   const [toggleMenu, setToggleMenu] = useState(false);
-  const { handleSignOut, user } = useContext(UserContext);
+  const { handleSignOut, googleUser } = useContext(UserContext);
 
   return (
-    <nav className="w-full flex md:justify-center justify-between items-center p-4">
-      <div className="md:flex-[0.5] flex-initial justify-center items-center">
+    <nav className="w-full flex justify-between items-center p-4 bg-white">
+      <div className="md:flex-[0.5] flex-initial justify-between content-end">
         <img
           src={logo}
           alt="Megaphone Logo"
@@ -23,23 +23,17 @@ const Navbar = () => {
           data-cy="HLogo"
         />
       </div>
-      {user && (
-        <>
-          <ul className="text-white md:flex hidden list-none flex-row justify-between items-center flex-initial object-left">
-            {["Fixate", "Sweet Code"].map((item, index) => (
-              <NavbarItem key={item + index} title={item} />
-            ))}
-          </ul>
-          <button
-            className="bg-[#2952e3] py-2 px-7 mx-4 rounded-full cursor-pointer hover:bg-purple-800 text-white transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
-            type="button"
-            onClick={e => handleSignOut(e)}
-          >
-            Logout
-          </button>
-        </>
+      {googleUser && (
+        <button
+          className="bg-[#1A0B3A] py-2 px-7 mx-4 rounded-full cursor-pointer hover:bg-purple-800 text-white transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
+          type="button"
+          onClick={e => handleSignOut(e)}
+        >
+          Logout
+        </button>
       )}
-      <div className="flex relative">
+      {/* For if there's a real navbar.
+        <div className="flex relative">
         {toggleMenu ? (
           <AiOutlineClose
             fontSize={28}
@@ -69,7 +63,7 @@ const Navbar = () => {
             )}
           </ul>
         )}
-      </div>
+      </div>*/}
     </nav>
   );
 };
