@@ -14,7 +14,7 @@ const Navbar = () => {
   const { handleSignOut, googleUser } = useContext(UserContext);
 
   return (
-    <nav className="w-full flex justify-between items-center p-4 bg-white">
+    <nav className="w-full flex justify-between items-center p-4">
       <div className="md:flex-[0.5] flex-initial justify-between content-end">
         <img
           src={logo}

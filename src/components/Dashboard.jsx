@@ -100,6 +100,19 @@ const Dashboard = () => {
     <div className="flex w-full justify-center items-center">
       <div className="flex items-start justify-between md:p-20 py-12 px-4">
         <div className="flex flex-1 justify-start flex-col mf:mr-10">
+          <div className="p-5 w-full items-center flex flex-col">
+            {!googleUser.googleUser && (
+              <GoogleLogin
+                shape="pill"
+                onSuccess={credentialResponse => {
+                  loginCallback(credentialResponse);
+                }}
+                onError={() => {
+                  console.log("Login Failed");
+                }}
+              />
+            )}
+          </div>
           {googleUser?.googleUser ? (
             <>
               <h1 className="text-3xl sm:text-5xl text-white text-gradient py-1">
@@ -143,16 +156,6 @@ const Dashboard = () => {
           ) : (
             <>
               <Welcome />
-              <div className="p-5 w-full items-center flex flex-col">
-                <GoogleLogin
-                  onSuccess={credentialResponse => {
-                    loginCallback(credentialResponse);
-                  }}
-                  onError={() => {
-                    console.log("Login Failed");
-                  }}
-                />
-              </div>
             </>
           )}
         </div>
