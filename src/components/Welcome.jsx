@@ -3,11 +3,11 @@ const commonStyles =
 
 const Welcome = () => {
   return (
-    <>
-      <h1 className="text-3xl sm:text-5xl text-white text-gradient py-1">
+    <div className="flex flex-col items-center">
+      <h1 className="text-3xl sm:text-5xl text-white text-center text-bold py-1">
         Empowered <br /> Practitioner Marketing
       </h1>
-      <p className="text-left mt-5 text-white font-light md:w-9/12 w-11/12 text-base">
+      <p className="text-left mt-5 text-white font-light text-center md:w-9/12 w-11/12 text-base">
         Get professionals talking about your company through strategically
         selected topics and blog posts written by the experts at Fixate.
       </p>
@@ -19,7 +19,7 @@ const Welcome = () => {
         <div className={commonStyles}>Easy</div>
         <div className={`rounded-br-2xl ${commonStyles}`}>Intuitive</div>
       </div>
-    </>
+    </div>
   );
 };
 

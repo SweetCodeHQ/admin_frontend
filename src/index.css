@@ -12,6 +12,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
 .gradient-bg-welcome {
   background: linear-gradient(
       149.41deg,
@@ -19,6 +20,16 @@ body {
       rgba(139, 32, 189, 0.1) 81.42%
     ),
     #1a0b3a;
+}
+
+.gradient-bg-purple-welcome {
+  background: linear-gradient(
+      149.41deg,
+      rgba(48, 26, 58, 0.25) 4.11%,
+      rgba(139, 32, 189, 0.25) 81.42%
+    ),
+    #140533;
+  opacity: 1;
 }
 
 .gradient-bg-alt-welcome {

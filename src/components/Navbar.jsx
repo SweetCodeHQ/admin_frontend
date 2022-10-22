@@ -3,7 +3,7 @@ import { UserContext } from "../context/UserContext";
 import { HiMenuAlt4 } from "react-icons/hi";
 import { AiOutlineClose } from "react-icons/ai";
 
-import logo from "../../images/logo.png";
+import logo from "../../images/black_white_logo.png";
 
 const NavbarItem = ({ title, classProps }) => {
   return <li className={`mx-4 cursor-pointer ${classProps}`}>{title}</li>;
@@ -14,18 +14,49 @@ const Navbar = () => {
   const { handleSignOut, googleUser } = useContext(UserContext);
 
   return (
-    <nav className="w-full flex justify-between items-center p-4 bg-white">
-      <div className="md:flex-[0.5] flex-initial justify-between content-end">
-        <img
-          src={logo}
-          alt="Megaphone Logo"
-          className="w-32 cursor-pointer"
-          data-cy="HLogo"
-        />
-      </div>
+    <nav className="w-full flex justify-between p-4">
+      <div></div>
+      <img
+        src={logo}
+        alt="Megaphone Logo"
+        className="h-[35px]"
+        data-cy="HLogo"
+      />
+
+      {/*cart will live here.
+        <Cart />
+        render (
+        <div className="menu-related stuff">
+        cartItems.map(item => <CartItem text={item.text} />)
+
+        Clear Cart
+
+        Submit topic for writing. What does confirmation look like? Will Debi email them?
+      )
+
+      Docket, ledger, pile, stack, cabinet, desk, notebook,
+        <CartItem />
+        trashIcon, text
+
+        How many topics will they purchase?
+        Need an icon.
+        State=toggleCart.
+        If cart is toggled, then there's a popup/ menu that shows topics in cart.
+        Probably need to add it to localstorage, too.
+        There probably also needs to be a state that saves/updates cart.
+        Iterate through cart array.
+        topicText, deleteIcon, submitted?
+
+        Add submitted? attribute to topics?
+
+        Can use the NavBar already written below. Need a transparent purple glassmorphism.
+
+        Have a section where topics are submitted? Then, include their status? In admin dash, create a section with topic submissions.
+
+        */}
       {googleUser && (
         <button
-          className="bg-[#1A0B3A] py-2 px-7 mx-4 rounded-full cursor-pointer hover:bg-purple-800 text-white transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
+          className="bg-white py-2 px-7 mx-4 rounded-full cursor-pointer font-semibold text-[#2D104F] transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
           type="button"
           onClick={e => handleSignOut(e)}
         >

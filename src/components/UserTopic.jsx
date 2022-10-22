@@ -2,6 +2,7 @@ import { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
 import { MdDeleteForever } from "react-icons/md";
 import { HiPencilAlt, HiOutlineX } from "react-icons/hi";
+import { BsCart4 } from "react-icons/bs";
 
 const UPDATE_TOPIC = gql`
   mutation($id: ID!, $text: String!) {
@@ -80,6 +81,12 @@ const UserTopic = ({ topic, refetch, id }) => {
     setClicked(false);
   };
 
+  const handleEmail = () => {
+    const url = `https://megaphone-api.herokuapp.com/email?topic_id=${topicFormData.id}`;
+
+    fetch(url, { method: "POST" }).then(error => console.log(error));
+  };
+
   return (
     <>
       {clicked ? (
@@ -116,6 +123,13 @@ const UserTopic = ({ topic, refetch, id }) => {
           <button
             type="button"
             className="text-blue-300 mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-500"
+            onClick={handleEmail}
+          >
+            <BsCart4 />
+          </button>
+          <button
+            type="button"
+            className="text-blue-300 mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-500"
             onClick={destroyTopicMutation}
           >
             <MdDeleteForever />
@@ -127,7 +141,7 @@ const UserTopic = ({ topic, refetch, id }) => {
           >
             <HiPencilAlt />
           </button>
-          <li className="text-white">{topic.text}</li>
+          <li className="text-white font-bold">{topic.text}</li>
         </div>
       )}
     </>

@@ -8,13 +8,13 @@ const App = () => {
 
   return (
     <div className="min-h-screen">
-      <div className="gradient-bg-welcome">
+      <div className="gradient-bg-purple-welcome">
         <UserContextProvider user={user}>
           <Navbar />
           <Dashboard />
         </UserContextProvider>
+        <Footer />
       </div>
-      <Footer />
     </div>
   );
 };

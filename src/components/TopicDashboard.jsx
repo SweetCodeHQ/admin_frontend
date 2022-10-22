@@ -88,7 +88,7 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
     value={value}
     onChange={e => handleChange(e, name)}
     className={
-      "my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism shadow-inner shadow-lg"
+      "my-2 w-full rounded-lg p-2 outline-none text-white bg-[#4E376A]/75 placeholder-gray-400 border-none text-sm shadow-inner shadow-lg"
     }
   />
 );
@@ -236,13 +236,13 @@ const TopicDashboard = ({ userId, userEmail }) => {
 
   return (
     <div className="w-full justify-center items-center 2xl:px20">
-      <div className="flex flex-col items-center md:p-12 py-12 px-4">
+      <div className="flex w-full flex-col items-center mt-5">
         <div className="flex w-full justify-between">
-          <div>
-            <h3 className="text-white text-3xl text-center my-2">
+          <div className="w-full flex flex-col justify-items-center">
+            <h3 className="text-white text-3xl font-bold text-center">
               Make Topics
             </h3>
-            <div className="p-5 pt-3 mt-3 sm:w-96 w-full flex flex-col justify-start items-start blue-glassmorphism">
+            <div className="p-5 pt-3 mt-3 w-4/5 flex flex-col justify-start items-start bg-[#3A1F5C] rounded-xl self-center">
               <Input
                 placeholder="Word 1"
                 name="word1"
@@ -279,75 +279,88 @@ const TopicDashboard = ({ userId, userEmail }) => {
                 handleChange={handleChange}
               />
               <div className="h-[1px] w-full bg-gray-400 my-2" />
-              <div className="w-full flex justify-between">
+              <div className="flex w-full justify-around flex-wrap">
                 <button
                   type="button"
                   onClick={handleSubmit}
-                  className="text-white shadow-sm shadow-blue-400 mt-2 border-[1px] p-3 border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-purple-800 hover:shadow-sm"
+                  className="text-[#2D104F] bg-white pr-5 pl-5 p-2 mt-2 font-bold rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
                 >
-                  Show Me Topics!
+                  Generate
                 </button>
                 <button
                   type="button"
                   onClick={handleSuggest}
-                  className="text-white shadow-sm shadow-blue-400 mt-2 border-[1px] p-3 border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-purple-800 hover:shadow-sm"
+                  className="text-[#2D104F] bg-white pr-5 pl-5 p-2 mt-2 font-bold rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
                 >
-                  Suggest Keywords
+                  Autofill
                 </button>
               </div>
             </div>
-          </div>
-          <div className="self-center">
-            <h2 className="text-yellow-500">Trending Keywords</h2>
-            {topFiveKeywordsData?.topFiveKeywords.map((keyword, i) => (
-              <p className="text-yellow-300" key={i}>
-                {keyword.word.toLowerCase()}
-              </p>
-            ))}
-          </div>
-        </div>
-        <h3 className="text-white text-3xl text-center my-2 pt-10">
-          Generated Topics
-        </h3>
-        {inputKeywords && (
-          <div className="text-white mb-2 blue-glassmorphism">
-            <p className="mt-3 mb-3 mr-10 ml-10">You used these keywords: </p>
-            <div className="mb-5">
-              {inputKeywords.map((keyword, i) => (
-                <p className="text-yellow-400 text-center">{keyword} </p>
-              ))}
+            <div className="flex flex-col mt-2 w-full">
+              <h2 className="text-white font-bold self-center text-lg">
+                Trending Keywords
+              </h2>
+              <div className="flex flex-wrap justify-evenly w-full self-center">
+                {topFiveKeywordsData?.topFiveKeywords.map((keyword, i) => (
+                  <div
+                    className="text-[#2D104F] font-bold bg-white rounded-full text-center text-sm pr-3 pl-3 mt-2 mr-3 pt-1 pb-1"
+                    key={i}
+                  >
+                    {keyword.word}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        )}
-        <div className="blue-glassmorphism mt-2 w-full">
-          {isLoading ? (
-            <Loader />
-          ) : (
-            <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
-              {freshTopics.length != 0 ? (
-                freshTopics.map((topic, i) => (
-                  <TopicRow
-                    topic={topic}
-                    key={i}
-                    userId={userId}
-                    i={i}
-                    refetch={refetch}
-                  />
-                ))
+          <div className="w-full">
+            <div className="flex items-center justify-between w-full mt-5">
+              <h3 className="text-white text-3xl font-bold text-center my-2">
+                Generated Topics
+              </h3>
+            </div>
+            <div className="bg-[#4E376A] rounded-xl mt-2 w-full">
+              {isLoading ? (
+                <Loader />
               ) : (
-                <h1 className="text-purple-400/70 text-center text-xl animate-pulse">
-                  Make Topics Using Our Generator
-                </h1>
+                <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
+                  {freshTopics.length != 0 ? (
+                    freshTopics.map((topic, i) => (
+                      <TopicRow
+                        topic={topic}
+                        key={i}
+                        userId={userId}
+                        i={i}
+                        refetch={refetch}
+                      />
+                    ))
+                  ) : (
+                    <h1 className="text-purple-400/70 text-center text-xl animate-pulse">
+                      Make Topics Using Our Generator
+                    </h1>
+                  )}
+                </ul>
               )}
-            </ul>
-          )}
+            </div>
+            {inputKeywords && (
+              <ul className="flex flex-wrap justify-between w-full">
+                {inputKeywords.map(
+                  (keyword, i) =>
+                    keyword != "" && (
+                      <li className="text-[#2D104F] font-bold bg-white text-sm rounded-full text-center pr-5 pl-5 mt-2 mr-3 pt-2 pb-2">
+                        {keyword}
+                      </li>
+                    )
+                )}
+              </ul>
+            )}
+          </div>
         </div>
         {userTopicsConnection?.edges?.length != 0 && (
           <>
             <h3 className="text-white text-3xl text-center my-2 pt-10">
               My Saved Topics
             </h3>
-            <div className="blue-glassmorphism mt-2 w-full">
+            <div className="bg-[#4E376A] rounded-xl mt-2 w-full">
               <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
                 {userTopicsConnection?.edges?.map((edge, i) => (
                   <UserTopic
