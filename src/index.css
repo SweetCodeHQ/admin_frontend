@@ -12,6 +12,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
 .gradient-bg-welcome {
   background: linear-gradient(
       149.41deg,

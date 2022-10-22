@@ -141,7 +141,7 @@ const UserTopic = ({ topic, refetch, id }) => {
           >
             <HiPencilAlt />
           </button>
-          <li className="text-white">{topic.text}</li>
+          <li className="text-white font-bold">{topic.text}</li>
         </div>
       )}
     </>

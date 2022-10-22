@@ -97,7 +97,12 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="flex w-full justify-center items-center">
+    <div
+      className="flex w-full justify-center items-center"
+      style={
+        googleUser?.googleUser && { backgroundImage: "url(/welcomeBG.png)" }
+      }
+    >
       <div className="flex items-start justify-between md:p-20 py-12 px-4">
         <div className="flex flex-1 justify-start flex-col mf:mr-10">
           <div className="p-5 w-full items-center flex flex-col">
@@ -115,7 +120,7 @@ const Dashboard = () => {
           </div>
           {googleUser?.googleUser ? (
             <>
-              <h1 className="text-3xl sm:text-5xl text-white text-gradient py-1">
+              <h1 className="text-3xl sm:text-5xl text-white text-gradient font-bold py-1">
                 Welcome back, <br />
                 {googleUser?.googleUser?.given_name}!
               </h1>
@@ -134,7 +139,7 @@ const Dashboard = () => {
                 </>
               ) : (
                 <>
-                  <p className="text-left mt-5 text-white font-light md:w-9/12 w-11/12 text-base">
+                  <p className="text-left mt-5 text-white font-semibold text-lg md:w-9/12 w-11/12 text-base">
                     Use this portal to get topic suggestions and more using the
                     latest in artificial intelligence.
                   </p>
@@ -144,14 +149,6 @@ const Dashboard = () => {
                   />
                 </>
               )}
-              <button
-                id="signOutDiv"
-                type="button"
-                onClick={e => handleSignOut(e)}
-                className="flex flex-row justify-center items-center my-5 bg-[#2952e3] p-3 rounded-full cursor-pointer hover:bg-purple-800"
-              >
-                <p className="text-white text-base font-semibold">Logout</p>
-              </button>
             </>
           ) : (
             <>
