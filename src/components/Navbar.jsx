@@ -1,8 +1,10 @@
 import { useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
+
 import { HiMenuAlt4 } from "react-icons/hi";
 import { AiOutlineClose } from "react-icons/ai";
 import { BsCart4 } from "react-icons/bs";
+import { MdDeleteForever } from "react-icons/md";
 
 import logo from "../../images/black_white_logo.png";
 
@@ -53,7 +55,7 @@ const Navbar = () => {
                 onClick={() => setToggleCart(false)}
               />
               <li className="flex items-center">
-                <AiOutlineClose
+                <MdDeleteForever
                   fontSize={20}
                   className="text-white font-bold mr-10"
                 />
