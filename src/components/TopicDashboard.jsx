@@ -1,5 +1,7 @@
 import { useState, useContext, useEffect } from "react";
+import { CartContext, CartContextProvider } from "../context/CartContext";
 import { gql, useQuery, useMutation } from "@apollo/client";
+
 import { Loader, TopicRow, UserTopic } from "../components";
 import { ImBullhorn } from "react-icons/im";
 
@@ -109,6 +111,8 @@ const TopicDashboard = ({ userId, userEmail }) => {
   const [freshTopics, setFreshTopics] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [userTopicsConnection, setUserTopicsConnection] = useState([]);
+
+  const handleAddToCart = useContext(CartContext);
 
   const { data, refetch, fetchMore } = useQuery(GET_PAGINATED_TOPICS, {
     variables: { userId: userId },
@@ -334,7 +338,7 @@ const TopicDashboard = ({ userId, userEmail }) => {
                       />
                     ))
                   ) : (
-                    <h1 className="text-purple-400/70 text-center text-xl animate-pulse">
+                    <h1 className="text-purple-400/70 text-center text-xl">
                       Make Topics Using Our Generator
                     </h1>
                   )}
@@ -362,14 +366,16 @@ const TopicDashboard = ({ userId, userEmail }) => {
             </h3>
             <div className="bg-[#4E376A] rounded-xl mt-2 w-full">
               <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
-                {userTopicsConnection?.edges?.map((edge, i) => (
-                  <UserTopic
-                    id={i}
-                    key={edge.node.id}
-                    topic={edge.node}
-                    refetch={refetch}
-                  />
-                ))}
+                <CartContextProvider>
+                  {userTopicsConnection?.edges?.map((edge, i) => (
+                    <UserTopic
+                      id={i}
+                      key={edge.node.id}
+                      topic={edge.node}
+                      refetch={refetch}
+                    />
+                  ))}
+                </CartContextProvider>
               </ul>
               <div className="flex justify-between content-end pl-5 pr-5">
                 <div className="text-left text-blue-400">
