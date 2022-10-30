@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { gql, useMutation } from "@apollo/client";
+import { CartContext } from "../context/CartContext";
+
 import { MdDeleteForever } from "react-icons/md";
 import { HiPencilAlt, HiOutlineX } from "react-icons/hi";
 import { BsCart4 } from "react-icons/bs";
+import { BsCartCheckFill } from "react-icons/bs";
 
 const UPDATE_TOPIC = gql`
   mutation($id: ID!, $text: String!) {
@@ -37,12 +40,16 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
 );
 
 const UserTopic = ({ topic, refetch, id }) => {
-  const [clicked, setClicked] = useState(false);
+  const [clickedEdit, setClickedEdit] = useState(false);
 
   const [topicFormData, setTopicFormData] = useState({
     text: topic.text,
     id: topic.id
   });
+
+  const { handleAddToCart, cartTopics } = useContext(CartContext);
+
+  const cartIds = cartTopics.map(topic => topic.id);
 
   const [destroyTopicData, { loading, error }] = useMutation(DESTROY_TOPIC, {
     onCompleted: refetch,
@@ -81,22 +88,16 @@ const UserTopic = ({ topic, refetch, id }) => {
     setClicked(false);
   };
 
-  const handleEmail = () => {
-    const url = `https://megaphone-api.herokuapp.com/email?topic_id=${topicFormData.id}`;
-
-    fetch(url, { method: "POST" }).then(error => console.log(error));
-  };
-
   return (
     <>
-      {clicked ? (
+      {clickedEdit ? (
         <div className="flex items-center">
           <div className="self-start">
             <button
               type="button"
               className="text-blue-300 mr-3 border-[1px] border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-500"
               onClick={() => {
-                setClicked(false);
+                setClickedEdit(false);
               }}
             >
               <HiOutlineX />
@@ -120,13 +121,20 @@ const UserTopic = ({ topic, refetch, id }) => {
         </div>
       ) : (
         <div className="flex items-left">
-          <button
-            type="button"
-            className="text-blue-300 mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-500"
-            onClick={handleEmail}
-          >
-            <BsCart4 />
-          </button>
+          {cartIds.includes(topic.id) ? (
+            <button className="text-blue-300 mr-3 rounded-full">
+              <BsCartCheckFill />
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="text-blue-300 mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-500"
+              onClick={e => handleAddToCart(topic)}
+            >
+              <BsCart4 />
+            </button>
+          )}
+
           <button
             type="button"
             className="text-blue-300 mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-500"
@@ -137,7 +145,7 @@ const UserTopic = ({ topic, refetch, id }) => {
           <button
             className="text-blue-300 mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-500"
             type="button"
-            onClick={() => setClicked(true)}
+            onClick={() => setClickedEdit(true)}
           >
             <HiPencilAlt />
           </button>

@@ -9,3 +9,5 @@ export { default as AdminUserDashboard } from "./AdminUserDashboard";
 export { default as TopicDashboard } from "./TopicDashboard";
 export { default as TopicRow } from "./TopicRow";
 export { default as UserTopic } from "./UserTopic";
+
+export { default as Cart } from "./Cart";

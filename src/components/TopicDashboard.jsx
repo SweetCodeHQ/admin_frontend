@@ -1,5 +1,7 @@
 import { useState, useContext, useEffect } from "react";
+import { CartContext, CartContextProvider } from "../context/CartContext";
 import { gql, useQuery, useMutation } from "@apollo/client";
+
 import { Loader, TopicRow, UserTopic } from "../components";
 import { ImBullhorn } from "react-icons/im";
 
@@ -109,6 +111,8 @@ const TopicDashboard = ({ userId, userEmail }) => {
   const [freshTopics, setFreshTopics] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [userTopicsConnection, setUserTopicsConnection] = useState([]);
+
+  const handleAddToCart = useContext(CartContext);
 
   const { data, refetch, fetchMore } = useQuery(GET_PAGINATED_TOPICS, {
     variables: { userId: userId },
@@ -334,7 +338,7 @@ const TopicDashboard = ({ userId, userEmail }) => {
                       />
                     ))
                   ) : (
-                    <h1 className="text-purple-400/70 text-center text-xl animate-pulse">
+                    <h1 className="text-purple-400/70 text-center text-xl">
                       Make Topics Using Our Generator
                     </h1>
                   )}
