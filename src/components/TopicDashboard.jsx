@@ -366,16 +366,14 @@ const TopicDashboard = ({ userId, userEmail }) => {
             </h3>
             <div className="bg-[#4E376A] rounded-xl mt-2 w-full">
               <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
-                <CartContextProvider>
-                  {userTopicsConnection?.edges?.map((edge, i) => (
-                    <UserTopic
-                      id={i}
-                      key={edge.node.id}
-                      topic={edge.node}
-                      refetch={refetch}
-                    />
-                  ))}
-                </CartContextProvider>
+                {userTopicsConnection?.edges?.map((edge, i) => (
+                  <UserTopic
+                    id={i}
+                    key={edge.node.id}
+                    topic={edge.node}
+                    refetch={refetch}
+                  />
+                ))}
               </ul>
               <div className="flex justify-between content-end pl-5 pr-5">
                 <div className="text-left text-blue-400">
