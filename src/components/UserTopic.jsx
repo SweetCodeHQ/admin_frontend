@@ -49,7 +49,7 @@ const UserTopic = ({ topic, refetch, id }) => {
 
   const { handleAddToCart, cartTopics } = useContext(CartContext);
 
-  const cartIds = cartTopics.map(topic => topic.id);
+  const cartIds = cartTopics?.map(topic => topic.id);
 
   const [destroyTopicData, { loading, error }] = useMutation(DESTROY_TOPIC, {
     onCompleted: refetch,
@@ -121,7 +121,7 @@ const UserTopic = ({ topic, refetch, id }) => {
         </div>
       ) : (
         <div className="flex items-left">
-          {cartIds.includes(topic.id) ? (
+          {cartIds?.includes(topic.id) ? (
             <button className="text-blue-300 mr-3 rounded-full">
               <BsCartCheckFill />
             </button>

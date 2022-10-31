@@ -1,9 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export const CartContext = React.createContext();
 
 export const CartContextProvider = ({ children }) => {
-  const [cartTopics, setCartTopics] = useState([]);
+  const [cartTopics, setCartTopics] = useState(() => {
+    const saved = localStorage.getItem("cartTopics");
+    const initialValue = JSON.parse(saved);
+
+    return initialValue || [];
+  });
 
   const handleAddToCart = topic => {
     setCartTopics(prev => [...prev, topic]);
@@ -22,6 +27,10 @@ export const CartContextProvider = ({ children }) => {
 
     fetch(url, { method: "POST" }).then(error => console.log(error));
   };
+
+  useEffect(() => {
+    localStorage.setItem("cartTopics", JSON.stringify(cartTopics));
+  }, [cartTopics]);
 
   return (
     <CartContext.Provider
