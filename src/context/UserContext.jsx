@@ -15,7 +15,12 @@ const CREATE_USER = gql`
 export const UserContext = React.createContext();
 
 export const UserContextProvider = ({ children }) => {
-  const [googleUser, setGoogleUser] = useState(null);
+  const [googleUser, setGoogleUser] = useState(() => {
+    const saved = localStorage.getItem("googleUser");
+    const initialValue = JSON.parse(saved);
+
+    return initialValue || null;
+  });
 
   const createUserMutation = email => {
     const input = { email: email };
@@ -47,6 +52,10 @@ export const UserContextProvider = ({ children }) => {
     console.log("logged out");
     setGoogleUser(null);
   };
+
+  useEffect(() => {
+    localStorage.setItem("googleUser", JSON.stringify(googleUser));
+  }, [googleUser]);
 
   return (
     <UserContext.Provider
