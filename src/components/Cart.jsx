@@ -25,7 +25,9 @@ const Cart = ({ setToggleCart }) => {
     <ul className="z-10 fixed top-0 -right-2 p-3 w-[75vw] md:w-[35vw] h-screen shadow-2xl list-none flex flex-col justify-start items-end rounded-md blue-glassmorphism text-white animate-slide-in">
       <div className="flex justify-between w-full">
         <div></div>
-        <h1 className="font-bold text-2xl">Your Cart</h1>
+        <h1 className="font-extrabold text-2xl underline underline-offset-2">
+          Your Cart
+        </h1>
         <AiOutlineClose
           fontSize={28}
           className="text-white cursor-pointer mb-5"
@@ -48,22 +50,28 @@ const Cart = ({ setToggleCart }) => {
         </div>
       ))}
       {cartTopics.length != 0 && (
-        <div className="flex justify-between w-full">
-          <button
-            type="button"
-            className="text-[#2D104F] bg-white pr-5 pl-5 p-2 mt-2 font-bold rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
-            onClick={e => handleClearCart()}
-          >
-            Clear Cart
-          </button>
-          <button
-            type="button"
-            className="text-[#2D104F] bg-white pr-5 pl-5 p-2 mt-2 font-bold rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
-            onClick={handleSubmitTopics}
-          >
-            Send All Topics
-          </button>
-        </div>
+        <>
+          <p className="self-center font-bold">
+            You Have {cartTopics.length}{" "}
+            {cartTopics.length > 1 ? "Topics" : "Topic"} in Your Cart
+          </p>
+          <div className="flex justify-between w-full">
+            <button
+              type="button"
+              className="text-[#2D104F] bg-white pr-5 pl-5 p-2 mt-2 font-bold rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
+              onClick={e => handleClearCart()}
+            >
+              Clear All
+            </button>
+            <button
+              type="button"
+              className="text-[#2D104F] bg-white pr-5 pl-5 p-2 mt-2 font-bold rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
+              onClick={handleSubmitTopics}
+            >
+              Send All
+            </button>
+          </div>
+        </>
       )}
     </ul>
   );
