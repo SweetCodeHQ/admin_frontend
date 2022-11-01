@@ -11,6 +11,8 @@ import {
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { GoogleLogin } from "@react-oauth/google";
 
+import background from "../assets/WelcomeBG.png";
+
 const GET_USER_PROFILE = gql`
   query userByEmail($email: String!) {
     user(email: $email) {
@@ -100,7 +102,7 @@ const Dashboard = () => {
     <div
       className="flex w-full justify-center items-center"
       style={
-        googleUser?.googleUser && { backgroundImage: "url(/welcomeBG.png)" }
+        googleUser?.googleUser && { backgroundImage: `url(${background})` }
       }
     >
       <div className="flex items-start justify-between md:p-20 py-12 px-4">
