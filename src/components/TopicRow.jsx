@@ -15,6 +15,18 @@ const CREATE_TOPIC = gql`
 const TopicRow = ({ topic, userId, i, refetch }) => {
   const [hasBeenSaved, setHasBeenSaved] = useState(false);
 
+  const formatTopic = () => {
+    if (topic.charAt(0) === "-") {
+      const temp = topic.slice(1, -1);
+
+      return `${i + 1}. ${temp}`;
+    } else {
+      return topic;
+    }
+  };
+
+  const formattedTopic = formatTopic();
+
   const [topicCreationData, { loading, error }] = useMutation(CREATE_TOPIC, {
     onCompleted: refetch,
     onError: error => console.log(error)
@@ -27,7 +39,7 @@ const TopicRow = ({ topic, userId, i, refetch }) => {
   };
 
   const handleSaveTopic = () => {
-    const stringified = JSON.stringify(topic);
+    const stringified = JSON.stringify(formattedTopic);
     createTopicMutation(stringified.slice(4, -1));
     setHasBeenSaved(true);
   };
@@ -48,7 +60,7 @@ const TopicRow = ({ topic, userId, i, refetch }) => {
         </button>
       )}
       <li key={i} className="text-white font-bold">
-        {topic}
+        {formattedTopic}
       </li>
     </div>
   );

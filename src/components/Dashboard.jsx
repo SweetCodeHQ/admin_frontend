@@ -63,7 +63,7 @@ const Dashboard = () => {
     onCompleted: data => console.log(data)
   });
 
-  const loginCallback = response => {
+  const loginCallback = async response => {
     const currentUser = userCallback(response);
     userEntityCallback(currentUser);
   };

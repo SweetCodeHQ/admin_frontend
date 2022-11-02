@@ -180,6 +180,7 @@ const TopicDashboard = ({ userId, userEmail }) => {
       /*Add response in case of dashes and no numbers or bullets*/
     }
     const topics = response.data.attributes.text;
+
     const formattedTopics = topics.split("\n").splice(2, 5);
 
     setIsLoading(false);
