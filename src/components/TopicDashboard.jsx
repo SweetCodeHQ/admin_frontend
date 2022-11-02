@@ -239,6 +239,43 @@ const TopicDashboard = ({ userId, userEmail }) => {
     }
   };
 
+  const moveKeyword = (word, i) => {
+    let newForm;
+    if (formData.word1 === "") {
+      newForm = {
+        ...formData,
+        word1: word
+      };
+    } else if (formData.word2 === "") {
+      newForm = {
+        ...formData,
+        word2: word
+      };
+    } else if (formData.word3 === "") {
+      newForm = {
+        ...formData,
+        word3: word
+      };
+    } else if (formData.word4 === "") {
+      newForm = {
+        ...formData,
+        word4: word
+      };
+    } else if (formData.word5 === "") {
+      newForm = {
+        ...formData,
+        word5: word
+      };
+    } else {
+      newForm = {
+        ...formData,
+        word5: word
+      };
+    }
+
+    setFormData(newForm);
+  };
+
   return (
     <div className="w-full justify-center items-center 2xl:px20">
       <div className="flex w-full flex-col items-center mt-5">
@@ -308,8 +345,9 @@ const TopicDashboard = ({ userId, userEmail }) => {
               <div className="flex flex-wrap justify-evenly w-full self-center">
                 {topFiveKeywordsData?.topFiveKeywords.map((keyword, i) => (
                   <div
-                    className="text-[#2D104F] font-bold bg-white rounded-full text-center text-sm pr-3 pl-3 mt-2 mr-3 pt-1 pb-1"
+                    className="text-[#2D104F] font-bold bg-white rounded-full text-center text-sm pr-3 pl-3 mt-2 mr-3 pt-1 pb-1 cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
                     key={i}
+                    onClick={() => moveKeyword(keyword.word, i)}
                   >
                     {keyword.word}
                   </div>
