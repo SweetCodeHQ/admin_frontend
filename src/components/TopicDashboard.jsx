@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { CartContext, CartContextProvider } from "../context/CartContext";
 import { gql, useQuery, useMutation } from "@apollo/client";
 
-import { Loader, TopicRow, UserTopic } from "../components";
+import { Loader, TopicRow, UserTopic, TopicInputForm } from "../components";
 import { ImBullhorn } from "react-icons/im";
 
 const GET_PAGINATED_TOPICS = gql`
@@ -400,9 +400,10 @@ const TopicDashboard = ({ userId, userEmail }) => {
         </div>
         {userTopicsConnection?.edges?.length != 0 && (
           <>
-            <h3 className="text-white text-3xl text-center my-2 pt-10">
+            <h3 className="text-white text-3xl font-bold text-center my-2 pt-10">
               My Saved Topics
             </h3>
+            <TopicInputForm userId={userId} refetch={refetch} />
             <div className="bg-[#4E376A] rounded-xl mt-2 w-full">
               <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
                 {userTopicsConnection?.edges?.map((edge, i) => (
