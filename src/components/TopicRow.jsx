@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
 
-import { BsFillBookmarkFill } from "react-icons/bs";
+import { BsFillBookmarkPlusFill } from "react-icons/bs";
+import { MdBookmarkAdd } from "react-icons/md";
 
 const CREATE_TOPIC = gql`
   mutation CreateTopic($userId: ID!, $text: String!) {
@@ -53,10 +54,10 @@ const TopicRow = ({ topic, userId, i, refetch }) => {
       ) : (
         <button
           type="button"
-          className="text-white text-sm border-[1px] border-none outline-none rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-400 pr-5"
+          className="text-white text-lg border-[1px] border-none outline-none rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-400 pr-5"
           onClick={handleSaveTopic}
         >
-          <BsFillBookmarkFill />
+          <BsFillBookmarkPlusFill />
         </button>
       )}
       <li key={i} className="text-white font-bold">

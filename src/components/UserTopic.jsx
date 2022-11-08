@@ -7,8 +7,10 @@ import { HiPencilAlt, HiOutlineX } from "react-icons/hi";
 import { BsCart4 } from "react-icons/bs";
 import { BsCartCheckFill } from "react-icons/bs";
 
+import { RiMailCheckFill } from "react-icons/ri";
+
 const UPDATE_TOPIC = gql`
-  mutation($id: ID!, $text: String!) {
+  mutation UpdateTopicText($id: ID!, $text: String!) {
     updateTopic(input: { id: $id, text: $text }) {
       id
       text
@@ -40,6 +42,7 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
 );
 
 const UserTopic = ({ topic, refetch, id }) => {
+  console.log(topic.submitted);
   const [clickedEdit, setClickedEdit] = useState(false);
 
   const [topicFormData, setTopicFormData] = useState({
@@ -85,7 +88,7 @@ const UserTopic = ({ topic, refetch, id }) => {
     if (!text) return;
 
     editTopic(topicFormData);
-    setClicked(false);
+    setClickedEdit(false);
   };
 
   return (
@@ -121,6 +124,11 @@ const UserTopic = ({ topic, refetch, id }) => {
         </div>
       ) : (
         <div className="flex items-left">
+          {topic.submitted && (
+            <div className="text-blue-500 mr-10">
+              <RiMailCheckFill />
+            </div>
+          )}
           {cartIds?.includes(topic.id) ? (
             <button className="text-blue-300 mr-3 rounded-full">
               <BsCartCheckFill />
@@ -128,7 +136,8 @@ const UserTopic = ({ topic, refetch, id }) => {
           ) : (
             <button
               type="button"
-              className="text-blue-300 mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-500"
+              className={`text-blue-300 mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-500 ${topic.submitted &&
+                "hidden"}`}
               onClick={e => handleAddToCart(topic)}
             >
               <BsCart4 />
@@ -137,13 +146,15 @@ const UserTopic = ({ topic, refetch, id }) => {
 
           <button
             type="button"
-            className="text-blue-300 mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-500"
+            className={`text-blue-300 mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-500 ${topic.submitted &&
+              "hidden"}`}
             onClick={destroyTopicMutation}
           >
             <MdDeleteForever />
           </button>
           <button
-            className="text-blue-300 mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-500"
+            className={`text-blue-300 mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-500 ${topic.submitted &&
+              "hidden"}`}
             type="button"
             onClick={() => setClickedEdit(true)}
           >
