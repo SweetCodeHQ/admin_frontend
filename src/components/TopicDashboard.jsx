@@ -29,6 +29,7 @@ const GET_PAGINATED_TOPICS = gql`
         node {
           id
           text
+          submitted
         }
       }
     }

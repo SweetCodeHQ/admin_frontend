@@ -5,6 +5,18 @@ import { CartContext } from "../context/CartContext";
 import { MdDeleteForever } from "react-icons/md";
 import { AiOutlineClose } from "react-icons/ai";
 
+import { gql, useMutation } from "@apollo/client";
+
+const UPDATE_TOPIC = gql`
+  mutation UpdateSubmitted($id: ID!, $submitted: Boolean!) {
+    updateTopic(input: { id: $id, submitted: $submitted }) {
+      id
+      submitted
+      text
+    }
+  }
+`;
+
 const Cart = ({ setToggleCart }) => {
   const {
     handleTopicEmail,
@@ -13,12 +25,30 @@ const Cart = ({ setToggleCart }) => {
     handleRemoveFromCart
   } = useContext(CartContext);
 
+  const updateSubmitted = id => {
+    const input = { submitted: true, id: id };
+    topicUpdateSubmit({ variables: input });
+  };
+
+  const [
+    topicUpdateSubmit,
+    { loading: updateLoading, error: updateError }
+  ] = useMutation(UPDATE_TOPIC, {
+    onError: error => console.log(error),
+    onCompleted: data => console.log(data)
+  });
+
+  const processTopics = async id => {
+    await updateSubmitted(id);
+    handleTopicEmail(id);
+  };
+
   const handleSubmitTopics = () => {
-    cartTopics.forEach(topic => handleTopicEmail(topic.id));
+    cartTopics.forEach(topic => processTopics(topic.id));
     handleClearCart();
-    {
-      /* change status or submitted? attribute to true */
-    }
+    alert(
+      "Thank you! These topics have been sent to the experts at Fixate. We'll send you an update soon."
+    );
   };
 
   return (
@@ -45,6 +75,7 @@ const Cart = ({ setToggleCart }) => {
             fontSize={20}
             className="text-white font-bold mr-10 flex-none cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
             onClick={e => handleRemoveFromCart(i)}
+            key={i}
           />
           <p className="mr-5 w-4/5">{item.text}</p>
         </div>
