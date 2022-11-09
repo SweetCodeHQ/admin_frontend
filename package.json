@@ -16,7 +16,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-ga": "^3.3.1",
-    "react-icons": "^4.4.0"
+    "react-icons": "^4.4.0",
+    "tw-elements": "^1.0.0-alpha12"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.2",

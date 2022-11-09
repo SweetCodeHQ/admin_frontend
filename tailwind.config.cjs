@@ -31,5 +31,6 @@ module.exports = {
   variants: {
     extend: {},
   },
-  plugins: [require("@tailwindcss/forms")],
+  content: ['./src/**/*.{html,js}', './node_modules/tw-elements/dist/js/**/*.js'],
+  plugins: [require("@tailwindcss/forms"), require('tw-elements/dist/plugin')],
 };
