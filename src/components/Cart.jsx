@@ -22,13 +22,6 @@ const UPDATE_TOPIC = gql`
 const LaunchModalButton = ({ handleSubmitTopics }) => {
   return (
     <>
-      {/*<button
-        type="button"
-        className="text-[#2D104F] bg-white pr-5 pl-5 p-2 mt-2 font-bold rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
-        onClick={handleSubmitTopics}
-      >
-        Send All
-      </button>*/}
       <button
         type="button"
         className="pr-5 pl-5 p-2 mt-2 text-[#2D104F] bg-white font-bold text-base leading-tight rounded-full shadow-md hover:bg-blue-700 hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 hover:text-white active:shadow-lg transition duration-150 ease-in-out"
