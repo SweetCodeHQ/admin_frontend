@@ -280,7 +280,7 @@ const TopicDashboard = ({ userId, userEmail }) => {
   return (
     <div className="w-full justify-center items-center 2xl:px20">
       <div className="flex w-full flex-col items-center mt-5">
-        <div className="flex w-full justify-between">
+        <div className="w-full justify-between flex flex-wrap md:flex-nowrap">
           <div className="w-full flex flex-col justify-items-center">
             <h3 className="text-white text-3xl font-bold text-center">
               Make Topics
