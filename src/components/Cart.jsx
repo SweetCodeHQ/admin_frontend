@@ -24,7 +24,7 @@ const LaunchModalButton = ({ handleSubmitTopics }) => {
     <>
       <button
         type="button"
-        className="pr-5 pl-5 p-2 mt-2 text-[#2D104F] bg-white font-bold text-base leading-tight rounded-full shadow-md hover:bg-blue-700 hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 hover:text-white active:shadow-lg transition duration-150 ease-in-out"
+        className="pr-5 pl-5 p-2 mt-2 text-[#2D104F] bg-white font-bold text-base leading-tight rounded-full shadow-md hover:bg-blue-700 hover:shadow-lg hover:text-white transition duration-150 ease-in-out"
         data-bs-toggle="modal"
         data-bs-target="#submitTopicsConfirmation"
       >
@@ -68,6 +68,7 @@ const LaunchModalButton = ({ handleSubmitTopics }) => {
               <button
                 type="button"
                 className="px-6 py-2.5 bg-blue-600 text-white font-bold text-sm leading-tight uppercase rounded-full shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out ml-1 hover:-translate-y-1 hover:scale-105"
+                data-bs-dismiss="modal"
                 onClick={handleSubmitTopics}
               >
                 Send Topics
@@ -101,14 +102,15 @@ const Cart = ({ setToggleCart }) => {
     onCompleted: data => console.log(data)
   });
 
-  const processTopics = async id => {
-    await updateSubmitted(id);
+  const processTopics = id => {
+    updateSubmitted(id);
     handleTopicEmail(id);
   };
 
   const handleSubmitTopics = () => {
     cartTopics.forEach(topic => processTopics(topic.id));
     handleClearCart();
+    setToggleCart(false);
   };
 
   return (
