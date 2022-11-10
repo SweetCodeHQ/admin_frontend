@@ -42,7 +42,6 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
 );
 
 const UserTopic = ({ topic, refetch, id }) => {
-  console.log(topic.submitted);
   const [clickedEdit, setClickedEdit] = useState(false);
 
   const [topicFormData, setTopicFormData] = useState({
