@@ -2,7 +2,13 @@ import { useState, useContext, useEffect } from "react";
 import { CartContext, CartContextProvider } from "../context/CartContext";
 import { gql, useQuery, useMutation } from "@apollo/client";
 
-import { Loader, TopicRow, UserTopic, TopicInputForm } from "../components";
+import {
+  Loader,
+  TopicRow,
+  UserTopic,
+  TopicInputForm,
+  AutofillButton
+} from "../components";
 import { ImBullhorn } from "react-icons/im";
 
 const GET_PAGINATED_TOPICS = gql`
@@ -98,7 +104,8 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
 {
   /*Consider pulling form into its own component so that the Topic Dashboard doesn't re-render everytime someone types a character*/
 }
-const TopicDashboard = ({ userId, userEmail }) => {
+
+const TopicDashboard = ({ megaphoneUserInfo }) => {
   const [formData, setFormData] = useState({
     word1: "",
     word2: "",
@@ -116,7 +123,7 @@ const TopicDashboard = ({ userId, userEmail }) => {
   const handleAddToCart = useContext(CartContext);
 
   const { data, refetch, fetchMore } = useQuery(GET_PAGINATED_TOPICS, {
-    variables: { userId: userId },
+    variables: { userId: megaphoneUserInfo?.id },
     onError: error => console.log(error),
     onCompleted: data => setUserTopicsConnection(data.userTopicsConnection),
     fetchPolicy: "network-first"
@@ -159,7 +166,7 @@ const TopicDashboard = ({ userId, userEmail }) => {
   });
 
   const createUserKeyword = word => {
-    const input = { userId: userId, word: word };
+    const input = { userId: megaphoneUserInfo.id, word: word };
     userKeywordMutationData({ variables: input });
   };
 
@@ -234,9 +241,9 @@ const TopicDashboard = ({ userId, userEmail }) => {
 
   const keywordActions = async words => {
     for (const word of words) {
-      await createKeyword(word);
-      await createUserKeyword(word);
-      await updateKeyword(word);
+      await createKeyword(formattedWord);
+      await createUserKeyword(formattedWord);
+      await updateKeyword(formattedWord);
     }
   };
 
@@ -330,13 +337,10 @@ const TopicDashboard = ({ userId, userEmail }) => {
                 >
                   Generate
                 </button>
-                <button
-                  type="button"
-                  onClick={handleSuggest}
-                  className="text-[#2D104F] bg-white pr-5 pl-5 p-2 mt-2 font-bold rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
-                >
-                  Autofill
-                </button>
+                <AutofillButton
+                  megaphoneUserInfo={megaphoneUserInfo}
+                  handleSuggest={handleSuggest}
+                />
               </div>
             </div>
             <div className="flex flex-col mt-2 w-full">
@@ -372,7 +376,7 @@ const TopicDashboard = ({ userId, userEmail }) => {
                       <TopicRow
                         topic={topic}
                         key={i}
-                        userId={userId}
+                        userId={megaphoneUserInfo.id}
                         i={i}
                         refetch={refetch}
                       />
@@ -404,7 +408,7 @@ const TopicDashboard = ({ userId, userEmail }) => {
             <h3 className="text-white text-3xl font-bold text-center my-2 pt-10">
               My Saved Topics
             </h3>
-            <TopicInputForm userId={userId} refetch={refetch} />
+            <TopicInputForm userId={megaphoneUserInfo?.id} refetch={refetch} />
             <div className="bg-[#4E376A] rounded-xl mt-2 w-full">
               <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
                 {userTopicsConnection?.edges?.map((edge, i) => (

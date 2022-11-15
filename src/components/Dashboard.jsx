@@ -73,15 +73,15 @@ const Dashboard = () => {
       email: currentUser.email
     });
 
-    const megaphoneUserId = megaphoneUserResponse.data.user.id;
-
+    const megaphoneUserInfo = megaphoneUserResponse?.data?.user;
+    console.log(megaphoneUserData);
     const megaphoneEntityResponse = await refetchEntity({
       url: currentUser.hd
     });
 
     const entityId = megaphoneEntityResponse.data.entity.id;
 
-    createUserEntityMutation(megaphoneUserId, entityId);
+    createUserEntityMutation(megaphoneUserInfo.id, entityId);
   };
 
   const [userEntityMutationData, { loading, error }] = useMutation(
@@ -145,10 +145,7 @@ const Dashboard = () => {
                     Use this portal to get topic suggestions and more using the
                     latest in artificial intelligence.
                   </p>
-                  <TopicDashboard
-                    userId={megaphoneUserData?.user?.id}
-                    userEmail={megaphoneUserData?.user?.email}
-                  />
+                  <TopicDashboard megaphoneUserInfo={megaphoneUserData?.user} />
                 </>
               )}
             </>
