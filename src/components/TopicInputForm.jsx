@@ -18,7 +18,7 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
     value={value}
     onChange={e => handleChange(e, name)}
     className={
-      "my-3 w-full rounded-lg p-2 outline-none text-white bg-[#4E376A]/75 placeholder-gray-400 border-sm text-sm shadow-inner shadow-lg w-4/5"
+      "my-3 w-4/5 rounded-lg p-2 outline-none text-white bg-[#4E376A]/75 placeholder-gray-400 border-sm text-sm shadow-inner shadow-lg"
     }
   />
 );
