@@ -19,6 +19,8 @@ const GET_USER_PROFILE = gql`
       id
       email
       isAdmin
+      loginCount
+      clickedGenerateCount
     }
   }
 `;
@@ -41,6 +43,15 @@ const GET_ENTITY = gql`
   }
 `;
 
+const UPDATE_LOGIN_COUNT = gql`
+  mutation UpdateLoginCount($id: ID!) {
+    updateUser(input: { id: $id, loginCount: 1 }) {
+      id
+      loginCount
+    }
+  }
+`;
+
 const Dashboard = () => {
   const { handleSignOut, userCallback } = useContext(UserContext);
 
@@ -53,7 +64,8 @@ const Dashboard = () => {
   const { data: megaphoneUserData, refetch: refetchUser } = useQuery(
     GET_USER_PROFILE,
     {
-      variables: { email }
+      variables: { email },
+      onError: error => console.log(error)
     }
   );
 
@@ -63,8 +75,23 @@ const Dashboard = () => {
     onCompleted: data => console.log(data)
   });
 
+  const updateUserLoginCount = id => {
+    const input = { id: id };
+    updateLoginCountMutationData({ variables: input });
+  };
+  {
+    /*Pull this back into the userContext*/
+  }
+  const [
+    updateLoginCountMutationData,
+    { loading: loginLoading, error: loginError }
+  ] = useMutation(UPDATE_LOGIN_COUNT, {
+    onCompleted: data => console.log(data),
+    onError: error => console.log(error)
+  });
+
   const loginCallback = async response => {
-    const currentUser = userCallback(response);
+    const currentUser = await userCallback(response);
     userEntityCallback(currentUser);
   };
 
@@ -74,7 +101,9 @@ const Dashboard = () => {
     });
 
     const megaphoneUserInfo = megaphoneUserResponse?.data?.user;
-    console.log(megaphoneUserData);
+
+    updateUserLoginCount(megaphoneUserInfo.id);
+
     const megaphoneEntityResponse = await refetchEntity({
       url: currentUser.hd
     });
