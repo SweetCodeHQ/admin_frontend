@@ -84,6 +84,15 @@ const CREATE_USER_KEYWORD = gql`
   }
 `;
 
+const UPDATE_CLICKED_GENERATE_COUNT = gql`
+  mutation UpdateClickedGenerateCount($id: ID!) {
+    updateUser(input: { id: $id, clickedGenerateCount: 1 }) {
+      id
+      clickedGenerateCount
+    }
+  }
+`;
+
 {
   /*
   Add user-keyword mutation and random keywords as suggestions
@@ -176,6 +185,21 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
       : prev;
   };
 
+  const updateClickedGenerateCount = id => {
+    const input = { id: id };
+    updateClickedGenerateMutationData({ variables: input });
+  };
+  {
+    /*Pull this back into the userContext*/
+  }
+  const [
+    updateClickedGenerateMutationData,
+    { loading: loginLoading, error: loginError }
+  ] = useMutation(UPDATE_CLICKED_GENERATE_COUNT, {
+    onCompleted: data => console.log(data),
+    onError: error => console.log(error)
+  });
+
   const flipTopicPage = params => {
     fetchMore({
       variables: params,
@@ -223,6 +247,7 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
     setInputKeywords(words);
     setFormData({ word1: "", word2: "", word3: "", word4: "", word5: "" });
 
+    updateClickedGenerateCount(megaphoneUserInfo.id);
     keywordActions(words);
   };
 
@@ -241,9 +266,9 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
 
   const keywordActions = async words => {
     for (const word of words) {
-      await createKeyword(formattedWord);
-      await createUserKeyword(formattedWord);
-      await updateKeyword(formattedWord);
+      await createKeyword(word);
+      await createUserKeyword(word);
+      await updateKeyword(word);
     }
   };
 
