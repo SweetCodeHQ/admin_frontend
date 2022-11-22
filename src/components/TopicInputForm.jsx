@@ -44,12 +44,12 @@ const TopicInputForm = ({ userId, refetch }) => {
   const handleSubmit = e => {
     if (formData.text === "") return alert("Please input the topic text.");
 
-    setFormData({ text: "Saved! Replace me to write another topic." });
+    setFormData({ text: "Saved! Write another?" });
     createTopicMutation(formData.text);
   };
 
   return (
-    <div className="w-3/5 items-center flex flex-col bg-[#4E376A] rounded-xl">
+    <div className="w-full items-center flex flex-col bg-[#3A1F5C] rounded-xl mt-5">
       <Input
         placeholder="Write your own topic here!"
         name="text"

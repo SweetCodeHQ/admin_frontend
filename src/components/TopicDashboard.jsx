@@ -315,7 +315,7 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
         <div className="w-full justify-between flex flex-wrap md:flex-nowrap">
           <div className="w-full flex flex-col justify-items-center">
             <h3 className="text-white text-3xl font-bold text-center">
-              Make Topics
+              My Keywords
             </h3>
             <div className="p-5 pt-3 mt-3 w-4/5 flex flex-col justify-start items-start bg-[#3A1F5C] rounded-xl self-center">
               <Input
@@ -368,6 +368,14 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
                 />
               </div>
             </div>
+            <div className="w-4/5 self-center">
+              <TopicInputForm
+                userId={megaphoneUserInfo?.id}
+                refetch={refetch}
+              />
+            </div>
+          </div>
+          <div className="w-full flex flex-col items-center">
             <div className="flex flex-col mt-2 w-full">
               <h2 className="text-white font-bold self-center text-lg">
                 Trending Keywords
@@ -384,8 +392,6 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
                 ))}
               </div>
             </div>
-          </div>
-          <div className="w-full">
             <div className="flex items-center justify-between w-full mt-5">
               <h3 className="text-white text-3xl font-bold text-center my-2">
                 Generated Topics
@@ -416,10 +422,13 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
             </div>
             {inputKeywords && (
               <ul className="flex flex-wrap justify-between w-full">
+                <li className="bg-[#4E376A] font-bold text-white text-sm rounded-xl text-center pr-5 pl-5 mt-2 mr-3 pt-2 pb-2">
+                  You used:
+                </li>
                 {inputKeywords.map(
                   (keyword, i) =>
                     keyword != "" && (
-                      <li className="text-[#2D104F] font-bold bg-white text-sm rounded-full text-center pr-5 pl-5 mt-2 mr-3 pt-2 pb-2">
+                      <li className="bg-[#4E376A] font-bold text-white text-sm rounded-xl text-center pr-5 pl-5 mt-2 mr-3 pt-2 pb-2">
                         {keyword}
                       </li>
                     )
@@ -433,7 +442,6 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
             <h3 className="text-white text-3xl font-bold text-center my-2 pt-10">
               My Saved Topics
             </h3>
-            <TopicInputForm userId={megaphoneUserInfo?.id} refetch={refetch} />
             <div className="bg-[#4E376A] rounded-xl mt-2 w-full">
               <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
                 {userTopicsConnection?.edges?.map((edge, i) => (
