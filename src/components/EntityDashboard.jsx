@@ -3,6 +3,10 @@ import { gql, useQuery, useMutation } from "@apollo/client";
 import { EntityContext } from "../context/EntityContext";
 import { ImBullhorn } from "react-icons/im";
 import { HiPencilAlt, HiOutlineX } from "react-icons/hi";
+import {
+  BsFillArrowLeftCircleFill,
+  BsFillArrowRightCircleFill
+} from "react-icons/bs";
 
 const GET_PAGINATED_ENTITIES = gql`
   query EntitiesConnection($after: String, $before: String, $last: Int) {
@@ -35,8 +39,8 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
     onChange={e => handleChange(e, name)}
     className={
       placeholder === "Name LLC" || placeholder === "www.url.com"
-        ? "my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
-        : "bg-transparent outline-none border-none pt-1 pb-1 text-sm white-glassmorphism rounded-lg"
+        ? "my-2 w-full rounded-sm p-2 outline-none bg-transparent bg-[#4E376A]/75 placeholder-gray-400 border-none text-sm shadow-inner shadow-lg text-white border-none text-sm white-glassmorphism"
+        : "bg-transparent outline-none border-[1px] pt-1 pb-1 text-sm white-glassmorphism rounded-lg"
     }
   />
 );
@@ -86,7 +90,7 @@ const EntityTableItem = ({ node, editEntity }) => {
             />
           </div>
           <button
-            className="table-cell border-none text-white-300 bg-blue-500 text-sm font-bold italic p-1 w-full border-[1px] border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-purple-700"
+            className="table-cell border-none text-[#2D104F] bg-white pr-2 pl-2 font-semibold rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
             onClick={handleSubmit}
           >
             Update
@@ -94,7 +98,7 @@ const EntityTableItem = ({ node, editEntity }) => {
           <div className="table-cell text-white text-center pl-5">
             <button
               type="button"
-              className="text-blue-300 w-full  border-[1px] border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-500"
+              className="text-blue-300 w-full  border-[1px] border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
               onClick={() => {
                 setClicked(prevState => !clicked);
               }}
@@ -113,7 +117,7 @@ const EntityTableItem = ({ node, editEntity }) => {
           <div className="table-cell text-white text-center pl-5">
             <button
               type="button"
-              className="text-blue-300 w-full border-[1px] border-[#3d4f7c] outline-none rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-400"
+              className="text-blue-300 w-full outline-none rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
               onClick={() => {
                 setClicked(prevState => !clicked);
               }}
@@ -202,33 +206,37 @@ const EntityDashboard = () => {
 
   return (
     <div className="flex w-full justify-center items-center 2xl:px20">
-      <div className="flex flex-col items-center md:p-12 py-12 px-4 w-full">
-        <h3 className="text-white text-3xl text-center my-2">Entities</h3>
-        <div className="p-5 pt-3 mt-3 sm:w-96 w-full flex flex-col justify-start items-start blue-glassmorphism">
-          <Input
-            placeholder="Name LLC"
-            name="name"
-            value={formData.name}
-            type="text"
-            handleChange={handleChange}
-          />
-          <Input
-            placeholder="www.url.com"
-            name="url"
-            value={formData.url}
-            type="text"
-            handleChange={handleChange}
-          />
-          <div className="h-[1px] w-full bg-gray-400 my-2" />
-          <button
-            type="button"
-            onClick={handleSubmit}
-            className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-purple-800"
-          >
-            Create
-          </button>
+      <div className="flex items-start md:p-12 w-full flex-wrap md:flex-nowrap">
+        <div className="w-full flex flex-col mr-5">
+          <h3 className="text-white font-bold text-3xl text-center my-2">
+            Entities
+          </h3>
+          <div className="p-5 pt-3 mt-3 w-full self-center flex flex-col justify-start items-start blue-glassmorphism bg-[#3A1F5C]">
+            <Input
+              placeholder="Name LLC"
+              name="name"
+              value={formData.name}
+              type="text"
+              handleChange={handleChange}
+            />
+            <Input
+              placeholder="www.url.com"
+              name="url"
+              value={formData.url}
+              type="text"
+              handleChange={handleChange}
+            />
+            <div className="h-[1px] w-full bg-gray-400 my-2" />
+            <button
+              type="button"
+              onClick={handleSubmit}
+              className="text-[#2D104F] self-center bg-white pr-5 pl-5 p-2 mt-2 font-bold rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
+            >
+              Create
+            </button>
+          </div>
         </div>
-        <div className="w-full blue-glassmorphism mt-5 justify-between">
+        <div className="w-full blue-glassmorphism bg-[#3A1F5C] mt-5 justify-between">
           <EntityTable
             edges={entities?.entitiesConnection?.edges}
             editEntity={editEntity}
@@ -237,7 +245,7 @@ const EntityDashboard = () => {
             <div className="text-left text-blue-400">
               {entities?.entitiesConnection?.pageInfo.hasPreviousPage ? (
                 <p
-                  className="hover:text-purple-600 cursor-pointer"
+                  className="cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 text-xl"
                   onClick={() =>
                     flipEntityPage({
                       last: 10,
@@ -245,7 +253,7 @@ const EntityDashboard = () => {
                     })
                   }
                 >
-                  {"<<<"}
+                  <BsFillArrowLeftCircleFill />
                 </p>
               ) : (
                 <p></p>
@@ -257,14 +265,14 @@ const EntityDashboard = () => {
             <div className=" text-blue-400">
               {entities?.entitiesConnection?.pageInfo.hasNextPage ? (
                 <p
-                  className="hover:text-purple-600 cursor-pointer"
+                  className="cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 text-xl"
                   onClick={() =>
                     flipEntityPage({
                       after: entities.entitiesConnection.pageInfo.endCursor
                     })
                   }
                 >
-                  {">>>"}
+                  <BsFillArrowRightCircleFill />
                 </p>
               ) : (
                 <p></p>
