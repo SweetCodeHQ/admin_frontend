@@ -170,45 +170,49 @@ const AdminUserDashboard = () => {
           <h3 className="text-white font-bold text-3xl text-center my-2 pt-10">
             All Users
           </h3>
-          <div className="w-full blue-glassmorphism bg-[#3A1F5C] mt-5 justify-between p-5">
-            <NormalUsersTable {...allUsersData?.usersConnection} />
-            <div className="flex justify-between content-end pl-5 pr-5">
-              <div className="text-left text-blue-400 pt-3">
-                {allUsersData?.usersConnection?.pageInfo.hasPreviousPage ? (
-                  <p
-                    className="cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 text-xl"
-                    onClick={() =>
-                      flipUserPage({
-                        last: 10,
-                        before:
-                          allUsersData.usersConnection.pageInfo.startCursor
-                      })
-                    }
-                  >
-                    <BsFillArrowLeftCircleFill />
-                  </p>
-                ) : (
-                  <p></p>
-                )}
-              </div>
-              <div className="text-blue-300 pt-3">
-                <ImBullhorn />
-              </div>
-              <div className=" text-blue-400 pt-3">
-                {allUsersData?.usersConnection?.pageInfo.hasNextPage ? (
-                  <p
-                    className="cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 text-xl"
-                    onClick={() =>
-                      flipUserPage({
-                        after: allUsersData.usersConnection.pageInfo.endCursor
-                      })
-                    }
-                  >
-                    <BsFillArrowRightCircleFill />
-                  </p>
-                ) : (
-                  <p></p>
-                )}
+          <div className="flex flex-wrap w-full h-[335px] blue-glassmorphism bg-[#3A1F5C] mt-5 p-5">
+            <div>
+              <NormalUsersTable {...allUsersData?.usersConnection} />
+            </div>
+            <div className="w-full self-end">
+              <div className="flex justify-between pl-5 pr-5">
+                <div className="text-blue-400 pt-3">
+                  {allUsersData?.usersConnection?.pageInfo.hasPreviousPage ? (
+                    <p
+                      className="cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 text-xl"
+                      onClick={() =>
+                        flipUserPage({
+                          last: 10,
+                          before:
+                            allUsersData.usersConnection.pageInfo.startCursor
+                        })
+                      }
+                    >
+                      <BsFillArrowLeftCircleFill />
+                    </p>
+                  ) : (
+                    <p></p>
+                  )}
+                </div>
+                <div className="text-blue-300 pt-3">
+                  <ImBullhorn />
+                </div>
+                <div className="text-blue-400 pt-3">
+                  {allUsersData?.usersConnection?.pageInfo.hasNextPage ? (
+                    <p
+                      className="cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 text-xl"
+                      onClick={() =>
+                        flipUserPage({
+                          after: allUsersData.usersConnection.pageInfo.endCursor
+                        })
+                      }
+                    >
+                      <BsFillArrowRightCircleFill />
+                    </p>
+                  ) : (
+                    <p></p>
+                  )}
+                </div>
               </div>
             </div>
           </div>

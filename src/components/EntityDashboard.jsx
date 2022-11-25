@@ -133,10 +133,10 @@ const EntityTableItem = ({ node, editEntity }) => {
 
 const EntityTable = ({ edges, editEntity }) => {
   return (
-    <div className="table w-full p-5">
+    <div className="table p-5 w-[460px]">
       <div className="table-header-group">
         <div className="table-row">
-          <div className="table-cell text-left text-gray-300 w-full">
+          <div className="table-cell text-left text-gray-300">
             Name
             <div className="h-[1px] w-full bg-gray-400 my-2" />
           </div>
@@ -205,7 +205,7 @@ const EntityDashboard = () => {
   };
 
   return (
-    <div className="flex w-full justify-center items-center 2xl:px20">
+    <div className="flex w-full justify-center items-center">
       <div className="flex items-start md:p-12 w-full flex-wrap md:flex-nowrap">
         <div className="w-full flex flex-col mr-5">
           <h3 className="text-white font-bold text-3xl text-center my-2">
@@ -236,12 +236,14 @@ const EntityDashboard = () => {
             </button>
           </div>
         </div>
-        <div className="w-full blue-glassmorphism bg-[#3A1F5C] mt-5 justify-between">
-          <EntityTable
-            edges={entities?.entitiesConnection?.edges}
-            editEntity={editEntity}
-          />
-          <div className="flex justify-between content-end pl-5 pr-5">
+        <div className="flex flex-wrap content-between h-[465px] w-full blue-glassmorphism bg-[#3A1F5C] mt-5 justify-between">
+          <div>
+            <EntityTable
+              edges={entities?.entitiesConnection?.edges}
+              editEntity={editEntity}
+            />
+          </div>
+          <div className="flex justify-between content-end pl-5 pr-5 w-full">
             <div className="text-left text-blue-400">
               {entities?.entitiesConnection?.pageInfo.hasPreviousPage ? (
                 <p
