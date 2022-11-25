@@ -1,6 +1,10 @@
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { AdminSwitch } from "../components/AdminSwitch";
 import { ImBullhorn } from "react-icons/im";
+import {
+  BsFillArrowRightCircleFill,
+  BsFillArrowLeftCircleFill
+} from "react-icons/bs";
 
 const GET_FIXATE_USERS = gql`
   query FixateUsers {
@@ -55,7 +59,7 @@ const FixateUsersTableItem = props => {
 
 const FixateUsersTable = ({ users }) => {
   return (
-    <div className="table mt-5 blue-glassmorphism p-5">
+    <div className="table mt-5 blue-glassmorphism bg-[#3A1F5C] p-5">
       <div className="table-header-group">
         <div className="table-row">
           <div className="table-cell text-center text-gray-300">Email</div>
@@ -154,51 +158,58 @@ const AdminUserDashboard = () => {
   };
 
   return (
-    <div className="justify-center items-center 2xl:px20">
-      <div className="flex flex-col items-center md:p-12 py-12 px-4 w-full">
-        <h3 className="text-white text-3xl text-center my-2">Fixate Users</h3>
-        <FixateUsersTable users={fixateUsersData?.fixateUsers} />
-        <h3 className="text-white text-3xl text-center my-2 pt-10">
-          All Users
-        </h3>
-        <div className="w-full blue-glassmorphism mt-5 justify-between p-5">
-          <NormalUsersTable {...allUsersData?.usersConnection} />
-          <div className="flex justify-between content-end pl-5 pr-5">
-            <div className="text-left text-blue-400 pt-3">
-              {allUsersData?.usersConnection?.pageInfo.hasPreviousPage ? (
-                <p
-                  className="hover:text-purple-600 cursor-pointer"
-                  onClick={() =>
-                    flipUserPage({
-                      last: 10,
-                      before: allUsersData.usersConnection.pageInfo.startCursor
-                    })
-                  }
-                >
-                  {"<<<"}
-                </p>
-              ) : (
-                <p></p>
-              )}
-            </div>
-            <div className="text-blue-300 pt-3">
-              <ImBullhorn />
-            </div>
-            <div className=" text-blue-400 pt-3">
-              {allUsersData?.usersConnection?.pageInfo.hasNextPage ? (
-                <p
-                  className="hover:text-purple-600 cursor-pointer"
-                  onClick={() =>
-                    flipUserPage({
-                      after: allUsersData.usersConnection.pageInfo.endCursor
-                    })
-                  }
-                >
-                  {">>>"}
-                </p>
-              ) : (
-                <p></p>
-              )}
+    <div className="flex justify-items-center w-full">
+      <div className="flex flex-wrap md:flex-nowrap justify-center md:items-center md:p-12 py-12 px-4 w-full">
+        <div className="mr-5">
+          <h3 className="text-white font-bold text-3xl text-center my-2">
+            Fixate Users
+          </h3>
+          <FixateUsersTable users={fixateUsersData?.fixateUsers} />
+        </div>
+        <div>
+          <h3 className="text-white font-bold text-3xl text-center my-2 pt-10">
+            All Users
+          </h3>
+          <div className="w-full blue-glassmorphism bg-[#3A1F5C] mt-5 justify-between p-5">
+            <NormalUsersTable {...allUsersData?.usersConnection} />
+            <div className="flex justify-between content-end pl-5 pr-5">
+              <div className="text-left text-blue-400 pt-3">
+                {allUsersData?.usersConnection?.pageInfo.hasPreviousPage ? (
+                  <p
+                    className="cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 text-xl"
+                    onClick={() =>
+                      flipUserPage({
+                        last: 10,
+                        before:
+                          allUsersData.usersConnection.pageInfo.startCursor
+                      })
+                    }
+                  >
+                    <BsFillArrowLeftCircleFill />
+                  </p>
+                ) : (
+                  <p></p>
+                )}
+              </div>
+              <div className="text-blue-300 pt-3">
+                <ImBullhorn />
+              </div>
+              <div className=" text-blue-400 pt-3">
+                {allUsersData?.usersConnection?.pageInfo.hasNextPage ? (
+                  <p
+                    className="cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 text-xl"
+                    onClick={() =>
+                      flipUserPage({
+                        after: allUsersData.usersConnection.pageInfo.endCursor
+                      })
+                    }
+                  >
+                    <BsFillArrowRightCircleFill />
+                  </p>
+                ) : (
+                  <p></p>
+                )}
+              </div>
             </div>
           </div>
         </div>
