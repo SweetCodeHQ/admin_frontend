@@ -53,7 +53,9 @@ const UPDATE_LOGIN_COUNT = gql`
 `;
 
 const Dashboard = () => {
-  const { handleSignOut, userCallback } = useContext(UserContext);
+  const { handleSignOut, userCallback, setMegaphoneUserInfo } = useContext(
+    UserContext
+  );
 
   const googleUser = useContext(UserContext);
   const email = googleUser?.googleUser?.email;
@@ -100,9 +102,10 @@ const Dashboard = () => {
       email: currentUser.email
     });
 
-    const megaphoneUserInfo = megaphoneUserResponse?.data?.user;
+    const megaphoneUserData = megaphoneUserResponse?.data?.user;
 
-    updateUserLoginCount(megaphoneUserInfo.id);
+    setMegaphoneUserInfo(megaphoneUserData);
+    updateUserLoginCount(megaphoneUserData.id);
 
     const megaphoneEntityResponse = await refetchEntity({
       url: currentUser.hd
@@ -110,7 +113,7 @@ const Dashboard = () => {
 
     const entityId = megaphoneEntityResponse.data.entity.id;
 
-    createUserEntityMutation(megaphoneUserInfo.id, entityId);
+    createUserEntityMutation(megaphoneUserData.id, entityId);
   };
 
   const [userEntityMutationData, { loading, error }] = useMutation(

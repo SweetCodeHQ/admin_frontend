@@ -22,6 +22,12 @@ export const UserContextProvider = ({ children }) => {
     return initialValue || null;
   });
 
+  const [megaphoneUserInfo, setMegaphoneUserInfo] = useState(() => {
+    const saved = localStorage.getItem("megaphoneUser");
+    const initialValue = JSON.parse(saved);
+    return initialValue || null;
+  });
+
   const createUserMutation = email => {
     const input = { email: email };
     userMutationData({ variables: input });
@@ -51,18 +57,28 @@ export const UserContextProvider = ({ children }) => {
   const handleSignOut = event => {
     console.log("logged out");
     setGoogleUser(null);
+    setMegaphoneUserInfo(null);
+  };
+
+  const localStorageEffects = () => {
+    if (!localStorage.getItem("googleUser"))
+      localStorage.setItem("googleUser", JSON.stringify(googleUser));
+    if (!localStorage.getItem("megaphoneUserInfo"))
+      localStorage.setItem("megaphoneUser", JSON.stringify(megaphoneUserInfo));
   };
 
   useEffect(() => {
-    localStorage.setItem("googleUser", JSON.stringify(googleUser));
-  }, [googleUser]);
+    localStorageEffects();
+  }, [googleUser, megaphoneUserInfo]);
 
   return (
     <UserContext.Provider
       value={{
         handleSignOut,
         userCallback,
-        googleUser
+        googleUser,
+        megaphoneUserInfo,
+        setMegaphoneUserInfo
       }}
     >
       {children}
