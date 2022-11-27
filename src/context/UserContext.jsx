@@ -28,9 +28,10 @@ export const UserContextProvider = ({ children }) => {
     return initialValue || null;
   });
 
-  const createUserMutation = email => {
+  const createUserMutation = async email => {
     const input = { email: email };
-    userMutationData({ variables: input });
+    const data = await userMutationData({ variables: input });
+    return data;
   };
 
   const [userMutationData, { loading, error }] = useMutation(CREATE_USER, {
@@ -38,13 +39,12 @@ export const UserContextProvider = ({ children }) => {
     onError: error => console.log(error)
   });
 
-  const userCallback = response => {
+  const userCallback = async response => {
     console.log("logged in");
     var userObject = jwt_decode(response.credential);
     if (userObject.hd) {
       setGoogleUser(userObject);
-
-      createUserMutation(userObject.email);
+      await createUserMutation(userObject.email);
       return userObject;
     } else {
       return alert("Please try your corporate G-Suite account.");
@@ -54,6 +54,12 @@ export const UserContextProvider = ({ children }) => {
     }
   };
 
+  const handleSignupAlertEmail = userId => {
+    const url = `https://megaphone-api.herokuapp.com/signup_alert_emails?user_id=${userId}`;
+
+    fetch(url, { method: "POST" }).then(error => console.log(error));
+  };
+
   const handleSignOut = event => {
     console.log("logged out");
     setGoogleUser(null);
@@ -61,10 +67,8 @@ export const UserContextProvider = ({ children }) => {
   };
 
   const localStorageEffects = () => {
-    if (!localStorage.getItem("googleUser"))
-      localStorage.setItem("googleUser", JSON.stringify(googleUser));
-    if (!localStorage.getItem("megaphoneUserInfo"))
-      localStorage.setItem("megaphoneUser", JSON.stringify(megaphoneUserInfo));
+    localStorage.setItem("googleUser", JSON.stringify(googleUser));
+    localStorage.setItem("megaphoneUser", JSON.stringify(megaphoneUserInfo));
   };
 
   useEffect(() => {
@@ -78,7 +82,8 @@ export const UserContextProvider = ({ children }) => {
         userCallback,
         googleUser,
         megaphoneUserInfo,
-        setMegaphoneUserInfo
+        setMegaphoneUserInfo,
+        handleSignupAlertEmail
       }}
     >
       {children}
