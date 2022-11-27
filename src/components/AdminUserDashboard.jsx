@@ -31,6 +31,10 @@ const GET_PAGINATED_USERS = gql`
           id
           email
           isBlocked
+          topicCount
+          loginCount
+          clickedGenerateCount
+          createdAt
         }
       }
     }
@@ -62,8 +66,12 @@ const FixateUsersTable = ({ users }) => {
     <div className="table mt-5 blue-glassmorphism bg-[#3A1F5C] p-5">
       <div className="table-header-group">
         <div className="table-row">
-          <div className="table-cell text-center text-gray-300">Email</div>
-          <div className="table-cell text-center text-gray-300">Admin?</div>
+          <div className="table-cell text-center text-white font-bold">
+            EMAIL
+          </div>
+          <div className="table-cell text-center text-white font-bold">
+            ADMIN?
+          </div>
         </div>
       </div>
       <div className="h-[1px] w-5/6 bg-gray-400 my-2 absolute inset-x-5 top-9" />
@@ -85,9 +93,25 @@ const FixateUsersTable = ({ users }) => {
 };
 
 const NormalUsersTableItem = props => {
+  const formatDate = isoDate => {
+    const date = new Date(isoDate);
+    const [day, month, year] = [
+      date.getDate(),
+      date.getMonth() + 1,
+      date.getFullYear()
+    ];
+    return `${month}/${day}/${year}`;
+  };
+
   return (
     <div className="table-row">
       <div className="table-cell text-white text-left pr-5">{props.email}</div>
+      <div className="table-cell text-white text-center pr-5">
+        {props.generateClicks}
+      </div>
+      <div className="table-cell text-white text-center pr-5 hidden md:block">
+        {formatDate(props.dateJoined)}
+      </div>
       <div className="table-cell text-white text-center">
         {props.isBlocked ? "Yes" : "No"}
       </div>
@@ -107,8 +131,16 @@ const NormalUsersTable = ({ edges }) => {
     <div className="table">
       <div className="table-header-group">
         <div className="table-row">
-          <div className="table-cell text-left text-gray-300">Email</div>
-          <div className="table-cell text-center text-gray-300">Blocked?</div>
+          <div className="table-cell text-left text-white font-bold">EMAIL</div>
+          <div className="table-cell text-left text-white font-bold pr-3">
+            CLICKS
+          </div>
+          <div className="table-cell text-center text-white  font-bold pr-3 hidden md:block">
+            JOINED
+          </div>
+          <div className="table-cell text-center text-white font-bold">
+            BLOCKED?
+          </div>
         </div>
       </div>
       <div className="h-[1px] w-7/8 bg-gray-400 my-2 absolute inset-x-5 top-9" />
@@ -121,6 +153,8 @@ const NormalUsersTable = ({ edges }) => {
               userId={edge.node.id}
               email={edge.node.email}
               isBlocked={edge.node.isBlocked}
+              generateClicks={edge.node.clickedGenerateCount}
+              dateJoined={edge.node.createdAt}
             />
           );
         })}

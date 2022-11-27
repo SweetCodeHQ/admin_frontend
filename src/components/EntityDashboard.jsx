@@ -24,6 +24,7 @@ const GET_PAGINATED_ENTITIES = gql`
           name
           url
           userCount
+          topicCount
         }
       }
     }
@@ -110,9 +111,14 @@ const EntityTableItem = ({ node, editEntity }) => {
       ) : (
         <div className="table-row">
           <div className="table-cell text-white text-left">{node.name}</div>
-          <div className="table-cell text-white text-left pl-5">{node.url}</div>
+          <div className="table-cell text-white text-left pl-5 hidden md:block">
+            {node.url}
+          </div>
           <div className="table-cell text-white text-center pl-5">
             {node.userCount}
+          </div>
+          <div className="table-cell text-white text-center pl-5">
+            {node.topicCount}
           </div>
           <div className="table-cell text-white text-center pl-5">
             <button
@@ -133,19 +139,23 @@ const EntityTableItem = ({ node, editEntity }) => {
 
 const EntityTable = ({ edges, editEntity }) => {
   return (
-    <div className="table p-5 w-[460px]">
+    <div className="table p-5">
       <div className="table-header-group">
         <div className="table-row">
-          <div className="table-cell text-left text-gray-300">
-            Name
+          <div className="table-cell text-left text-white font-bold">
+            NAME
             <div className="h-[1px] w-full bg-gray-400 my-2" />
           </div>
-          <div className="table-cell text-left text-gray-300 pl-5">
+          <div className="table-cell text-left text-white font-bold pl-5 hidden md:block">
             URL
             <div className="h-[1px] w-full bg-gray-400 my-2" />
           </div>
-          <div className="table-cell text-left text-gray-300 pl-5">
-            Users
+          <div className="table-cell text-left text-white font-bold pl-5">
+            USERS
+            <div className="h-[1px] w-full bg-gray-400 my-2" />
+          </div>
+          <div className="table-cell text-left text-white font-bold pl-5">
+            TOPICS
             <div className="h-[1px] w-full bg-gray-400 my-2" />
           </div>
         </div>
@@ -206,12 +216,12 @@ const EntityDashboard = () => {
 
   return (
     <div className="flex w-full justify-center items-center">
-      <div className="flex items-start md:p-12 w-full flex-wrap md:flex-nowrap">
+      <div className="flex md:p-12 w-full flex-col md:flex-row">
         <div className="w-full flex flex-col mr-5">
           <h3 className="text-white font-bold text-3xl text-center my-2">
             Entities
           </h3>
-          <div className="p-5 pt-3 mt-3 w-full self-center flex flex-col justify-start items-start blue-glassmorphism bg-[#3A1F5C]">
+          <div className="p-5 pt-3 mt-3 w-4/5 md:w-full self-center flex flex-col justify-start items-start blue-glassmorphism bg-[#3A1F5C]">
             <Input
               placeholder="Name LLC"
               name="name"
@@ -236,7 +246,7 @@ const EntityDashboard = () => {
             </button>
           </div>
         </div>
-        <div className="flex flex-wrap content-between h-[465px] w-full blue-glassmorphism bg-[#3A1F5C] mt-5 justify-between">
+        <div className="flex flex-wrap content-between h-[450px] w-3/5 blue-glassmorphism self-center bg-[#3A1F5C] mt-5 justify-between">
           <div>
             <EntityTable
               edges={entities?.entitiesConnection?.edges}
