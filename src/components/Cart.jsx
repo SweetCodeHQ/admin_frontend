@@ -83,7 +83,7 @@ const LaunchModalButton = ({ handleSubmitTopics }) => {
 
 const Cart = ({ setToggleCart }) => {
   const {
-    handleTopicEmail,
+    handleTopicAlertEmail,
     handleClearCart,
     cartTopics,
     handleRemoveFromCart
@@ -104,7 +104,7 @@ const Cart = ({ setToggleCart }) => {
 
   const processTopics = id => {
     updateSubmitted(id);
-    handleTopicEmail(id);
+    handleTopicAlertEmail(id);
   };
 
   const handleSubmitTopics = () => {

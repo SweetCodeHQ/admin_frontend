@@ -22,8 +22,8 @@ export const CartContextProvider = ({ children }) => {
     setCartTopics(prev => prev.filter((topic, i) => i !== index));
   };
 
-  const handleTopicEmail = topicId => {
-    const url = `https://megaphone-api.herokuapp.com/email?topic_id=${topicId}`;
+  const handleTopicAlertEmail = topicId => {
+    const url = `https://megaphone-api.herokuapp.com/topic_alert_emails?topic_id=${topicId}`;
 
     fetch(url, { method: "POST" }).then(error => console.log(error));
   };
@@ -37,7 +37,7 @@ export const CartContextProvider = ({ children }) => {
       value={{
         cartTopics,
         handleAddToCart,
-        handleTopicEmail,
+        handleTopicAlertEmail,
         handleClearCart,
         handleRemoveFromCart
       }}

@@ -53,7 +53,12 @@ const UPDATE_LOGIN_COUNT = gql`
 `;
 
 const Dashboard = () => {
-  const { handleSignOut, userCallback } = useContext(UserContext);
+  const {
+    handleSignOut,
+    userCallback,
+    setMegaphoneUserInfo,
+    handleSignupAlertEmail
+  } = useContext(UserContext);
 
   const googleUser = useContext(UserContext);
   const email = googleUser?.googleUser?.email;
@@ -94,15 +99,22 @@ const Dashboard = () => {
     const currentUser = await userCallback(response);
     userEntityCallback(currentUser);
   };
+  {
+    /*The below method is too big. Break out the functionality/ change names. It's doing much more than just creating the userEntity*/
+  }
+
+  const megaphoneUserRefetch = async mail => {
+    const user = refetchUser({ email: mail });
+    return user;
+  };
 
   const userEntityCallback = async currentUser => {
-    const megaphoneUserResponse = await refetchUser({
-      email: currentUser.email
-    });
+    const data = await megaphoneUserRefetch(currentUser.email);
 
-    const megaphoneUserInfo = megaphoneUserResponse?.data?.user;
-
-    updateUserLoginCount(megaphoneUserInfo.id);
+    if (data.data.user.loginCount === 0)
+      handleSignupAlertEmail(data.data.user.id);
+    setMegaphoneUserInfo(data.data.user);
+    updateUserLoginCount(data.data.user.id);
 
     const megaphoneEntityResponse = await refetchEntity({
       url: currentUser.hd
@@ -110,7 +122,7 @@ const Dashboard = () => {
 
     const entityId = megaphoneEntityResponse.data.entity.id;
 
-    createUserEntityMutation(megaphoneUserInfo.id, entityId);
+    createUserEntityMutation(data.data.user.id, entityId);
   };
 
   const [userEntityMutationData, { loading, error }] = useMutation(
