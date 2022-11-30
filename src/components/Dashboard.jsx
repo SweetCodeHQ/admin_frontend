@@ -146,7 +146,7 @@ const Dashboard = () => {
         googleUser?.googleUser && { backgroundImage: `url(${background})` }
       }
     >
-      <div className="flex items-start justify-between md:p-20 py-12 px-4">
+      <div className="flex items-start justify-between md:p-20 py-12">
         <div className="flex flex-1 justify-start flex-col mf:mr-10">
           <div className="p-5 w-full items-center flex flex-col">
             {!googleUser.googleUser && (

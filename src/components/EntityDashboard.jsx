@@ -41,7 +41,7 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
     className={
       placeholder === "Name LLC" || placeholder === "www.url.com"
         ? "my-2 w-full rounded-sm p-2 outline-none bg-transparent bg-[#4E376A]/75 placeholder-gray-400 border-none text-sm shadow-inner shadow-lg text-white border-none text-sm white-glassmorphism"
-        : "bg-transparent outline-none border-[1px] pt-1 pb-1 text-sm white-glassmorphism rounded-lg"
+        : "bg-transparent outline-none border-[1px] pt-1 pb-1 text-sm white-glassmorphism rounded-lg w-4/5 md:w-auto"
     }
   />
 );
@@ -99,7 +99,7 @@ const EntityTableItem = ({ node, editEntity }) => {
           <div className="table-cell text-white text-center pl-5">
             <button
               type="button"
-              className="text-blue-300 w-full  border-[1px] border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
+              className="text-blue-300 w-full md:w-auto border-[1px] border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
               onClick={() => {
                 setClicked(prevState => !clicked);
               }}
@@ -246,7 +246,7 @@ const EntityDashboard = () => {
             </button>
           </div>
         </div>
-        <div className="flex flex-wrap content-between h-[450px] w-3/5 blue-glassmorphism self-center bg-[#3A1F5C] mt-5 justify-between">
+        <div className="flex flex-wrap content-between h-[450px] w-4/5 blue-glassmorphism self-center bg-[#3A1F5C] mt-5 justify-between">
           <div>
             <EntityTable
               edges={entities?.entitiesConnection?.edges}
