@@ -106,7 +106,7 @@ const NormalUsersTableItem = props => {
   return (
     <div className="table-row">
       <div className="table-cell text-white text-left pr-5">{props.email}</div>
-      <div className="table-cell text-white text-center pr-5 hidden md:block">
+      <div className="table-cell text-white text-center pr-5">
         {props.generateClicks}
       </div>
       <div className="table-cell text-white text-center pr-5 hidden md:block">
@@ -132,10 +132,10 @@ const NormalUsersTable = ({ edges }) => {
       <div className="table-header-group">
         <div className="table-row">
           <div className="table-cell text-left text-white font-bold">EMAIL</div>
-          <div className="table-cell text-left text-white font-bold pr-3 hidden md:block">
+          <div className="table-cell text-left text-white font-bold pr-3">
             CLICKS
           </div>
-          <div className="table-cell text-center text-white  font-bold pr-3 hidden md:block">
+          <div className="table-cell text-center text-white font-bold pr-3 hidden md:block">
             JOINED
           </div>
           <div className="table-cell text-center text-white font-bold">
