@@ -135,7 +135,7 @@ const NormalUsersTable = ({ edges }) => {
           <div className="table-cell text-left text-white font-bold pr-3">
             CLICKS
           </div>
-          <div className="table-cell text-center text-white  font-bold pr-3 hidden md:block">
+          <div className="table-cell text-center text-white font-bold pr-3 hidden md:block">
             JOINED
           </div>
           <div className="table-cell text-center text-white font-bold">
