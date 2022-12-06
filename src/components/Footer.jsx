@@ -1,6 +1,10 @@
 import logo from "../../images/logo.png";
 
 const Footer = () => {
+  const openInNewTab = url => {
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
   return (
     <div className="w-full flex md:justify-center justify-between items-center flex-col p-4">
       <div className="w-full flex sm:flex-row flex-col justify-between items-center my-4">
@@ -13,15 +17,21 @@ const Footer = () => {
           />
         </div>
         <div className="flex flex-1 justify-evenly items-center flex-wrap sm:mt-0 mt-5 w-full">
-          <p className="text-[#2D104F] text-base font-semibold text-center mx-2 cursor-pointer p-2 pr-5 pl-5 bg-white rounded-full">
+          <div className="text-[#2D104F] text-base font-semibold text-center mx-2 cursor-pointer p-2 pr-5 pl-5 bg-white rounded-full">
             About
-          </p>
-          <p className="text-[#2D104F] text-base font-semibold text-center mx-2 cursor-pointer p-2 pr-5 pl-5 bg-white rounded-full">
-            Sweet Code
-          </p>
-          <p className="text-[#2D104F] text-base font-semibold text-center mx-2 cursor-pointer p-2 pr-5 pl-5 bg-white rounded-full">
-            Fixate
-          </p>
+          </div>
+          <button
+            onClick={() => openInNewTab("https://sweetcode.io")}
+            className="text-[#2D104F] text-base font-semibold text-center mx-2 cursor-pointer p-2 pr-5 pl-5 bg-white rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
+          >
+            Sweetcode.io
+          </button>
+          <button
+            onClick={() => openInNewTab("https://fixate.io")}
+            className="text-[#2D104F] text-base font-semibold text-center mx-2 cursor-pointer p-2 pr-5 pl-5 bg-white rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
+          >
+            Fixate.io
+          </button>
         </div>
       </div>
       <div className="flex justify-center items-center flex-col mt-5">
