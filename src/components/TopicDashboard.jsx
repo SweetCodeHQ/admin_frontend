@@ -422,7 +422,7 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
             </div>
             {inputKeywords && (
               <ul className="flex flex-wrap justify-between w-full">
-                <li className="bg-[#4E376A] font-bold text-white text-sm rounded-xl text-center pr-5 pl-5 mt-2 mr-3 pt-2 pb-2">
+                <li className="font-bold text-white border-[#4E376A] border-2 text-sm rounded-xl border-solid text-center pr-5 pl-5 mt-2 mr-3 pt-2 pb-2">
                   You used:
                 </li>
                 {inputKeywords.map(
