@@ -18,7 +18,7 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
     value={value}
     onChange={e => handleChange(e, name)}
     className={
-      "my-3 w-4/5 rounded-lg p-2 outline-none text-white bg-[#4E376A]/75 placeholder-gray-400 border-sm text-sm shadow-inner shadow-lg"
+      "w-4/5 rounded-lg p-2 outline-none text-white bg-[#4E376A]/75 placeholder-gray-400 border-sm text-sm shadow-inner shadow-lg mt-5"
     }
   />
 );
@@ -49,7 +49,7 @@ const TopicInputForm = ({ userId, refetch }) => {
   };
 
   return (
-    <div className="flex bg-[#3A1F5C] items-center justify-around pl-5 rounded-xl pr-5 md:pr-3">
+    <div className="flex bg-inherit items-center justify-around pl-5 rounded-xl pr-5 md:pr-3 space-y-5">
       <Input
         placeholder="Write your own topic here!"
         name="text"

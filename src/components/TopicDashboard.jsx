@@ -391,7 +391,7 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
               </div>
             </div>
             <div className="flex items-center justify-between w-full mt-5">
-              <h3 className="text-white text-3xl font-bold text-center my-2">
+              <h3 className="text-white text-3xl font-bold text-center my-2 w-4/5">
                 Generated Topics
               </h3>
             </div>
@@ -441,13 +441,13 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
               My Saved Topics
             </h3>
             <div className="bg-[#4E376A] rounded-xl mt-2">
+              <div className="w-full self-start">
+                <TopicInputForm
+                  userId={megaphoneUserInfo?.id}
+                  refetch={refetch}
+                />
+              </div>
               <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
-                <div className="w-full self-center">
-                  <TopicInputForm
-                    userId={megaphoneUserInfo?.id}
-                    refetch={refetch}
-                  />
-                </div>
                 {userTopicsConnection?.edges?.map((edge, i) => (
                   <UserTopic
                     id={i}
