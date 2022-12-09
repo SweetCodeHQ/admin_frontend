@@ -141,7 +141,7 @@ const Dashboard = () => {
 
   return (
     <div
-      className="flex w-full justify-center items-center"
+      className="flex w-full justify-center items-center bg-cover"
       style={
         googleUser?.googleUser && { backgroundImage: `url(${background})` }
       }

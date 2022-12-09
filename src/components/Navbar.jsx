@@ -43,7 +43,7 @@ const Navbar = () => {
               </div>
             )}
             <button
-              className="bg-white py-2 px-7 mx-4 rounded-full cursor-pointer font-semibold text-[#2D104F] transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
+              className="bg-white py-2 px-7 mx-4 rounded-full cursor-pointer font-bold text-[#2D104F] transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
               type="button"
               onClick={e => handleSignOut(e)}
             >

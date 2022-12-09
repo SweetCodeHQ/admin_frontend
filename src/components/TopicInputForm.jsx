@@ -18,7 +18,7 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
     value={value}
     onChange={e => handleChange(e, name)}
     className={
-      "my-3 w-4/5 rounded-lg p-2 outline-none text-white bg-[#4E376A]/75 placeholder-gray-400 border-sm text-sm shadow-inner shadow-lg"
+      "w-4/5 rounded-lg p-2 outline-none text-white bg-[#4E376A]/75 placeholder-gray-400 border-sm text-sm shadow-inner shadow-lg mt-5"
     }
   />
 );
@@ -49,7 +49,7 @@ const TopicInputForm = ({ userId, refetch }) => {
   };
 
   return (
-    <div className="w-full items-center flex flex-col bg-[#3A1F5C] rounded-xl mt-5">
+    <div className="flex bg-inherit items-center justify-around pl-5 rounded-xl pr-5 md:pr-3 space-y-5">
       <Input
         placeholder="Write your own topic here!"
         name="text"
@@ -58,7 +58,7 @@ const TopicInputForm = ({ userId, refetch }) => {
         handleChange={handleChange}
       />
       <button
-        className="text-[#2D104F] font-bold bg-white rounded-full text-center text-lg pr-3 pl-3 mr-3 pt-1 mb-4 pb-1 cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
+        className="text-[#2D104F] font-bold bg-white rounded-full ml-5 md:ml-0 text-center text-base pr-3 pl-3 pt-1 mb-4 pb-1 mt-3 cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
         onClick={handleSubmit}
       >
         Save
