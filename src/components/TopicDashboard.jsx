@@ -1,5 +1,9 @@
 import { useState, useContext, useEffect } from "react";
 import { CartContext, CartContextProvider } from "../context/CartContext";
+import {
+  BsFillArrowLeftCircleFill,
+  BsFillArrowRightCircleFill
+} from "react-icons/bs";
 import { gql, useQuery, useMutation } from "@apollo/client";
 
 import {
@@ -368,12 +372,6 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
                 />
               </div>
             </div>
-            <div className="w-4/5 self-center">
-              <TopicInputForm
-                userId={megaphoneUserInfo?.id}
-                refetch={refetch}
-              />
-            </div>
           </div>
           <div className="w-full flex flex-col items-center">
             <div className="flex flex-col mt-2 w-full">
@@ -397,7 +395,7 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
                 Generated Topics
               </h3>
             </div>
-            <div className="bg-[#4E376A] rounded-xl mt-2 w-full">
+            <div className="bg-[#4E376A] rounded-xl mt-2 w-4/5 md:w-full">
               {isLoading ? (
                 <Loader />
               ) : (
@@ -438,12 +436,18 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
           </div>
         </div>
         {userTopicsConnection?.edges?.length != 0 && (
-          <>
+          <div className="w-4/5">
             <h3 className="text-white text-3xl font-bold text-center my-2 pt-10">
               My Saved Topics
             </h3>
-            <div className="bg-[#4E376A] rounded-xl mt-2 w-full">
+            <div className="bg-[#4E376A] rounded-xl mt-2">
               <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
+                <div className="w-full self-center">
+                  <TopicInputForm
+                    userId={megaphoneUserInfo?.id}
+                    refetch={refetch}
+                  />
+                </div>
                 {userTopicsConnection?.edges?.map((edge, i) => (
                   <UserTopic
                     id={i}
@@ -457,7 +461,7 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
                 <div className="text-left text-blue-400">
                   {userTopicsConnection?.pageInfo?.hasPreviousPage ? (
                     <p
-                      className="hover:text-purple-600 cursor-pointer"
+                      className="cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 text-xl"
                       onClick={() =>
                         flipTopicPage({
                           last: 10,
@@ -465,7 +469,7 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
                         })
                       }
                     >
-                      {"<<<"}
+                      <BsFillArrowLeftCircleFill />
                     </p>
                   ) : (
                     <p></p>
@@ -477,14 +481,14 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
                 <div className=" text-blue-400">
                   {userTopicsConnection?.pageInfo?.hasNextPage ? (
                     <p
-                      className="hover:text-purple-600 cursor-pointer"
+                      className="cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 text-xl"
                       onClick={() =>
                         flipTopicPage({
                           after: userTopicsConnection.pageInfo.endCursor
                         })
                       }
                     >
-                      {">>>"}
+                      <BsFillArrowRightCircleFill />
                     </p>
                   ) : (
                     <p></p>
@@ -492,7 +496,7 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
                 </div>
               </div>
             </div>
-          </>
+          </div>
         )}
       </div>
     </div>
