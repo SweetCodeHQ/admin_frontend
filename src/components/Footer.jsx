@@ -8,14 +8,7 @@ const Footer = () => {
   return (
     <div className="w-full flex md:justify-center justify-between items-center flex-col p-4">
       <div className="w-full flex sm:flex-row flex-col justify-between items-center my-4">
-        <div className="flex flex-0.5 justify-center items-center">
-          <img
-            src={logo}
-            alt="Megaphone Logo"
-            className="w-32"
-            data-cy="FLogo"
-          />
-        </div>
+        <div className="flex flex-0.5 justify-center items-center"></div>
         <div className="flex flex-1 justify-evenly items-center flex-wrap sm:mt-0 mt-5 w-full">
           <div className="text-[#2D104F] text-base font-semibold text-center mx-2 cursor-pointer p-2 pr-5 pl-5 bg-white rounded-full">
             About
