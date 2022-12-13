@@ -1,12 +1,10 @@
 import { useState, useContext } from "react";
 import { gql, useMutation } from "@apollo/client";
-import { EditTopicMenu } from "../Components";
+import { EditTopicMenu, TopicCartIcon } from "../Components";
 import { CartContext } from "../context/CartContext";
 
 import { MdDeleteForever } from "react-icons/md";
 import { HiPencilAlt } from "react-icons/hi";
-import { BsCart4 } from "react-icons/bs";
-import { BsCartCheckFill } from "react-icons/bs";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { RiMailCheckFill } from "react-icons/ri";
 
@@ -55,21 +53,11 @@ const UserTopic = ({ topic, refetch, id }) => {
               <RiMailCheckFill />
             </div>
           )}
-          {cartIds?.includes(topic.id) ? (
-            <button className="text-blue-300 mr-3 rounded-full">
-              <BsCartCheckFill />
-            </button>
-          ) : (
-            <button
-              type="button"
-              className={`text-blue-300 mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 ${topic.submitted &&
-                "hidden"}`}
-              onClick={e => handleAddToCart(topic)}
-            >
-              <BsCart4 />
-            </button>
-          )}
-
+          <TopicCartIcon
+            topic={topic}
+            handleAddToCart={handleAddToCart}
+            cartIds={cartIds}
+          />
           <button
             type="button"
             className={`text-blue-300 mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 ${topic.submitted &&

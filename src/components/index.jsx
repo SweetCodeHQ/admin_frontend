@@ -11,6 +11,8 @@ export { default as TopicDashboard } from "./TopicDashboard";
 export { default as TopicRow } from "./TopicRow";
 export { default as UserTopic } from "./UserTopic";
 export { default as EditTopicMenu } from "./EditTopicMenu";
+export { default as TopicCartIcon } from "./TopicCartIcon";
+
 export { default as TopicInputForm } from "./TopicInputForm";
 export { default as AutofillButton } from "./AutofillButton";
 
