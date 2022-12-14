@@ -40,6 +40,10 @@ const GET_PAGINATED_TOPICS = gql`
           id
           text
           submitted
+          abstract {
+            id
+            text
+          }
         }
       }
     }
