@@ -28,14 +28,14 @@ const TopicRow = ({ topic, userId, i, refetch }) => {
   const [abstractMutationData, { error: abstractError }] = useMutation(
     CREATE_ABSTRACT,
     {
-      onCompleted: data => console.log(data),
+      onCompleted: refetch,
       onError: error => console.log(error)
     }
   );
 
-  const createAbstract = (topicId, text) => {
+  const createAbstract = async (topicId, text) => {
     const input = { topicId: topicId, text: text };
-    abstractMutationData({ variables: input });
+    await abstractMutationData({ variables: input });
   };
 
   const formatTopic = () => {
@@ -51,7 +51,7 @@ const TopicRow = ({ topic, userId, i, refetch }) => {
   const formattedTopic = formatTopic();
 
   const [topicCreationData, { loading, error }] = useMutation(CREATE_TOPIC, {
-    onCompleted: refetch,
+    onCompleted: data => console.log(data),
     onError: error => console.log(error)
   });
 
@@ -96,7 +96,7 @@ const TopicRow = ({ topic, userId, i, refetch }) => {
 
     const abstract = await generateAbstract();
 
-    createAbstract(topicId, abstract);
+    const newInstract = await createAbstract(topicId, abstract);
   };
 
   return (
