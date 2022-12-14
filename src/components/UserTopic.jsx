@@ -80,6 +80,12 @@ const UserTopic = ({ topic, refetch, id }) => {
           <li className="text-white font-bold">{topic.text}</li>
         </div>
       )}
+      {toggleAbstract && (
+        <div className="flex flex-col text-white opacity-70">
+          <h1 className="self-center">Abstract</h1>
+          <div>{topic.abstract.text}</div>
+        </div>
+      )}
     </>
   );
 };
