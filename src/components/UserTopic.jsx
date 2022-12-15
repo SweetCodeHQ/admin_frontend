@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import { gql, useMutation } from "@apollo/client";
-import { EditTopicMenu, TopicCartIcon } from "../Components";
+import { EditTopicMenu, TopicCartIcon } from "../components";
 import { CartContext } from "../context/CartContext";
 
 import { MdDeleteForever } from "react-icons/md";
