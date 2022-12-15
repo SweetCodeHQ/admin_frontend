@@ -1,22 +1,12 @@
 import { useState, useContext } from "react";
 import { gql, useMutation } from "@apollo/client";
+import { EditTopicMenu, TopicCartIcon } from "../components";
 import { CartContext } from "../context/CartContext";
 
 import { MdDeleteForever } from "react-icons/md";
-import { HiPencilAlt, HiOutlineX } from "react-icons/hi";
-import { BsCart4 } from "react-icons/bs";
-import { BsCartCheckFill } from "react-icons/bs";
-
+import { HiPencilAlt } from "react-icons/hi";
+import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { RiMailCheckFill } from "react-icons/ri";
-
-const UPDATE_TOPIC = gql`
-  mutation UpdateTopicText($id: ID!, $text: String!) {
-    updateTopic(input: { id: $id, text: $text }) {
-      id
-      text
-    }
-  }
-`;
 
 const DESTROY_TOPIC = gql`
   mutation($id: ID!) {
@@ -25,29 +15,13 @@ const DESTROY_TOPIC = gql`
     }
   }
 `;
-{
-  /*Consider pulling this out into a separate file because you use it in so many places.*/
-}
-const Input = ({ placeholder, name, type, value, handleChange }) => (
-  <input
-    placeholder={placeholder}
-    name={name}
-    type={type}
-    value={value}
-    onChange={e => handleChange(e, name)}
-    className={
-      "my-2 w-full rounded-sm p-2 outline-none bg-transparent text-blue-200 border-none text-sm white-glassmorphism"
-    }
-  />
-);
 
 const UserTopic = ({ topic, refetch, id }) => {
   const [clickedEdit, setClickedEdit] = useState(false);
-
-  const [topicFormData, setTopicFormData] = useState({
-    text: topic.text,
-    id: topic.id
-  });
+  {
+    /*State is getting complex...use the reduceState hook instead*/
+  }
+  const [toggleAbstract, setToggleAbstract] = useState(false);
 
   const { handleAddToCart, cartTopics } = useContext(CartContext);
 
@@ -64,63 +38,14 @@ const UserTopic = ({ topic, refetch, id }) => {
     destroyTopicData({ variables: input });
   };
 
-  const editTopic = updateInfo => {
-    const input = updateInfo;
-    topicUpdateData({ variables: input });
-  };
-
-  const [
-    topicUpdateData,
-    { loading: updateLoading, error: updateError }
-  ] = useMutation(UPDATE_TOPIC, {
-    onError: error => console.log(error),
-    onCompleted: data => console.log(data)
-  });
-
-  const handleChange = (e, name) => {
-    setTopicFormData(prevState => ({ ...prevState, [name]: e.target.value }));
-  };
-
-  const handleSubmit = e => {
-    const { text } = topicFormData;
-
-    if (!text) return;
-
-    editTopic(topicFormData);
-    setClickedEdit(false);
+  const handleToggleAbstract = e => {
+    setToggleAbstract(prev => !prev);
   };
 
   return (
     <>
       {clickedEdit ? (
-        <div className="flex items-center">
-          <div className="self-start">
-            <button
-              type="button"
-              className="text-blue-300 mr-3 border-[1px] border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-500"
-              onClick={() => {
-                setClickedEdit(false);
-              }}
-            >
-              <HiOutlineX />
-            </button>
-          </div>
-          <Input
-            placeholder={topic.text}
-            name="text"
-            value={topicFormData.text}
-            type="text"
-            handleChange={handleChange}
-          />
-          <div>
-            <button
-              className="border-none ml-3 text-blue-200 bg-blue-500 text-sm font-bold italic p-1 border-[1px] border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-purple-700"
-              onClick={handleSubmit}
-            >
-              Update
-            </button>
-          </div>
-        </div>
+        <EditTopicMenu topic={topic} setClickedEdit={setClickedEdit} />
       ) : (
         <div className="flex items-left">
           {topic.submitted && (
@@ -128,38 +53,40 @@ const UserTopic = ({ topic, refetch, id }) => {
               <RiMailCheckFill />
             </div>
           )}
-          {cartIds?.includes(topic.id) ? (
-            <button className="text-blue-300 mr-3 rounded-full">
-              <BsCartCheckFill />
-            </button>
-          ) : (
-            <button
-              type="button"
-              className={`text-blue-300 mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-500 ${topic.submitted &&
-                "hidden"}`}
-              onClick={e => handleAddToCart(topic)}
-            >
-              <BsCart4 />
-            </button>
-          )}
-
+          <TopicCartIcon
+            topic={topic}
+            handleAddToCart={handleAddToCart}
+            cartIds={cartIds}
+          />
           <button
             type="button"
-            className={`text-blue-300 mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-500 ${topic.submitted &&
+            className={`text-blue-300 mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 ${topic.submitted &&
               "hidden"}`}
             onClick={destroyTopicMutation}
           >
             <MdDeleteForever />
           </button>
           <button
-            className={`text-blue-300 mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-500 ${topic.submitted &&
+            className={`text-blue-300 mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 ${topic.submitted &&
               "hidden"}`}
             type="button"
             onClick={() => setClickedEdit(true)}
           >
             <HiPencilAlt />
           </button>
+          <button className="text-blue-300 mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105">
+            <IoIosArrowDropdownCircle onClick={e => handleToggleAbstract()} />
+          </button>
           <li className="text-white font-bold">{topic.text}</li>
+        </div>
+      )}
+      {toggleAbstract && (
+        <div className="flex flex-col text-white opacity-70">
+          <h3 className="text-sm self-center border rounded-xl p-2 mb-3">
+            BETA FEATURE
+          </h3>
+          <h1 className="self-center">Abstract</h1>
+          <div className="self-center max-w-prose">{topic.abstract.text}</div>
         </div>
       )}
     </>

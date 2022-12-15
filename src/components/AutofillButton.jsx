@@ -51,16 +51,22 @@ const AutofillButton = ({ megaphoneUserInfo, handleSuggest }) => {
   return (
     <button
       type="button"
-      disabled={determineButtonDisabled()}
+      disabled
       onClick={handleSuggest}
-      className={`text-[#2D104F] bg-white pr-5 pl-5 p-2 mt-2 font-bold rounded-full cursor-pointer transition duration-150 ease-in-out enabled:hover:-translate-y-1 enabled:hover:scale-105 ${opacity} disabled:cursor-help disabled:bg-gradient-to-r disabled:from-pink-500 disabled:to-yellow-500`}
+      className={`text-[#2D104F] bg-white pr-5 pl-5 p-2 mt-2 font-bold rounded-full cursor-pointer transition duration-150 ease-in-out enabled:hover:-translate-y-1 enabled:hover:scale-105 disabled:opacity-20`}
       data-bs-toggle="tooltip"
       data-bs-placement="right"
-      title={setTitle()}
+      title="Coming Soon"
     >
       Autofill
     </button>
   );
 };
 
+{
+  /*className={`text-[#2D104F] bg-white pr-5 pl-5 p-2 mt-2 font-bold rounded-full cursor-pointer transition duration-150 ease-in-out enabled:hover:-translate-y-1 enabled:hover:scale-105 ${opacity} disabled:cursor-help disabled:bg-gradient-to-r disabled:from-pink-500 disabled:to-yellow-500`
+  data-bs-toggle="tooltip"
+  data-bs-placement="right"
+  title={setTitle()}}*/
+}
 export default AutofillButton;

@@ -13,8 +13,30 @@ const CREATE_TOPIC = gql`
   }
 `;
 
+const CREATE_ABSTRACT = gql`
+  mutation CreateAbstract($topicId: ID!, $text: String!) {
+    createAbstract(input: { topicId: $topicId, text: $text }) {
+      id
+      text
+    }
+  }
+`;
+
 const TopicRow = ({ topic, userId, i, refetch }) => {
   const [hasBeenSaved, setHasBeenSaved] = useState(false);
+
+  const [abstractMutationData, { error: abstractError }] = useMutation(
+    CREATE_ABSTRACT,
+    {
+      onCompleted: refetch,
+      onError: error => console.log(error)
+    }
+  );
+
+  const createAbstract = async (topicId, text) => {
+    const input = { topicId: topicId, text: text };
+    await abstractMutationData({ variables: input });
+  };
 
   const formatTopic = () => {
     if (topic.charAt(0) === "-") {
@@ -29,20 +51,52 @@ const TopicRow = ({ topic, userId, i, refetch }) => {
   const formattedTopic = formatTopic();
 
   const [topicCreationData, { loading, error }] = useMutation(CREATE_TOPIC, {
-    onCompleted: refetch,
+    onCompleted: data => console.log(data),
     onError: error => console.log(error)
   });
 
-  const createTopicMutation = text => {
+  const createTopicMutation = async text => {
     const input = { userId: userId, text: text };
 
-    topicCreationData({ variables: input });
+    const newTopic = await topicCreationData({ variables: input });
+    return newTopic;
   };
 
-  const handleSaveTopic = () => {
+  const handleSaveTopic = async () => {
     const stringified = JSON.stringify(formattedTopic);
-    createTopicMutation(stringified.slice(4, -1));
+    const newTopic = await createTopicMutation(stringified.slice(4, -1));
     setHasBeenSaved(true);
+
+    return newTopic;
+  };
+
+  const generateAbstract = async () => {
+    let instract;
+
+    const handleResponse = response => {
+      instract = response.data.attributes.text.split("\n")[2];
+    };
+
+    const url = "https://megaphone-ai-api.herokuapp.com/api/v1/abstracts?";
+
+    const fullUrl = `${url}topic="${formattedTopic}"`;
+
+    const response = await fetch(fullUrl)
+      .then(response => response.json())
+      .then(response => handleResponse(response))
+      .then(error => console.log(error));
+
+    return instract;
+  };
+
+  const handleAddTopicToUser = async () => {
+    const newTopic = await handleSaveTopic();
+
+    const topicId = newTopic.data.createTopic.id;
+
+    const abstract = await generateAbstract();
+
+    const newInstract = await createAbstract(topicId, abstract);
   };
 
   return (
@@ -55,7 +109,7 @@ const TopicRow = ({ topic, userId, i, refetch }) => {
         <button
           type="button"
           className="text-white text-lg border-[1px] border-none outline-none rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-400 pr-5"
-          onClick={handleSaveTopic}
+          onClick={handleAddTopicToUser}
         >
           <BsFillBookmarkPlusFill />
         </button>
