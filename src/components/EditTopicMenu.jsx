@@ -1,0 +1,90 @@
+import { useState } from "react";
+import { gql, useMutation } from "@apollo/client";
+import { HiPencilAlt, HiOutlineX } from "react-icons/hi";
+
+const UPDATE_TOPIC = gql`
+  mutation UpdateTopicText($id: ID!, $text: String!) {
+    updateTopic(input: { id: $id, text: $text }) {
+      id
+      text
+    }
+  }
+`;
+
+const Input = ({ placeholder, name, type, value, handleChange }) => (
+  <input
+    placeholder={placeholder}
+    name={name}
+    type={type}
+    value={value}
+    onChange={e => handleChange(e, name)}
+    className={
+      "my-2 w-full rounded-sm p-2 outline-none bg-transparent text-blue-200 border-none text-sm white-glassmorphism"
+    }
+  />
+);
+
+const EditTopicMenu = ({ topic, setClickedEdit }) => {
+  const editTopic = updateInfo => {
+    const input = updateInfo;
+    topicUpdateData({ variables: input });
+  };
+
+  const [topicFormData, setTopicFormData] = useState({
+    text: topic.text,
+    id: topic.id
+  });
+
+  const [
+    topicUpdateData,
+    { loading: updateLoading, error: updateError }
+  ] = useMutation(UPDATE_TOPIC, {
+    onError: error => console.log(error),
+    onCompleted: data => console.log(data)
+  });
+
+  const handleChange = (e, name) => {
+    setTopicFormData(prevState => ({ ...prevState, [name]: e.target.value }));
+  };
+
+  const handleSubmit = e => {
+    const { text } = topicFormData;
+
+    if (!text) return;
+
+    editTopic(topicFormData);
+    setClickedEdit(false);
+  };
+  return (
+    <div className="flex items-center">
+      <div className="self-start">
+        <button
+          type="button"
+          className="text-blue-300 mr-3 border-[1px] border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
+          onClick={() => {
+            setClickedEdit(false);
+          }}
+        >
+          <HiOutlineX />
+        </button>
+      </div>
+      <Input
+        placeholder={topic.text}
+        name="text"
+        value={topicFormData.text}
+        type="text"
+        handleChange={handleChange}
+      />
+      <div>
+        <button
+          className="border-none ml-3 text-blue-200 bg-blue-500 text-sm font-bold italic p-1 border-[1px] border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-purple-700"
+          onClick={handleSubmit}
+        >
+          Update
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default EditTopicMenu;
