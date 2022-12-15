@@ -82,8 +82,11 @@ const UserTopic = ({ topic, refetch, id }) => {
       )}
       {toggleAbstract && (
         <div className="flex flex-col text-white opacity-70">
+          <h3 className="text-sm self-center border rounded-xl p-2 mb-3">
+            BETA FEATURE
+          </h3>
           <h1 className="self-center">Abstract</h1>
-          <div>{topic.abstract.text}</div>
+          <div className="self-center max-w-prose">{topic.abstract.text}</div>
         </div>
       )}
     </>
