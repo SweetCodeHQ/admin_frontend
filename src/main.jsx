@@ -21,10 +21,10 @@ const client = new ApolloClient({
 });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-console.log(process.env);
+
 root.render(
   <React.StrictMode>
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+    <GoogleOAuthProvider clientId={process.env.GOOGLE_CLIENT_ID}>
       <ApolloProvider client={client}>
         <App />
       </ApolloProvider>
