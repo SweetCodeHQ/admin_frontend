@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
-
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { relayStylePagination } from "@apollo/client/utilities";
 
@@ -25,7 +24,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <React.StrictMode>
-    <GoogleOAuthProvider clientId="370692924501-o701jqakpplacn0r5cohmiv7q6firec5.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId={process.env.GOOGLE_CLIENT_ID}>
       <ApolloProvider client={client}>
         <App />
       </ApolloProvider>
