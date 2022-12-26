@@ -8,7 +8,7 @@ import { relayStylePagination } from "@apollo/client/utilities";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const client = new ApolloClient({
-  uri: "https://megaphone-api.herokuapp.com/graphql",
+  uri: `${process.env.DB_URL}`,
   cache: new InMemoryCache({
     typePolicies: {
       Query: {
