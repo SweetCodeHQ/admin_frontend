@@ -77,7 +77,7 @@ const TopicRow = ({ topic, userId, i, refetch }) => {
       instract = response.data.attributes.text.split("\n")[2];
     };
 
-    const url = "https://megaphone-ai-api.herokuapp.com/api/v1/abstracts?";
+    const url = `${process.env.AI_API_URL}/api/v1/abstracts?`;
 
     const fullUrl = `${url}topic="${formattedTopic}"`;
 
