@@ -8,7 +8,7 @@ import { relayStylePagination } from "@apollo/client/utilities";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const client = new ApolloClient({
-  uri: `${process.env.DB_URL}`,
+  uri: `${process.env.MEGAPHONE_DB_URL}/graphql`,
   cache: new InMemoryCache({
     typePolicies: {
       Query: {

@@ -23,7 +23,7 @@ export const CartContextProvider = ({ children }) => {
   };
 
   const handleTopicAlertEmail = topicId => {
-    const url = `https://megaphone-api.herokuapp.com/topic_alert_emails?topic_id=${topicId}`;
+    const url = `${process.env.MEGAPHONE_DB_URL}/topic_alert_emails?topic_id=${topicId}`;
 
     fetch(url, { method: "POST" }).then(error => console.log(error));
   };
