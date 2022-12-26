@@ -55,7 +55,7 @@ export const UserContextProvider = ({ children }) => {
   };
 
   const handleSignupAlertEmail = userId => {
-    const url = `https://megaphone-api.herokuapp.com/signup_alert_emails?user_id=${userId}`;
+    const url = `${process.env.MEGAPHONE_DB_URL}/signup_alert_emails?user_id=${userId}`;
 
     fetch(url, { method: "POST" }).then(error => console.log(error));
   };
