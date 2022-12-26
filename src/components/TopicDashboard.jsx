@@ -228,7 +228,7 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
   };
 
   const getTopicSuggestions = () => {
-    const url = "https://megaphone-ai-api.herokuapp.com/api/v1/topics?";
+    const url = `${process.env.AI_API_URL}/api/v1/topics?`;
 
     const fullUrl = `${url}keywords="${formData.word1} ${formData.word2} ${formData.word3} ${formData.word4} ${formData.word5}"`;
 
