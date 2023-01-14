@@ -13,30 +13,8 @@ const CREATE_TOPIC = gql`
   }
 `;
 
-const CREATE_ABSTRACT = gql`
-  mutation CreateAbstract($topicId: ID!, $text: String!) {
-    createAbstract(input: { topicId: $topicId, text: $text }) {
-      id
-      text
-    }
-  }
-`;
-
 const TopicRow = ({ topic, userId, i, refetch }) => {
   const [hasBeenSaved, setHasBeenSaved] = useState(false);
-
-  const [abstractMutationData, { error: abstractError }] = useMutation(
-    CREATE_ABSTRACT,
-    {
-      onCompleted: refetch,
-      onError: error => console.log(error)
-    }
-  );
-
-  const createAbstract = async (topicId, text) => {
-    const input = { topicId: topicId, text: text };
-    await abstractMutationData({ variables: input });
-  };
 
   const formatTopic = () => {
     if (topic.charAt(0) === "-") {
@@ -65,38 +43,16 @@ const TopicRow = ({ topic, userId, i, refetch }) => {
   const handleSaveTopic = async () => {
     const stringified = JSON.stringify(formattedTopic);
     const newTopic = await createTopicMutation(stringified.slice(4, -1));
+    refetch();
     setHasBeenSaved(true);
 
     return newTopic;
-  };
-
-  const generateAbstract = async () => {
-    let instract;
-
-    const handleResponse = response => {
-      instract = response.data.attributes.text.split("\n")[2];
-    };
-
-    const url = `${process.env.AI_API_URL}/api/v1/abstracts?`;
-
-    const fullUrl = `${url}topic="${formattedTopic}"`;
-
-    const response = await fetch(fullUrl)
-      .then(response => response.json())
-      .then(response => handleResponse(response))
-      .then(error => console.log(error));
-
-    return instract;
   };
 
   const handleAddTopicToUser = async () => {
     const newTopic = await handleSaveTopic();
 
     const topicId = newTopic.data.createTopic.id;
-
-    const abstract = await generateAbstract();
-
-    const newInstract = await createAbstract(topicId, abstract);
   };
 
   return (
