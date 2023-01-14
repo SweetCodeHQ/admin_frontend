@@ -43,7 +43,6 @@ const TopicRow = ({ topic, userId, i, refetch }) => {
   const handleSaveTopic = async () => {
     const stringified = JSON.stringify(formattedTopic);
     const newTopic = await createTopicMutation(stringified.slice(4, -1));
-    refetch();
     setHasBeenSaved(true);
 
     return newTopic;
