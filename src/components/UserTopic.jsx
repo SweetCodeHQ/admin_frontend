@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import { gql, useMutation } from "@apollo/client";
-import { EditTopicMenu, TopicCartIcon } from "../components";
+import { EditTopicMenu, TopicCartIcon, TopicAbstractMenu } from "../components";
 import { CartContext } from "../context/CartContext";
 
 import { MdDeleteForever } from "react-icons/md";
@@ -74,20 +74,24 @@ const UserTopic = ({ topic, refetch, id }) => {
           >
             <HiPencilAlt />
           </button>
-          <button className="text-blue-300 mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105">
+          <button
+            className={`mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out  ${
+              toggleAbstract
+                ? "scale-150 text-blue-500"
+                : "hover:scale-105 hover:-translate-y-1 text-blue-300"
+            }`}
+          >
             <IoIosArrowDropdownCircle onClick={e => handleToggleAbstract()} />
           </button>
           <li className="text-white font-bold">{topic.text}</li>
         </div>
       )}
       {toggleAbstract && (
-        <div className="flex flex-col text-white opacity-70">
-          <h3 className="text-sm self-center border rounded-xl p-2 mb-3">
-            BETA FEATURE
-          </h3>
-          <h1 className="self-center">Abstract</h1>
-          <div className="self-center max-w-prose">{topic.abstract.text}</div>
-        </div>
+        <TopicAbstractMenu
+          topic={topic}
+          refetch={refetch}
+          handleToggleAbstract={handleToggleAbstract}
+        />
       )}
     </>
   );

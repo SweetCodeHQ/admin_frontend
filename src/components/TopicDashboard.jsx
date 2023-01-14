@@ -399,7 +399,7 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
                 Generated Topics
               </h3>
             </div>
-            <div className="bg-[#4E376A] rounded-xl mt-2 w-4/5 md:w-full">
+            <div className="bg-[#3A1F5C] rounded-xl mt-2 w-4/5 md:w-full">
               {isLoading ? (
                 <Loader />
               ) : (
@@ -444,7 +444,7 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
             <h3 className="text-white text-3xl font-bold text-center my-2 pt-10">
               My Saved Topics
             </h3>
-            <div className="bg-[#4E376A] rounded-xl mt-2">
+            <div className="bg-[#3A1F5C] rounded-xl mt-2">
               <div className="w-full self-start">
                 <TopicInputForm
                   userId={megaphoneUserInfo?.id}
