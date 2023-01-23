@@ -18,11 +18,12 @@ const TopicRow = ({ topic, userId, i, refetch }) => {
 
   const formatTopic = () => {
     if (topic.charAt(0) === "-") {
-      const temp = topic.slice(1, -1);
+      const temp = topic.substring(1);
 
-      return `${i + 1}. ${temp}`;
+      return `${temp}`;
     } else {
-      return topic;
+      const temp = topic.substring(3);
+      return temp;
     }
   };
 
@@ -42,7 +43,7 @@ const TopicRow = ({ topic, userId, i, refetch }) => {
 
   const handleSaveTopic = async () => {
     const stringified = JSON.stringify(formattedTopic);
-    const newTopic = await createTopicMutation(stringified.slice(4, -1));
+    const newTopic = await createTopicMutation(stringified.slice(1, -1));
     setHasBeenSaved(true);
 
     return newTopic;

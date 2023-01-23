@@ -21,12 +21,6 @@ const Navbar = () => {
   return (
     <nav className="w-full gradient-bg-purple-welcome fixed z-50">
       <div className="w-full flex justify-between items-center p-4">
-        <img
-          src={logo}
-          alt="Megaphone Logo"
-          className="h-[35px]"
-          data-cy="HLogo"
-        />
         {googleUser && (
           <>
             {!megaphoneUserInfo?.isAdmin && (

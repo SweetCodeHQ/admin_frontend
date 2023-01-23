@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect, forwardRef } from "react";
 import { gql, useMutation } from "@apollo/client";
 import { HiPencilAlt, HiOutlineX } from "react-icons/hi";
 
@@ -11,29 +11,39 @@ const UPDATE_TOPIC = gql`
   }
 `;
 
-const Input = ({ placeholder, name, type, value, handleChange }) => (
-  <input
-    placeholder={placeholder}
-    name={name}
-    type={type}
-    value={value}
-    onChange={e => handleChange(e, name)}
-    className={
-      "my-2 w-full rounded-sm p-2 outline-none bg-transparent text-blue-200 border-none text-sm white-glassmorphism"
-    }
-  />
+const Input = forwardRef(
+  ({ placeholder, name, type, value, handleChange }, topicInputRef) => (
+    <input
+      ref={topicInputRef}
+      placeholder={placeholder}
+      name={name}
+      type={type}
+      value={value}
+      onChange={e => handleChange(e, name)}
+      className={
+        "my-2 w-full rounded-sm p-2 outline-none bg-transparent text-blue-200 border-none text-base font-bold white-glassmorphism"
+      }
+    />
+  )
 );
 
-const EditTopicMenu = ({ topic, setClickedEdit }) => {
-  const editTopic = updateInfo => {
-    const input = updateInfo;
-    topicUpdateData({ variables: input });
-  };
+const EditTopicMenu = ({ topic, handleToggleEditMenu, topicRef, refetch }) => {
+  const [topicText, setTopicText] = useState(topic.text);
 
   const [topicFormData, setTopicFormData] = useState({
     text: topic.text,
     id: topic.id
   });
+
+  const topicInputRef = useRef();
+  // useEffect(() => {
+  //   setFormText(abstract?.text);
+  // }, [abstract]);
+
+  const editTopic = updateInfo => {
+    const input = topicFormData;
+    topicUpdateData({ variables: input });
+  };
 
   const [
     topicUpdateData,
@@ -53,36 +63,41 @@ const EditTopicMenu = ({ topic, setClickedEdit }) => {
     if (!text) return;
 
     editTopic(topicFormData);
-    setClickedEdit(false);
   };
+
+  const handleUpdateTopic = () => {
+    if (topicFormData.text && topicFormData.text !== topicText) {
+      editTopic();
+      setTopicText(prev => topicFormData.text);
+      // refetch();
+    }
+  };
+
+  useEffect(() => {
+    const handleClick = event => {
+      if (
+        topicInputRef.current &&
+        !topicInputRef.current.contains(event.target)
+      ) {
+        handleUpdateTopic();
+      }
+    };
+    document.addEventListener("click", handleClick, true);
+    return () => {
+      document.removeEventListener("click", handleClick, true);
+    };
+  }, [topicInputRef, topicFormData, topicText]);
+
   return (
-    <div className="flex items-center">
-      <div className="self-start">
-        <button
-          type="button"
-          className="text-blue-300 mr-3 border-[1px] border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
-          onClick={() => {
-            setClickedEdit(false);
-          }}
-        >
-          <HiOutlineX />
-        </button>
-      </div>
+    <div className="flex items-center" ref={topicRef}>
       <Input
-        placeholder={topic.text}
+        ref={topicInputRef}
+        placeholder="Abstract Text"
         name="text"
-        value={topicFormData.text}
         type="text"
+        value={topicFormData.text}
         handleChange={handleChange}
       />
-      <div>
-        <button
-          className="border-none ml-3 text-blue-200 bg-blue-500 text-sm font-bold italic p-1 border-[1px] border-[#3d4f7c] rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:bg-purple-700"
-          onClick={handleSubmit}
-        >
-          Update
-        </button>
-      </div>
     </div>
   );
 };

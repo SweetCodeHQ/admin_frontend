@@ -220,7 +220,6 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
       /*Add response in case of dashes and no numbers or bullets*/
     }
     const topics = response.data.attributes.text;
-
     const formattedTopics = topics.split("\n").splice(2, 5);
 
     setIsLoading(false);
@@ -379,19 +378,25 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
           </div>
           <div className="w-full flex flex-col items-center">
             <div className="flex flex-col mt-2 w-full">
-              <h2 className="text-white font-bold self-center text-lg">
+              <h2
+                className="text-gray-400 font-bold self-center rounded-full p-2"
+                disabled={true}
+              >
                 Trending Keywords
               </h2>
+              <h3 className="text-gray-400 self-center">COMING SOON</h3>
               <div className="flex flex-wrap justify-evenly w-full self-center">
+                {/*
                 {topFiveKeywordsData?.topFiveKeywords.map((keyword, i) => (
-                  <div
+                  <button
                     className="text-[#2D104F] font-bold bg-white rounded-full text-center text-sm pr-3 pl-3 mt-2 mr-3 pt-1 pb-1 cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
                     key={i}
                     onClick={() => moveKeyword(keyword.word, i)}
                   >
                     {keyword.word}
-                  </div>
+                  </button>
                 ))}
+                */}
               </div>
             </div>
             <div className="flex items-center justify-between w-full mt-5">
@@ -451,7 +456,7 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
                   refetch={refetch}
                 />
               </div>
-              <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
+              <div className="p-5 flex flex-col items-left space-y-2 pl-5">
                 {userTopicsConnection?.edges?.map((edge, i) => (
                   <UserTopic
                     id={i}
@@ -460,7 +465,7 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
                     refetch={refetch}
                   />
                 ))}
-              </ul>
+              </div>
               <div className="flex justify-between content-end pl-5 pr-5">
                 <div className="text-left text-blue-400">
                   {userTopicsConnection?.pageInfo?.hasPreviousPage ? (

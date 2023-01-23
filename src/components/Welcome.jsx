@@ -5,11 +5,10 @@ const Welcome = () => {
   return (
     <div className="flex flex-col items-center h-screen">
       <h1 className="text-3xl sm:text-5xl text-white text-center text-bold py-1">
-        Empowered <br /> Practitioner Marketing
+        Intelligent <br /> Content Curation
       </h1>
-      <p className="text-left mt-5 text-white font-light text-center md:w-9/12 w-11/12 text-base">
-        Get professionals talking about your company through strategically
-        selected topics and blog posts written by the experts at Fixate.
+      <p className="text-left mt-5 text-white font-light text-center md:w-9/12 w-11/12 text-2xl">
+        Helping contributors ideate and create targeted content faster.
       </p>
       {/*<div className="grid sm:grid-cols-3 grid-cols-2 w-full mt-10">
         <div className={`rounded-l-2xl ${commonStyles}`}>AI Powered</div>
