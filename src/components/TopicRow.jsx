@@ -51,7 +51,7 @@ const TopicRow = ({ topic, userId, i, refetch }) => {
 
   const handleAddTopicToUser = async () => {
     const newTopic = await handleSaveTopic();
-
+    refetch();
     const topicId = newTopic.data.createTopic.id;
   };
 
