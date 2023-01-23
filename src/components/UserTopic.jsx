@@ -61,7 +61,9 @@ const UserTopic = ({ topic, refetch, id }) => {
         userTopicRef.current &&
         !userTopicRef.current.contains(event.target)
       ) {
-        handleToggleSubmenus(true);
+        setTimeout(() => {
+          handleToggleSubmenus(true);
+        }, 100);
       }
     };
     document.addEventListener("click", handleClick, true);
