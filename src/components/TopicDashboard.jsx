@@ -136,6 +136,7 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
   const [freshTopics, setFreshTopics] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [userTopicsConnection, setUserTopicsConnection] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const handleAddToCart = useContext(CartContext);
 
@@ -213,6 +214,9 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
       variables: params,
       updateQuery
     });
+    params.after
+      ? setCurrentPage(prev => (prev += 1))
+      : setCurrentPage(prev => (prev -= 1));
   };
 
   const handleResponse = response => {
@@ -316,6 +320,8 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
     setFormData(newForm);
   };
 
+  const numOfPages = Math.ceil(megaphoneUserInfo?.topicCount / 10);
+
   return (
     <div className="w-full justify-center items-center 2xl:px20">
       <div className="flex w-full flex-col items-center mt-5">
@@ -400,7 +406,7 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
               </div>
             </div>
             <div className="flex items-center justify-between w-full mt-5">
-              <h3 className="text-white text-3xl font-bold text-center my-2 w-4/5">
+              <h3 className="text-white text-3xl font-bold text-center my-2 w-full">
                 Generated Topics
               </h3>
             </div>
@@ -456,7 +462,7 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
                   refetch={refetch}
                 />
               </div>
-              <div className="p-5 flex flex-col items-left space-y-2 pl-5">
+              <div className={"p-5 flex flex-col items-left space-y-2 pl-5"}>
                 {userTopicsConnection?.edges?.map((edge, i) => (
                   <UserTopic
                     id={i}
@@ -485,7 +491,9 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
                   )}
                 </div>
                 <div className="text-blue-300 pb-8">
-                  <ImBullhorn />
+                  <div>
+                    {currentPage} of {numOfPages}
+                  </div>
                 </div>
                 <div className=" text-blue-400">
                   {userTopicsConnection?.pageInfo?.hasNextPage ? (
