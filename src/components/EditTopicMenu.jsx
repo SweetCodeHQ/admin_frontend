@@ -21,7 +21,7 @@ const Input = forwardRef(
       value={value}
       onChange={e => handleChange(e, name)}
       className={
-        "my-2 w-full rounded-sm p-2 outline-none bg-transparent text-blue-200 border-none text-base font-bold white-glassmorphism"
+        "my-2 w-full rounded-sm p-2 outline-none bg-transparent text-blue-200 border-none text-base font-bold white-glassmorphism bg-[#4E376A]/75 rounded-lg"
       }
     />
   )
