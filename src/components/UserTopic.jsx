@@ -73,7 +73,10 @@ const UserTopic = ({ topic, refetch, id }) => {
   }, [userTopicRef, toggleAbstract, toggleEditMenu]);
 
   return (
-    <div ref={userTopicRef}>
+    <div
+      ref={userTopicRef}
+      className={`${toggleAbstract && "bg-[#240B3E] rounded-lg p-3"}`}
+    >
       {toggleEditMenu ? (
         <EditTopicMenu
           topic={topic}
