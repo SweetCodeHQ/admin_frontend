@@ -22,6 +22,7 @@ const GET_USER_PROFILE = gql`
       isAdmin
       loginCount
       clickedGenerateCount
+      topicCount
     }
   }
 `;
