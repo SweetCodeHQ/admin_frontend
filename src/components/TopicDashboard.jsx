@@ -28,6 +28,7 @@ const GET_PAGINATED_TOPICS = gql`
       before: $before
       last: $last
     ) {
+      totalCount
       pageInfo {
         endCursor
         startCursor
@@ -122,7 +123,7 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
   /*Consider pulling form into its own component so that the Topic Dashboard doesn't re-render everytime someone types a character*/
 }
 
-const TopicDashboard = ({ megaphoneUserInfo }) => {
+const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
   const [formData, setFormData] = useState({
     word1: "",
     word2: "",
@@ -137,6 +138,10 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [userTopicsConnection, setUserTopicsConnection] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    userTopicsConnection.pageInfo?.hasPreviousPage ? null : setCurrentPage(1);
+  }, [userTopicsConnection]);
 
   const handleAddToCart = useContext(CartContext);
 
@@ -320,7 +325,7 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
     setFormData(newForm);
   };
 
-  const numOfPages = Math.ceil(megaphoneUserInfo?.topicCount / 10);
+  const numOfPages = Math.ceil(userTopicsConnection.totalCount / 10);
 
   return (
     <div className="w-full justify-center items-center 2xl:px20">
