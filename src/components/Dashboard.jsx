@@ -5,7 +5,8 @@ import {
   EntityDashboard,
   AdminUserDashboard,
   TopicDashboard,
-  Welcome
+  Welcome,
+  IndustryModal
 } from "../components";
 
 import { gql, useQuery, useMutation } from "@apollo/client";
@@ -23,6 +24,7 @@ const GET_USER_PROFILE = gql`
       loginCount
       clickedGenerateCount
       topicCount
+      industry
     }
   }
 `;
@@ -61,6 +63,8 @@ const Dashboard = () => {
     setMegaphoneUserInfo,
     handleSignupAlertEmail
   } = useContext(UserContext);
+
+  const [toggleIndustryModal, setToggleIndustryModal] = useState(false);
 
   const googleUser = useContext(UserContext);
   const email = googleUser?.googleUser?.email;
@@ -171,6 +175,12 @@ const Dashboard = () => {
           </div>
           {googleUser?.googleUser ? (
             <>
+              {megaphoneUserData?.user.industry === 0 ? (
+                <IndustryModal
+                  setToggleIndustryModal={setToggleIndustryModal}
+                  megaphoneUserId={megaphoneUserData?.user.id}
+                />
+              ) : null}
               <h1 className="text-3xl sm:text-5xl text-white text-gradient font-bold py-1">
                 Welcome back, <br />
                 {googleUser?.googleUser?.given_name}!

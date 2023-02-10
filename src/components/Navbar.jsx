@@ -19,7 +19,7 @@ const Navbar = () => {
   const { cartTopics } = useContext(CartContext);
 
   return (
-    <nav className="w-full gradient-bg-purple-welcome fixed z-50">
+    <nav className="w-full gradient-bg-purple-welcome fixed z-20">
       <div className="w-full flex justify-between items-center p-4">
         {googleUser && (
           <>

@@ -19,3 +19,4 @@ export { default as TopicInputForm } from "./TopicInputForm";
 export { default as AutofillButton } from "./AutofillButton";
 
 export { default as Cart } from "./Cart";
+export { default as IndustryModal } from "./IndustryModal";
