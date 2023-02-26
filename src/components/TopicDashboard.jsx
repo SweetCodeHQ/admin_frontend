@@ -6,14 +6,10 @@ import {
 } from "react-icons/bs";
 import { gql, useQuery, useMutation } from "@apollo/client";
 
-import {
-  Loader,
-  TopicRow,
-  UserTopic,
-  TopicInputForm,
-  AutofillButton
-} from "../components";
+import { Loader, TopicRow, UserTopic, TopicInputForm } from "../components";
 import { ImBullhorn } from "react-icons/im";
+import { BiFilter } from "react-icons/bi";
+import { INDUSTRIES } from "../constants/industries";
 
 const GET_PAGINATED_TOPICS = gql`
   query TopicsConnection(
@@ -107,6 +103,51 @@ const UPDATE_CLICKED_GENERATE_COUNT = gql`
   Add user-keyword mutation and random keywords as suggestions
   */
 }
+
+export const IndustrySwitch = ({ toggleUseIndustry, setToggleUseIndustry }) => {
+  const enabledClass = "transform translate-x-5 bg-purple-500";
+
+  const flipStatus = () => {
+    setToggleUseIndustry(prev => !prev);
+  };
+
+  // const [userUpdateData, { loading, mutationError }] = useMutation(
+  //   UPDATE_ADMIN_STATUS,
+  //   {
+  //     onCompleted: data => console.log(data),
+  //     onError: error => console.log(error)
+  //   }
+  // );
+  //
+  // const handleEnableClick = () => {
+  //   var newEnabled = !isEnabled;
+  //   setIsEnabled(newEnabled);
+  //   flipStatus(newEnabled);
+  // };
+  //
+  // useEffect(() => {
+  //   setIsEnabled(isOn);
+  // }, []);
+
+  return (
+    <>
+      <div
+        className="md:w-10 md:h-4 w-10 h-3 flex items-center white-glassmorphism rounded-full p-1 cursor-pointer"
+        onClick={() => {
+          flipStatus();
+        }}
+      >
+        <div
+          className={
+            "white-glassmorphism md:w-3 md:h-3 h-2 w-2 rounded-full shadow-md transform duration-300 ease-in-out" +
+            (toggleUseIndustry ? enabledClass : null)
+          }
+        ></div>
+      </div>
+    </>
+  );
+};
+
 const Input = ({ placeholder, name, type, value, handleChange }) => (
   <input
     placeholder={placeholder}
@@ -138,6 +179,7 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [userTopicsConnection, setUserTopicsConnection] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [toggleUseIndustry, setToggleUseIndustry] = useState(true);
 
   useEffect(() => {
     userTopicsConnection.pageInfo?.hasPreviousPage ? null : setCurrentPage(1);
@@ -224,7 +266,7 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
       : setCurrentPage(prev => (prev -= 1));
   };
 
-  const handleResponse = response => {
+  const handleTopicResponse = response => {
     {
       /*Add response in case of dashes and no numbers or bullets*/
     }
@@ -242,7 +284,38 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
 
     fetch(fullUrl)
       .then(response => response.json())
-      .then(response => handleResponse(response))
+      .then(response => handleTopicResponse(response))
+      .then(error => console.log(error));
+  };
+
+  useEffect(() => {
+    getKeywordSuggestions();
+  }, [toggleUseIndustry]);
+
+  const [smartKeywords, setSmartKeywords] = useState([]);
+
+  const handleKeywordResponse = response => {
+    const keywords = response.data.attributes.text;
+
+    const extractedKeywords = keywords.split("\n").splice(2, 5);
+
+    const formattedKeywords = extractedKeywords.map(keyword =>
+      keyword.substring(3)
+    );
+
+    setSmartKeywords(formattedKeywords);
+  };
+
+  const getKeywordSuggestions = () => {
+    const url = `${process.env.AI_API_URL}/api/v1/keywords?`;
+
+    const queryTerm = toggleUseIndustry ? userIndustryName : "technology";
+
+    const fullUrl = `${url}industry="${queryTerm}"`;
+
+    fetch(fullUrl)
+      .then(response => response.json())
+      .then(response => handleKeywordResponse(response))
       .then(error => console.log(error));
   };
 
@@ -327,6 +400,10 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
 
   const numOfPages = Math.ceil(userTopicsConnection.totalCount / 10);
 
+  const userIndustryName = Object.keys(INDUSTRIES).find(
+    key => INDUSTRIES[key] === megaphoneUserInfo?.industry
+  );
+
   return (
     <div className="w-full justify-center items-center 2xl:px20">
       <div className="flex w-full flex-col items-center mt-5">
@@ -380,31 +457,35 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
                 >
                   Generate
                 </button>
-                <AutofillButton
-                  megaphoneUserInfo={megaphoneUserInfo}
-                  handleSuggest={handleSuggest}
-                />
               </div>
+              {/*<div className="flex w-full justify-around">
+                <div className="text-white pt-5 pb-2">
+                  <p>Use your industry:</p>
+                  <p>({userIndustryName})?</p>
+                </div>
+                <div className="self-right self-center">
+                  <IndustrySwitch
+                    toggleUseIndustry={toggleUseIndustry}
+                    setToggleUseIndustry={setToggleUseIndustry}
+                  />
+                </div>
+              </div>*/}
             </div>
           </div>
           <div className="w-full flex flex-col items-center">
             <div className="flex flex-col mt-2 w-full">
-              <h2
-                className="text-gray-400 font-bold self-center rounded-full p-2"
-                disabled={true}
-              >
-                Trending Keywords
+              <h2 className="text-gray-400 font-bold self-center rounded-full p-2">
+                Keywords for You
               </h2>
               <h3 className="text-gray-400 self-center">COMING SOON</h3>
               <div className="flex flex-wrap justify-evenly w-full self-center">
-                {/*
-                {topFiveKeywordsData?.topFiveKeywords.map((keyword, i) => (
+                {/* {smartKeywords.map((keyword, i) => (
                   <button
                     className="text-[#2D104F] font-bold bg-white rounded-full text-center text-sm pr-3 pl-3 mt-2 mr-3 pt-1 pb-1 cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
                     key={i}
-                    onClick={() => moveKeyword(keyword.word, i)}
+                    onClick={() => moveKeyword(keyword, i)}
                   >
-                    {keyword.word}
+                    {keyword}
                   </button>
                 ))}
                 */}
@@ -457,9 +538,14 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
         </div>
         {userTopicsConnection?.edges?.length != 0 && (
           <div className="w-4/5">
-            <h3 className="text-white text-3xl font-bold text-center my-2 pt-10">
-              My Saved Topics
-            </h3>
+            <div className="flex justify-center pt-10">
+              <h3 className="text-white text-3xl font-bold my-2 pr-5">
+                My Saved Topics
+              </h3>
+              {/*<div className="text-4xl bg-[#3A1F5C] text-white rounded-full p-2 hover:cursor-pointer">
+                <BiFilter />
+              </div>*/}
+            </div>
             <div className="bg-[#3A1F5C] rounded-xl mt-2">
               <div className="w-full self-start">
                 <TopicInputForm
