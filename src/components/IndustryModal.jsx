@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
+import { INDUSTRIES } from "../constants/industries";
 
 const UPDATE_INDUSTRY = gql`
   mutation updateIndustry($id: ID!, $industry: Int!) {
@@ -10,22 +11,6 @@ const UPDATE_INDUSTRY = gql`
     }
   }
 `;
-
-const INDUSTRIES = {
-  "Application Development": 1,
-  "Application Security": 2,
-  "Bio Informatics": 3,
-  Blockchain: 4,
-  "Career Development": 5,
-  "Contributor Opinion": 6,
-  DevOps: 7,
-  "IT Infrastructure": 8,
-  "Machine Learning": 9,
-  "Monitoring and Observability": 10,
-  "QA and Testing": 11,
-  Tooling: 12,
-  "Web Development": 13
-};
 
 const Industry = ({ data, setSelectedIndustry }) => {
   return (
