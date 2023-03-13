@@ -1,4 +1,5 @@
 import { BiFilter } from "react-icons/bi";
+import { FILTERS } from "../constants/filters";
 
 const Filter = ({ name, setFilterTopicsBy, filterTopicsBy }) => {
   return (
@@ -16,6 +17,8 @@ const Filter = ({ name, setFilterTopicsBy, filterTopicsBy }) => {
 };
 
 const TopicFilter = ({ setFilterTopicsBy, filterTopicsBy }) => {
+  const shownFilters = FILTERS.filter(filter => filter !== filterTopicsBy);
+
   return (
     <div className="dropdown relative">
       <button
@@ -31,7 +34,7 @@ const TopicFilter = ({ setFilterTopicsBy, filterTopicsBy }) => {
         className="dropdown-menu min-w-max absolute hidden bg-white text-base z-50 float-left py-2 list-none text-left rounded-lg shadow-lg mt-1 hidden m-0 bg-clip-padding border-none bg-gray-800"
         aria-labelledby="dropdownMenuButton3"
       >
-        {["NONE", "ALL", "SUBMITTED"].map((name, i) => (
+        {shownFilters.map((name, i) => (
           <Filter
             key={i}
             setFilterTopicsBy={setFilterTopicsBy}
