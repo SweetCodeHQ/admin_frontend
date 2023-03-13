@@ -15,55 +15,16 @@ import {
 } from "../components";
 import { ImBullhorn } from "react-icons/im";
 import { INDUSTRIES } from "../constants/industries";
+import { filterBySubmitted, filterByNotSubmitted } from "../constants/filters";
 
-const GET_PAGINATED_TOPICS = gql`
-  query TopicsConnection(
-    $userId: ID!
-    $after: String
-    $before: String
-    $last: Int
-  ) {
-    userTopicsConnection(
-      userId: $userId
-      after: $after
-      before: $before
-      last: $last
-    ) {
-      totalCount
-      pageInfo {
-        endCursor
-        startCursor
-        hasPreviousPage
-        hasNextPage
+const GET_USER_TOPICS = gql`
+  query User($email: String!) {
+    user(email: $email) {
+      topics {
+        id
+        text
+        submitted
       }
-      edges {
-        cursor
-        node {
-          id
-          text
-          submitted
-          abstract {
-            id
-            text
-          }
-        }
-      }
-    }
-  }
-`;
-
-const GET_RANDOM_KEYWORDS = gql`
-  query RandomKeywords {
-    randomKeywords {
-      word
-    }
-  }
-`;
-
-const GET_TOP_FIVE_KEYWORDS = gql`
-  query Top5 {
-    topFiveKeywords {
-      word
     }
   }
 `;
@@ -165,35 +126,82 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
   const [freshTopics, setFreshTopics] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [userTopics, setUserTopics] = useState(megaphoneUserInfo?.topics);
+  const [userTopics, setUserTopics] = useState([]);
+  const [topicPages, setTopicPages] = useState([]);
+
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const calculateCurrentPage = () => {
+    setCurrentPage(0);
+  };
+
+  const numOfPages = topicPages.length;
+
+  const backArrowVisible = () => {
+    return currentPage !== 0;
+  };
+
+  const forwardArrowVisible = () => {
+    if (numOfPages === 1) return false;
+    return currentPage + 1 !== numOfPages;
+  };
+
   const [userTopicsConnection, setUserTopicsConnection] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+
   const [toggleUseIndustry, setToggleUseIndustry] = useState(true);
-  const [filterTopicsBy, setFilterTopicsBy] = useState("NONE");
+
+  const [filterTopicsBy, setFilterTopicsBy] = useState("ALL");
+
+  const filterTopics = () => {
+    if (filterTopicsBy === "ALL") {
+      return userTopics;
+    } else if (filterTopicsBy === "SUBMITTED") {
+      return filterBySubmitted(userTopics);
+    } else if (filterTopicsBy === "NOT SUBMITTED") {
+      return filterByNotSubmitted(userTopics);
+    }
+  };
 
   useEffect(() => {
-    userTopicsConnection.pageInfo?.hasPreviousPage ? null : setCurrentPage(1);
-  }, [userTopicsConnection]);
+    handleTopicDisplay();
+    calculateCurrentPage();
+  }, [userTopics, filterTopicsBy]);
+
+  const handleTopicDisplay = () => {
+    const filteredTopics = filterTopics();
+    paginateTopics(filteredTopics);
+  };
+
+  const paginateTopics = topics => {
+    if (topics.length > 10) {
+      let topicsArr = [...topics];
+      let pages = [];
+      while (topicsArr.length > 0) {
+        let page = topicsArr.splice(0, 10);
+        pages.push(page);
+      }
+      setTopicPages(prev => pages);
+    } else {
+      setTopicPages(prev => [topics]);
+    }
+  };
+
+  const flipTopicPageForward = direction => {
+    if (direction) return setCurrentPage(prev => (prev += 1));
+    if (!direction) return setCurrentPage(prev => (prev -= 1));
+  };
 
   const handleAddToCart = useContext(CartContext);
 
-  const { data, refetch, fetchMore } = useQuery(GET_PAGINATED_TOPICS, {
-    variables: { userId: megaphoneUserInfo?.id },
-    onError: error => console.log(error),
-    onCompleted: data => setUserTopicsConnection(data.userTopicsConnection),
-    fetchPolicy: "network-first"
-  });
-
-  const { data: randomKeywordsData, refetch: refetchRandomKeywords } = useQuery(
-    GET_RANDOM_KEYWORDS,
+  const { data: userTopicsData, refetch: refetchUserTopics } = useQuery(
+    GET_USER_TOPICS,
     {
-      onError: error => console.log(error)
+      variables: { email: megaphoneUserInfo?.email },
+      onError: error => console.log(error),
+      onCompleted: data => setUserTopics(data.user.topics),
+      fetchPolicy: "network-first"
     }
   );
-
-  const { data: topFiveKeywordsData } = useQuery(GET_TOP_FIVE_KEYWORDS, {
-    onError: error => console.log(error)
-  });
 
   const [keywordMutationData] = useMutation(CREATE_KEYWORD, {
     onCompleted: data => console.log(data),
@@ -245,16 +253,6 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
     onCompleted: data => console.log(data),
     onError: error => console.log(error)
   });
-
-  const flipTopicPage = params => {
-    fetchMore({
-      variables: params,
-      updateQuery
-    });
-    params.after
-      ? setCurrentPage(prev => (prev += 1))
-      : setCurrentPage(prev => (prev -= 1));
-  };
 
   const handleTopicResponse = response => {
     {
@@ -388,8 +386,6 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
     setFormData(newForm);
   };
 
-  const numOfPages = Math.ceil(userTopicsConnection.totalCount / 10);
-
   const userIndustryName = Object.keys(INDUSTRIES).find(
     key => INDUSTRIES[key] === megaphoneUserInfo?.industry
   );
@@ -448,7 +444,7 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
                   Generate
                 </button>
               </div>
-              {/*<div className="flex w-full justify-around">
+              <div className="flex w-full justify-around">
                 <div className="text-white pt-5 pb-2">
                   <p>Use your industry:</p>
                   <p>({userIndustryName})?</p>
@@ -459,17 +455,16 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
                     setToggleUseIndustry={setToggleUseIndustry}
                   />
                 </div>
-              </div>*/}
+              </div>
             </div>
           </div>
           <div className="w-full flex flex-col items-center">
             <div className="flex flex-col mt-2 w-full">
-              <h2 className="text-gray-400 font-bold self-center rounded-full p-2">
+              <h2 className="text-white font-bold self-center rounded-full p-2">
                 Keywords for You
               </h2>
-              <h3 className="text-gray-400 self-center">COMING SOON</h3>
               <div className="flex flex-wrap justify-evenly w-full self-center">
-                {/* {smartKeywords.map((keyword, i) => (
+                {smartKeywords.map((keyword, i) => (
                   <button
                     className="text-[#2D104F] font-bold bg-white rounded-full text-center text-sm pr-3 pl-3 mt-2 mr-3 pt-1 pb-1 cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
                     key={i}
@@ -478,7 +473,6 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
                     {keyword}
                   </button>
                 ))}
-                */}
               </div>
             </div>
             <div className="flex items-center justify-between w-full mt-5">
@@ -498,7 +492,7 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
                         key={i}
                         userId={megaphoneUserInfo.id}
                         i={i}
-                        refetch={refetch}
+                        refetch={refetchUserTopics}
                       />
                     ))
                   ) : (
@@ -526,7 +520,7 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
             )}
           </div>
         </div>
-        {userTopicsConnection?.edges?.length != 0 && (
+        {userTopics.length != 0 && (
           <div className="w-4/5">
             <div className="flex justify-center pt-10">
               <h3 className="text-white text-3xl font-bold my-2 pr-5">
@@ -536,56 +530,34 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
                 setFilterTopicsBy={setFilterTopicsBy}
                 filterTopicsBy={filterTopicsBy}
               />
-              {/*<div className="flex justify-center">
-                <div>
-                  <div className="dropdown relative">
-                    <button
-                      className="dropdown-toggle bg-[#2D104F] p-1 text-5xl text-white rounded-full shadow-md hover:bg-white hover:text-[#2D104F] hover:shadow-lg focus:bg-white focus:text-[#2D104F] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-white active:shadow-lg active:text-[#2D104F] transition duration-150 ease-in-out flex items-center"
-                      type="button"
-                      id="dropdownMenuButton2"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      <BiFilter />
-                    </button>
-                    <ul
-                      className="dropdown-menu min-w-max absolute hidden bg-white text-base z-50 float-left py-2 list-none text-left rounded-lg shadow-lg mt-1 hidden m-0 bg-clip-padding border-none bg-gray-800"
-                      aria-labelledby="dropdownMenuButton2"
-                    >
-                      <h1>Thing</h1>
-                    </ul>
-                  </div>
-                </div>
-              </div>*/}
             </div>
             <div className="bg-[#3A1F5C] rounded-xl mt-2">
               <div className="w-full self-start">
                 <TopicInputForm
                   userId={megaphoneUserInfo?.id}
-                  refetch={refetch}
+                  refetch={refetchUserTopics}
                 />
               </div>
-              <div className={"p-5 flex flex-col items-left space-y-2 pl-5"}>
-                {userTopicsConnection?.edges?.map((edge, i) => (
+              <div
+                className={
+                  "p-5 flex flex-col items-left space-y-2 pl-5 md:h-[400px] h-full"
+                }
+              >
+                {topicPages[currentPage].map((topic, i) => (
                   <UserTopic
                     id={i}
-                    key={edge.node.id}
-                    topic={edge.node}
-                    refetch={refetch}
+                    key={topic.id}
+                    topic={topic}
+                    refetch={refetchUserTopics}
                   />
                 ))}
               </div>
               <div className="flex justify-between content-end pl-5 pr-5">
                 <div className="text-left text-blue-400">
-                  {userTopicsConnection?.pageInfo?.hasPreviousPage ? (
+                  {backArrowVisible() ? (
                     <p
                       className="cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 text-xl"
-                      onClick={() =>
-                        flipTopicPage({
-                          last: 10,
-                          before: userTopicsConnection.pageInfo.startCursor
-                        })
-                      }
+                      onClick={() => flipTopicPageForward(false)}
                     >
                       <BsFillArrowLeftCircleFill />
                     </p>
@@ -594,19 +566,17 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
                   )}
                 </div>
                 <div className="text-blue-300 pb-8">
-                  <div>
-                    {currentPage} of {numOfPages}
-                  </div>
+                  {userTopics !== 0 && (
+                    <div>
+                      {currentPage + 1} of {numOfPages}
+                    </div>
+                  )}
                 </div>
                 <div className=" text-blue-400">
-                  {userTopicsConnection?.pageInfo?.hasNextPage ? (
+                  {forwardArrowVisible() ? (
                     <p
                       className="cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 text-xl"
-                      onClick={() =>
-                        flipTopicPage({
-                          after: userTopicsConnection.pageInfo.endCursor
-                        })
-                      }
+                      onClick={() => flipTopicPageForward(true)}
                     >
                       <BsFillArrowRightCircleFill />
                     </p>
