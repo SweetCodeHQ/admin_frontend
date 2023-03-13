@@ -175,12 +175,12 @@ const Dashboard = () => {
           </div>
           {googleUser?.googleUser ? (
             <>
-              {/*{megaphoneUserData?.user.industry === 0 ? (
+              {megaphoneUserData?.user.industry === 0 ? (
                 <IndustryModal
                   setToggleIndustryModal={setToggleIndustryModal}
                   megaphoneUserId={megaphoneUserData?.user.id}
                 />
-              ) : null}*/}
+              ) : null}
               <h1 className="text-3xl sm:text-5xl text-white text-gradient font-bold py-1">
                 Welcome back, <br />
                 {googleUser?.googleUser?.given_name}!

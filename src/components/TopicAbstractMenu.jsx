@@ -61,7 +61,7 @@ const TopicAbstractMenu = forwardRef(
 
     const [localTopic, setLocalTopic] = useState(topic);
 
-    const [abstract, setAbstract] = useState(topic.abstract);
+    const [abstract, setAbstract] = useState(topicData?.topic?.abstract);
 
     const [formText, setFormText] = useState(() => {
       const text = topic.abstract?.text;
@@ -115,7 +115,7 @@ const TopicAbstractMenu = forwardRef(
     );
 
     const updateAbstract = () => {
-      const input = { id: topic.abstract.id, text: formText };
+      const input = { id: topicData.topic.abstract.id, text: formText };
       abstractUpdateData({ variables: input });
     };
 

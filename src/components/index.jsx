@@ -9,6 +9,7 @@ export { default as EntityDashboard } from "./EntityDashboard";
 export { default as AdminUserDashboard } from "./AdminUserDashboard";
 
 export { default as TopicDashboard } from "./TopicDashboard";
+export { default as TopicFilter } from "./TopicFilter";
 export { default as TopicRow } from "./TopicRow";
 export { default as UserTopic } from "./UserTopic";
 export { default as EditTopicMenu } from "./EditTopicMenu";

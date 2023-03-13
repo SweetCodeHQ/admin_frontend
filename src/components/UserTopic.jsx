@@ -84,9 +84,9 @@ const UserTopic = ({ topic, refetch, id }) => {
           refetch={refetch}
         />
       ) : (
-        <div className="flex items-left">
+        <div className="flex items-left items-center">
           {topic.submitted && (
-            <div className="text-blue-500 mr-10">
+            <div className="text-blue-500 mr-10 text-xl">
               <RiMailCheckFill />
             </div>
           )}
