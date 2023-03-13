@@ -25,10 +25,6 @@ const GET_USER_PROFILE = gql`
       clickedGenerateCount
       topicCount
       industry
-      topics {
-        id
-        text
-      }
     }
   }
 `;
