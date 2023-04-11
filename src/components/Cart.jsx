@@ -1,13 +1,13 @@
 import { useState, useContext } from "react";
+
 import { UserContext } from "../context/UserContext";
 import { CartContext } from "../context/CartContext";
+import { LaunchCartModalButton } from "../components";
 
 import { MdDeleteForever } from "react-icons/md";
 import { AiOutlineClose } from "react-icons/ai";
 
 import { gql, useMutation } from "@apollo/client";
-
-import "tw-elements";
 
 const UPDATE_TOPIC = gql`
   mutation UpdateSubmitted($id: ID!, $submitted: Boolean!) {
@@ -15,83 +15,31 @@ const UPDATE_TOPIC = gql`
       id
       submitted
       text
+      abstract {
+        id
+        text
+      }
     }
   }
 `;
-
-const LaunchModalButton = ({ handleSubmitTopics }) => {
-  return (
-    <>
-      <button
-        type="button"
-        className="pr-5 pl-5 p-2 mt-2 text-[#2D104F] bg-white font-bold text-base leading-tight rounded-full shadow-md hover:bg-blue-700 hover:shadow-lg hover:text-white transition duration-150 ease-in-out"
-        data-bs-toggle="modal"
-        data-bs-target="#submitTopicsConfirmation"
-      >
-        Send All
-      </button>
-      <div
-        className="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
-        id="submitTopicsConfirmation"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog relative w-auto pointer-events-none">
-          <div className="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
-            <div className="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md bg-[#2D104F]">
-              <h5
-                className="text-xl font-medium leading-normal text-white"
-                id="exampleModalLabel"
-              >
-                Send these topics?
-              </h5>
-              <button
-                type="button"
-                className="btn-close box-content w-4 h-4 p-1 bg-white text-white border-none rounded-full opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-white hover:opacity-75 hover:no-underline"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body relative p-4 text-black bg-purple-100">
-              Click "Send Topics" to confirm that you want to send these topics
-              to the experts at Fixate.
-            </div>
-            <div className="modal-footer flex flex-shrink-0 flex-wrap items-center justify-end p-4 border-t border-gray-200 rounded-b-md bg-purple-300">
-              <button
-                type="button"
-                className="px-6 py-2.5 bg-white text-[#2D104F] font-bold text-sm leading-tight uppercase rounded-full shadow-md hover:shadow-lg focus:bg-purple-700 focus:shadow-lg line-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out hover:-translate-y-1 hover:scale-105"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-              <button
-                type="button"
-                className="px-6 py-2.5 bg-blue-600 text-white font-bold text-sm leading-tight uppercase rounded-full shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out ml-1 hover:-translate-y-1 hover:scale-105"
-                data-bs-dismiss="modal"
-                onClick={handleSubmitTopics}
-              >
-                Send Topics
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-};
 
 const Cart = ({ setToggleCart }) => {
   const {
     handleTopicAlertEmail,
     handleClearCart,
     cartTopics,
-    handleRemoveFromCart
+    handleRemoveFromCart,
+    includeGoogleDoc,
+    setIncludeGoogleDoc
   } = useContext(CartContext);
 
-  const updateSubmitted = id => {
+  const { gToken } = useContext(UserContext);
+
+  const updateSubmitted = async id => {
+    let promise;
     const input = { submitted: true, id: id };
-    topicUpdateSubmit({ variables: input });
+    promise = await topicUpdateSubmit({ variables: input });
+    return promise;
   };
 
   const [
@@ -102,15 +50,83 @@ const Cart = ({ setToggleCart }) => {
     onCompleted: data => console.log(data)
   });
 
-  const processTopics = id => {
-    updateSubmitted(id);
-    handleTopicAlertEmail(id);
+  const processTopics = async topic => {
+    let promise;
+    let topicInfo;
+
+    topicInfo = await updateSubmitted(topic.id);
+    const abstractText = topicInfo.data.updateTopic.abstract?.text;
+
+    handleTopicAlertEmail(topic.id);
+
+    if (includeGoogleDoc) {
+      promise = await handleCreateGoogleDoc(topic);
+      handleAddTextToDoc(promise, abstractText);
+    }
+
+    setIncludeGoogleDoc(false);
   };
 
   const handleSubmitTopics = () => {
-    cartTopics.forEach(topic => processTopics(topic.id));
+    console.log("topics submitted");
+    cartTopics.forEach(topic => processTopics(topic));
     handleClearCart();
     setToggleCart(false);
+  };
+
+  const handleCreateGoogleDoc = async topic => {
+    let documentId;
+    const url = "https://docs.googleapis.com/v1/documents";
+
+    const fetch_options = {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${gToken.access_token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        title: `CURATE: ${topic.text}`
+      })
+    };
+
+    await fetch(url, fetch_options)
+      .then(response => response.json())
+      .then(response => {
+        documentId = response.documentId;
+      });
+    return documentId;
+  };
+
+  const handleAddTextToDoc = (
+    documentId,
+    abstractText = "No Text Provided"
+  ) => {
+    const url = `https://docs.googleapis.com/v1/documents/${documentId}:batchUpdate`;
+    const fetch_options = {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${gToken.access_token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        requests: [
+          {
+            insertText: {
+              text: abstractText,
+              location: {
+                index: 1
+              }
+            }
+          }
+        ]
+      })
+    };
+
+    fetch(url, fetch_options)
+      .then(response => response.json())
+      .then(response => {
+        console.log(response);
+      });
   };
 
   return (
@@ -156,7 +172,7 @@ const Cart = ({ setToggleCart }) => {
             >
               Clear All
             </button>
-            <LaunchModalButton handleSubmitTopics={handleSubmitTopics} />
+            <LaunchCartModalButton handleSubmitTopics={handleSubmitTopics} />
           </div>
         </>
       )}
