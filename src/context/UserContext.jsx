@@ -22,6 +22,8 @@ export const UserContextProvider = ({ children }) => {
     return initialValue || null;
   });
 
+  const [gToken, setGToken] = useState(null);
+
   const [megaphoneUserInfo, setMegaphoneUserInfo] = useState(() => {
     const saved = localStorage.getItem("megaphoneUser");
     const initialValue = JSON.parse(saved);
@@ -83,7 +85,9 @@ export const UserContextProvider = ({ children }) => {
         googleUser,
         megaphoneUserInfo,
         setMegaphoneUserInfo,
-        handleSignupAlertEmail
+        handleSignupAlertEmail,
+        gToken,
+        setGToken
       }}
     >
       {children}
