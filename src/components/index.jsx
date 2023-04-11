@@ -19,4 +19,6 @@ export { default as TopicCartIcon } from "./TopicCartIcon";
 export { default as TopicInputForm } from "./TopicInputForm";
 
 export { default as Cart } from "./Cart";
+export { default as LaunchCartModalButton } from "./LaunchCartModalButton";
+
 export { default as IndustryModal } from "./IndustryModal";
