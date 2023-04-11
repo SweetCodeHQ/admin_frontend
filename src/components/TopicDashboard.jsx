@@ -64,12 +64,6 @@ const UPDATE_CLICKED_GENERATE_COUNT = gql`
   }
 `;
 
-{
-  /*
-  Add user-keyword mutation and random keywords as suggestions
-  */
-}
-
 export const IndustrySwitch = ({ toggleUseIndustry, setToggleUseIndustry }) => {
   const enabledClass = "transform translate-x-5 bg-purple-500";
 
@@ -511,9 +505,12 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
                 {inputKeywords.map(
                   (keyword, i) =>
                     keyword != "" && (
-                      <li className="bg-[#4E376A] font-bold text-white text-sm rounded-xl text-center pr-5 pl-5 mt-2 mr-3 pt-2 pb-2">
+                      <button
+                        className="text-[#2D104F] font-bold bg-white rounded-full text-center text-sm pr-3 pl-3 mt-2 mr-3 pt-1 pb-1 cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
+                        onClick={() => moveKeyword(keyword)}
+                      >
                         {keyword}
-                      </li>
+                      </button>
                     )
                 )}
               </ul>
@@ -540,7 +537,7 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
               </div>
               <div
                 className={
-                  "p-5 flex flex-col items-left space-y-2 pl-5 md:h-[400px] h-full"
+                  "p-5 flex flex-col items-left space-y-2 pl-5 md:min-h-[400px] h-full"
                 }
               >
                 {topicPages[currentPage].map((topic, i) => (
