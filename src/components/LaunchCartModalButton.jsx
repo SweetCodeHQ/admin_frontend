@@ -1,8 +1,7 @@
 import { useContext, useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 
-import { CartContext } from "../context/CartContext";
-import { UserContext } from "../context/UserContext";
+import { CartContext, UserContext } from "../context";
 
 import "tw-elements";
 
