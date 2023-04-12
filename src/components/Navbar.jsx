@@ -3,17 +3,8 @@ import { UserContext } from "../context/UserContext";
 import { CartContext } from "../context/CartContext";
 import { Cart, Button, CartIcon } from "../components";
 
-import { HiMenuAlt4 } from "react-icons/hi";
-import { AiOutlineClose } from "react-icons/ai";
-
-import logo from "../../images/black_white_logo.png";
-
 const Navbar = () => {
-  const { handleSignOut, googleUser, megaphoneUserInfo } = useContext(
-    UserContext
-  );
-
-  const { cartTopics } = useContext(CartContext);
+  const { handleSignOut, googleUser } = useContext(UserContext);
 
   return (
     <nav className="w-full gradient-bg-purple-welcome fixed z-20">
