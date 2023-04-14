@@ -7,6 +7,8 @@ import {
 import { gql, useQuery, useMutation } from "@apollo/client";
 
 import {
+  Button,
+  Input,
   Loader,
   TopicRow,
   UserTopic,
@@ -89,22 +91,6 @@ export const IndustrySwitch = ({ toggleUseIndustry, setToggleUseIndustry }) => {
     </>
   );
 };
-
-const Input = ({ placeholder, name, type, value, handleChange }) => (
-  <input
-    placeholder={placeholder}
-    name={name}
-    type={type}
-    value={value}
-    onChange={e => handleChange(e, name)}
-    className={
-      "my-2 w-full rounded-lg p-2 outline-none text-white bg-[#4E376A]/75 placeholder-gray-400 border-none text-sm shadow-inner shadow-lg"
-    }
-  />
-);
-{
-  /*Consider pulling form into its own component so that the Topic Dashboard doesn't re-render everytime someone types a character*/
-}
 
 const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
   const [formData, setFormData] = useState({
@@ -385,208 +371,209 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
   );
 
   return (
-    <div className="w-full justify-center items-center 2xl:px20">
-      <div className="flex w-full flex-col items-center mt-5">
-        <div className="w-full justify-between flex flex-wrap md:flex-nowrap">
-          <div className="w-full flex flex-col justify-items-center">
-            <h3 className="text-white text-3xl font-bold text-center">
-              My Keywords
-            </h3>
-            <div className="p-5 pt-3 mt-3 w-4/5 flex flex-col justify-start items-start bg-[#3A1F5C] rounded-xl self-center">
-              <Input
-                placeholder="Word 1"
-                name="word1"
-                value={formData.word1}
-                type="text"
-                handleChange={handleChange}
-              />
-              <Input
-                placeholder="Word 2"
-                name="word2"
-                value={formData.word2}
-                type="text"
-                handleChange={handleChange}
-              />
-              <Input
-                placeholder="Word 3"
-                name="word3"
-                value={formData.word3}
-                type="text"
-                handleChange={handleChange}
-              />
-              <Input
-                placeholder="Word 4 (optional)"
-                name="word4"
-                value={formData.word4}
-                type="text"
-                handleChange={handleChange}
-              />
-              <Input
-                placeholder="Word 5 (optional)"
-                name="word5"
-                value={formData.word5}
-                type="text"
-                handleChange={handleChange}
-              />
-              <div className="h-[1px] w-full bg-gray-400 my-2" />
-              <div className="flex w-full justify-around flex-wrap">
-                <button
-                  type="button"
-                  onClick={handleSubmit}
-                  className="text-[#2D104F] bg-white pr-5 pl-5 p-2 mt-2 font-bold rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
-                >
-                  Generate
-                </button>
-              </div>
-              <div className="flex w-full justify-around">
-                <div className="text-white pt-5 pb-2">
-                  <p>Use your industry:</p>
-                  <p>({userIndustryName})?</p>
-                </div>
-                <div className="self-right self-center">
-                  <IndustrySwitch
-                    toggleUseIndustry={toggleUseIndustry}
-                    setToggleUseIndustry={setToggleUseIndustry}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="w-full flex flex-col items-center">
-            <div className="flex flex-col mt-2 w-full">
-              <h2 className="text-white font-bold self-center rounded-full p-2">
-                Keywords for You
-              </h2>
-              <div className="flex flex-wrap justify-evenly w-full self-center">
-                {smartKeywords.map((keyword, i) => (
-                  <button
-                    className="text-[#2D104F] font-bold bg-white rounded-full text-center text-sm pr-3 pl-3 mt-2 mr-3 pt-1 pb-1 cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
-                    key={i}
-                    onClick={() => moveKeyword(keyword, i)}
-                  >
-                    {keyword}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="flex items-center justify-between w-full mt-5">
-              <h3 className="text-white text-3xl font-bold text-center my-2 w-full">
-                Generated Topics
+    <>
+      <p className="text-left mt-5 text-white font-semibold text-lg md:w-9/12 w-11/12 text-base">
+        Use this portal to get topic suggestions and more using the latest in
+        artificial intelligence.
+      </p>
+      <div className="w-full justify-center items-center 2xl:px20">
+        <div className="flex w-full flex-col items-center mt-5">
+          <div className="w-full justify-between flex flex-wrap md:flex-nowrap">
+            <div className="w-full flex flex-col justify-items-center">
+              <h3 className="text-white text-3xl font-bold text-center">
+                My Keywords
               </h3>
+              <div className="p-5 pt-3 mt-3 w-4/5 flex flex-col justify-start items-start bg-[#3A1F5C] rounded-xl self-center">
+                <Input
+                  placeholder="Word 1"
+                  name="word1"
+                  value={formData.word1}
+                  type="text"
+                  handleChange={handleChange}
+                />
+                <Input
+                  placeholder="Word 2"
+                  name="word2"
+                  value={formData.word2}
+                  type="text"
+                  handleChange={handleChange}
+                />
+                <Input
+                  placeholder="Word 3"
+                  name="word3"
+                  value={formData.word3}
+                  type="text"
+                  handleChange={handleChange}
+                />
+                <Input
+                  placeholder="Word 4 (optional)"
+                  name="word4"
+                  value={formData.word4}
+                  type="text"
+                  handleChange={handleChange}
+                />
+                <Input
+                  placeholder="Word 5 (optional)"
+                  name="word5"
+                  value={formData.word5}
+                  type="text"
+                  handleChange={handleChange}
+                />
+                <div className="h-[1px] w-full bg-gray-400 my-2" />
+                <div className="flex w-full justify-around flex-wrap">
+                  <Button text={"Generate"} handleClick={handleSubmit} />
+                </div>
+                <div className="flex w-full justify-around">
+                  <div className="text-white pt-5 pb-2">
+                    <p>Use your industry:</p>
+                    <p>({userIndustryName})?</p>
+                  </div>
+                  <div className="self-right self-center">
+                    <IndustrySwitch
+                      toggleUseIndustry={toggleUseIndustry}
+                      setToggleUseIndustry={setToggleUseIndustry}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="bg-[#3A1F5C] rounded-xl mt-2 w-4/5 md:w-full">
-              {isLoading ? (
-                <Loader />
-              ) : (
-                <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
-                  {freshTopics.length != 0 ? (
-                    freshTopics.map((topic, i) => (
-                      <TopicRow
-                        topic={topic}
-                        key={i}
-                        userId={megaphoneUserInfo.id}
-                        i={i}
-                        refetch={refetchUserTopics}
-                      />
-                    ))
-                  ) : (
-                    <h1 className="text-purple-400/70 text-center text-xl">
-                      Make Topics Using Our Generator
-                    </h1>
+            <div className="w-full flex flex-col items-center">
+              <div className="flex flex-col mt-2 w-full">
+                <h2 className="text-white font-bold self-center rounded-full p-2">
+                  Keywords for You
+                </h2>
+                <div className="flex flex-wrap justify-evenly w-full self-center">
+                  {smartKeywords.map((keyword, i) => (
+                    <button
+                      className="text-[#2D104F] font-bold bg-white rounded-full text-center text-sm pr-3 pl-3 mt-2 mr-3 pt-1 pb-1 cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
+                      key={i}
+                      onClick={() => moveKeyword(keyword, i)}
+                    >
+                      {keyword}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="flex items-center justify-between w-full mt-5">
+                <h3 className="text-white text-3xl font-bold text-center my-2 w-full">
+                  Generated Topics
+                </h3>
+              </div>
+              <div className="bg-[#3A1F5C] rounded-xl mt-2 w-4/5 md:w-full">
+                {isLoading ? (
+                  <Loader />
+                ) : (
+                  <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
+                    {freshTopics.length != 0 ? (
+                      freshTopics.map((topic, i) => (
+                        <TopicRow
+                          topic={topic}
+                          key={i}
+                          userId={megaphoneUserInfo.id}
+                          i={i}
+                          refetch={refetchUserTopics}
+                        />
+                      ))
+                    ) : (
+                      <h1 className="text-purple-400/70 text-center text-xl">
+                        Make Topics Using Our Generator
+                      </h1>
+                    )}
+                  </ul>
+                )}
+              </div>
+              {inputKeywords && (
+                <ul className="flex flex-wrap justify-between w-full">
+                  <li className="font-bold text-white border-[#4E376A] border-2 text-sm rounded-xl border-solid text-center pr-5 pl-5 mt-2 mr-3 pt-2 pb-2">
+                    You used:
+                  </li>
+                  {inputKeywords.map(
+                    (keyword, i) =>
+                      keyword != "" && (
+                        <Button
+                          text={keyword}
+                          handleClick={() => moveKeyword(keyword)}
+                          customStyles={
+                            "text-[#2D104F] font-bold bg-white rounded-full text-center text-sm pr-3 pl-3 mt-2 mr-3 pt-1 pb-1 cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
+                          }
+                        />
+                      )
                   )}
                 </ul>
               )}
             </div>
-            {inputKeywords && (
-              <ul className="flex flex-wrap justify-between w-full">
-                <li className="font-bold text-white border-[#4E376A] border-2 text-sm rounded-xl border-solid text-center pr-5 pl-5 mt-2 mr-3 pt-2 pb-2">
-                  You used:
-                </li>
-                {inputKeywords.map(
-                  (keyword, i) =>
-                    keyword != "" && (
-                      <button
-                        className="text-[#2D104F] font-bold bg-white rounded-full text-center text-sm pr-3 pl-3 mt-2 mr-3 pt-1 pb-1 cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
-                        onClick={() => moveKeyword(keyword)}
-                      >
-                        {keyword}
-                      </button>
-                    )
-                )}
-              </ul>
-            )}
           </div>
-        </div>
-        {userTopics.length != 0 && (
-          <div className="w-4/5">
-            <div className="flex justify-center pt-10">
-              <h3 className="text-white text-3xl font-bold my-2 pr-5">
-                My Saved Topics
-              </h3>
-              <TopicFilter
-                setFilterTopicsBy={setFilterTopicsBy}
-                filterTopicsBy={filterTopicsBy}
-              />
-            </div>
-            <div className="bg-[#3A1F5C] rounded-xl mt-2">
-              <div className="w-full self-start">
-                <TopicInputForm
-                  userId={megaphoneUserInfo?.id}
-                  refetch={refetchUserTopics}
+          {userTopics.length != 0 && (
+            <div className="w-4/5">
+              <div className="flex justify-center pt-10">
+                <h3 className="text-white text-3xl font-bold my-2 pr-5">
+                  My Saved Topics
+                </h3>
+                <TopicFilter
+                  setFilterTopicsBy={setFilterTopicsBy}
+                  filterTopicsBy={filterTopicsBy}
                 />
               </div>
-              <div
-                className={
-                  "p-5 flex flex-col items-left space-y-2 pl-5 md:min-h-[400px] h-full"
-                }
-              >
-                {topicPages[currentPage].map((topic, i) => (
-                  <UserTopic
-                    id={i}
-                    key={topic.id}
-                    topic={topic}
+              <div className="bg-[#3A1F5C] rounded-xl mt-2">
+                <div className="w-full self-start">
+                  <TopicInputForm
+                    userId={megaphoneUserInfo?.id}
                     refetch={refetchUserTopics}
                   />
-                ))}
-              </div>
-              <div className="flex justify-between content-end pl-5 pr-5">
-                <div className="text-left text-blue-400">
-                  {backArrowVisible() ? (
-                    <p
-                      className="cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 text-xl"
-                      onClick={() => flipTopicPageForward(false)}
-                    >
-                      <BsFillArrowLeftCircleFill />
-                    </p>
-                  ) : (
-                    <p></p>
-                  )}
                 </div>
-                <div className="text-blue-300 pb-8">
-                  {userTopics !== 0 && (
-                    <div>
-                      {currentPage + 1} of {numOfPages}
-                    </div>
-                  )}
+                <div
+                  className={
+                    "p-5 flex flex-col items-left space-y-2 pl-5 md:min-h-[400px] h-full"
+                  }
+                >
+                  {topicPages[currentPage].map((topic, i) => (
+                    <UserTopic
+                      id={i}
+                      key={topic.id}
+                      topic={topic}
+                      refetch={refetchUserTopics}
+                    />
+                  ))}
                 </div>
-                <div className=" text-blue-400">
-                  {forwardArrowVisible() ? (
-                    <p
-                      className="cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 text-xl"
-                      onClick={() => flipTopicPageForward(true)}
-                    >
-                      <BsFillArrowRightCircleFill />
-                    </p>
-                  ) : (
-                    <p></p>
-                  )}
+                <div className="flex justify-between content-end pl-5 pr-5">
+                  <div className="text-left text-blue-400">
+                    {backArrowVisible() ? (
+                      <p
+                        className="cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 text-xl"
+                        onClick={() => flipTopicPageForward(false)}
+                      >
+                        <BsFillArrowLeftCircleFill />
+                      </p>
+                    ) : (
+                      <p></p>
+                    )}
+                  </div>
+                  <div className="text-blue-300 pb-8">
+                    {userTopics !== 0 && (
+                      <div>
+                        {currentPage + 1} of {numOfPages}
+                      </div>
+                    )}
+                  </div>
+                  <div className=" text-blue-400">
+                    {forwardArrowVisible() ? (
+                      <p
+                        className="cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 text-xl"
+                        onClick={() => flipTopicPageForward(true)}
+                      >
+                        <BsFillArrowRightCircleFill />
+                      </p>
+                    ) : (
+                      <p></p>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
