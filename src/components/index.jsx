@@ -5,6 +5,7 @@ export { default as Welcome } from "./Welcome";
 export { default as Input } from "./Input";
 
 export { default as Dashboard } from "./Dashboard";
+export { default as AdminDashboards } from "./AdminDashboards";
 export { default as EntityDashboard } from "./EntityDashboard";
 export { default as AdminUserDashboard } from "./AdminUserDashboard";
 
@@ -26,3 +27,4 @@ export { default as LaunchCartModalButton } from "./LaunchCartModalButton";
 export { default as IndustryModal } from "./IndustryModal";
 
 export { default as Button } from "./Button";
+export { default as GoogleLoginButton } from "./GoogleLoginButton";
