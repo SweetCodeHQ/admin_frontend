@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
+import { Input, Button } from "../components";
 
 const CREATE_TOPIC = gql`
   mutation CreateTopic($userId: ID!, $text: String!) {
@@ -10,21 +11,11 @@ const CREATE_TOPIC = gql`
   }
 `;
 
-const Input = ({ placeholder, name, type, value, handleChange }) => (
-  <input
-    placeholder={placeholder}
-    name={name}
-    type={type}
-    value={value}
-    onChange={e => handleChange(e, name)}
-    className={
-      "w-4/5 rounded-lg p-2 outline-none text-white bg-[#4E376A]/75 placeholder-gray-400 border-sm text-sm shadow-inner shadow-lg mt-5"
-    }
-  />
-);
-
 const TopicInputForm = ({ userId, refetch }) => {
   const [formData, setFormData] = useState({ text: "" });
+
+  const inputStyles =
+    "w-4/5 rounded-lg p-2 outline-none text-white bg-[#4E376A]/75 placeholder-gray-400 border-sm text-sm shadow-inner shadow-lg mt-5";
 
   const [topicCreationData, { loading, error }] = useMutation(CREATE_TOPIC, {
     onCompleted: refetch,
@@ -56,6 +47,7 @@ const TopicInputForm = ({ userId, refetch }) => {
         value={formData.text}
         type="text"
         handleChange={handleChange}
+        customStyles={inputStyles}
       />
       <button
         className="text-[#2D104F] font-bold bg-white rounded-full ml-5 md:ml-0 text-center text-base pr-3 pl-3 pt-1 mb-4 pb-1 mt-3 cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"

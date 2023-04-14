@@ -1,16 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
-import { EntityContext, EntityContextProvider } from "../context/EntityContext";
+
 import {
-  EntityDashboard,
-  AdminUserDashboard,
   TopicDashboard,
   Welcome,
-  IndustryModal
+  IndustryModal,
+  GoogleLoginButton,
+  AdminDashboards
 } from "../components";
 
 import { gql, useQuery, useMutation } from "@apollo/client";
-import { GoogleLogin } from "@react-oauth/google";
 
 import loggedInBackground from "../assets/WelcomeBG.png";
 import landingBackground from "../assets/climbing.png";
@@ -70,8 +69,6 @@ const Dashboard = () => {
   const email = googleUser?.googleUser?.email;
   const userHd = googleUser?.googleUser?.hd;
 
-  const formData = useContext(EntityContext);
-
   const { data: megaphoneUserData, refetch: refetchUser } = useQuery(
     GET_USER_PROFILE,
     {
@@ -105,9 +102,6 @@ const Dashboard = () => {
     const currentUser = await userCallback(response);
     userEntityCallback(currentUser);
   };
-  {
-    /*The below method is too big. Break out the functionality/ change names. It's doing much more than just creating the userEntity*/
-  }
 
   const megaphoneUserRefetch = async mail => {
     const user = refetchUser({ email: mail });
@@ -145,73 +139,39 @@ const Dashboard = () => {
     userEntityMutationData({ variables: input });
   };
 
+  const background = googleUser?.googleUser
+    ? { backgroundImage: `url(${loggedInBackground})` }
+    : { backgroundImage: `url(${landingBackground})` };
+
   return (
     <div
       className="flex w-full justify-center items-center bg-cover bg-center"
-      style={
-        googleUser?.googleUser
-          ? {
-              backgroundImage: `url(${loggedInBackground})`
-            }
-          : {
-              backgroundImage: `url(${landingBackground})`
-            }
-      }
+      style={background}
     >
       <div className="flex items-start justify-between md:p-20 py-12">
         <div className="flex flex-1 justify-start flex-col mf:mr-10">
-          <div className="p-5 w-full items-center flex flex-col">
-            {!googleUser.googleUser && (
-              <GoogleLogin
-                shape="pill"
-                onSuccess={credentialResponse => {
-                  loginCallback(credentialResponse);
-                }}
-                onError={() => {
-                  console.log("Login Failed");
-                }}
-              />
-            )}
-          </div>
-          {googleUser?.googleUser ? (
+          {!googleUser.googleUser && (
             <>
-              {megaphoneUserData?.user.industry === 0 ? (
-                <IndustryModal
-                  setToggleIndustryModal={setToggleIndustryModal}
-                  megaphoneUserId={megaphoneUserData?.user.id}
-                />
-              ) : null}
-              <h1 className="text-3xl sm:text-5xl text-white text-gradient font-bold py-1">
-                Welcome back, <br />
-                {googleUser?.googleUser?.given_name}!
-              </h1>
-              {megaphoneUserData?.user?.isAdmin ? (
-                <>
-                  <p className="text-left mt-5 text-white font-light md:w-9/12 w-11/12 text-base">
-                    Use this portal to manage administrators, entities, users,
-                    and more.
-                  </p>
-                  <div className="flex flex-col flex-1 items-center justify-start mf:mt-0 mt-10">
-                    <EntityContextProvider formData={formData}>
-                      <EntityDashboard />
-                    </EntityContextProvider>
-                    <AdminUserDashboard />
-                  </div>
-                </>
-              ) : (
-                <>
-                  <p className="text-left mt-5 text-white font-semibold text-lg md:w-9/12 w-11/12 text-base">
-                    Use this portal to get topic suggestions and more using the
-                    latest in artificial intelligence.
-                  </p>
-                  <TopicDashboard megaphoneUserInfo={megaphoneUserData?.user} />
-                </>
-              )}
-            </>
-          ) : (
-            <>
+              <GoogleLoginButton loginCallback={loginCallback} />
               <Welcome />
             </>
+          )}
+          {googleUser?.googleUser && (
+            <h1 className="text-3xl sm:text-5xl text-white text-gradient font-bold py-1">
+              Welcome back, <br />
+              {googleUser?.googleUser?.given_name}!
+            </h1>
+          )}
+          {megaphoneUserData?.user.industry === 0 ? (
+            <IndustryModal
+              setToggleIndustryModal={setToggleIndustryModal}
+              megaphoneUserId={megaphoneUserData?.user.id}
+            />
+          ) : null}
+          {megaphoneUserData?.user?.isAdmin ? (
+            <AdminDashboards />
+          ) : (
+            <TopicDashboard megaphoneUserInfo={megaphoneUserData?.user} />
           )}
         </div>
       </div>

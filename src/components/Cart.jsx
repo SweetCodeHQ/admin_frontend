@@ -1,10 +1,9 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 
-import { UserContext } from "../context/UserContext";
-import { CartContext } from "../context/CartContext";
-import { LaunchCartModalButton } from "../components";
+import { UserContext, CartContext } from "../context";
 
-import { MdDeleteForever } from "react-icons/md";
+import { LaunchCartModalButton, Button, CartTopic } from "../components";
+
 import { AiOutlineClose } from "react-icons/ai";
 
 import { gql, useMutation } from "@apollo/client";
@@ -28,7 +27,6 @@ const Cart = ({ setToggleCart }) => {
     handleTopicAlertEmail,
     handleClearCart,
     cartTopics,
-    handleRemoveFromCart,
     includeGoogleDoc,
     setIncludeGoogleDoc
   } = useContext(CartContext);
@@ -147,31 +145,23 @@ const Cart = ({ setToggleCart }) => {
           Your cart is empty!
         </p>
       )}
-      {cartTopics.map((item, i) => (
-        <div className="items-center mb-5 flex justify-between w-full">
-          <MdDeleteForever
-            fontSize={20}
-            className="text-white font-bold mr-10 flex-none cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
-            onClick={e => handleRemoveFromCart(i)}
-            key={i}
-          />
-          <p className="mr-5 w-4/5">{item.text}</p>
-        </div>
-      ))}
       {cartTopics.length != 0 && (
         <>
+          {cartTopics.map((topic, i) => (
+            <CartTopic text={topic.text} i={i} key={i} />
+          ))}
           <p className="self-center font-bold">
             You Have {cartTopics.length}{" "}
             {cartTopics.length > 1 ? "Topics" : "Topic"} in Your Cart
           </p>
           <div className="flex justify-between w-full">
-            <button
-              type="button"
-              className="text-[#2D104F] bg-white pr-5 pl-5 p-2 mt-2 font-bold rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
-              onClick={e => handleClearCart()}
-            >
-              Clear All
-            </button>
+            <Button
+              text={"Clear All"}
+              handleClick={handleClearCart}
+              customStyles={
+                "text-[#2D104F] bg-white pr-5 pl-5 p-2 mt-2 font-bold rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
+              }
+            />
             <LaunchCartModalButton handleSubmitTopics={handleSubmitTopics} />
           </div>
         </>
