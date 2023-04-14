@@ -5,7 +5,7 @@ const Button = ({ handleClick, text, customStyles }) => {
   const styles = customStyles || defaultStyles;
 
   return (
-    <button className={styles} type="button" onClick={handleClick}>
+    <button className={styles} type="button" onClick={() => handleClick()}>
       {text}
     </button>
   );
