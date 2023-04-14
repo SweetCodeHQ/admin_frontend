@@ -10,11 +10,6 @@ const Welcome = () => {
       <p className="text-left mt-5 text-white font-light text-center md:w-9/12 w-11/12 text-2xl">
         Helping contributors ideate and create targeted content faster.
       </p>
-      {/*<div className="grid sm:grid-cols-3 grid-cols-2 w-full mt-10">
-        <div className={`rounded-l-2xl ${commonStyles}`}>AI Powered</div>
-        <div className={commonStyles}> Organic</div>
-        <div className={`rounded-r-2xl ${commonStyles}`}>Intuitive</div>
-      </div>*/}
     </div>
   );
 };
