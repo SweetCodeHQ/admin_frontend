@@ -101,6 +101,8 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
     word5: ""
   });
 
+  const [toggleUserTopicModal, setToggleUserTopicModal] = useState(false);
+
   const [inputKeywords, setInputKeywords] = useState(null);
 
   const [freshTopics, setFreshTopics] = useState([]);
@@ -514,13 +516,11 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
                   filterTopicsBy={filterTopicsBy}
                 />
               </div>
-              <div className="bg-[#3A1F5C] rounded-xl mt-2">
-                <div className="w-full self-start">
-                  <TopicInputForm
-                    userId={megaphoneUserInfo?.id}
-                    refetch={refetchUserTopics}
-                  />
-                </div>
+              <div className="bg-[#3A1F5C] rounded-xl mt-2 min-w-fit">
+                <TopicInputForm
+                  userId={megaphoneUserInfo?.id}
+                  refetch={refetchUserTopics}
+                />
                 <div
                   className={
                     "p-5 flex flex-col items-left space-y-2 pl-5 md:min-h-[400px] h-full"
