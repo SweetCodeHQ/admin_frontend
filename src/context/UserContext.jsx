@@ -44,13 +44,13 @@ export const UserContextProvider = ({ children }) => {
   const userCallback = async response => {
     console.log("logged in");
     var userObject = jwt_decode(response.credential);
-    //if (userObject.hd) {
-    setGoogleUser(userObject);
-    await createUserMutation(userObject.email);
-    return userObject;
-    //} else {
-    //return alert("Please try your corporate G-Suite account.");
-    //}
+    if (userObject.hd) {
+      setGoogleUser(userObject);
+      await createUserMutation(userObject.email);
+      return userObject;
+    } else {
+      return alert("Please try your corporate G-Suite account.");
+    }
     {
       /*Need to reset this to userObject.user. Then, I need to change every mention of user.user  the dashboard.*/
     }
