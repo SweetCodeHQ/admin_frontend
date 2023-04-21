@@ -143,6 +143,12 @@ const Dashboard = () => {
     ? { backgroundImage: `url(${loggedInBackground})` }
     : { backgroundImage: `url(${landingBackground})` };
 
+  const userIsLoggedInAndIsAdmin =
+    googleUser?.googleUser && megaphoneUserData?.user?.isAdmin;
+
+  const userIsLoggedInAndIsNotAdmin =
+    googleUser?.googleUser && !megaphoneUserData?.user?.isAdmin;
+
   return (
     <div
       className="flex w-full justify-center items-center bg-cover bg-center"
@@ -168,9 +174,8 @@ const Dashboard = () => {
               megaphoneUserId={megaphoneUserData?.user.id}
             />
           ) : null}
-          {megaphoneUserData?.user?.isAdmin ? (
-            <AdminDashboards />
-          ) : (
+          {userIsLoggedInAndIsAdmin && <AdminDashboards />}
+          {userIsLoggedInAndIsNotAdmin && (
             <TopicDashboard megaphoneUserInfo={megaphoneUserData?.user} />
           )}
         </div>
