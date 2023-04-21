@@ -66,7 +66,6 @@ const Cart = ({ setToggleCart }) => {
   };
 
   const handleSubmitTopics = () => {
-    console.log("topics submitted");
     cartTopics.forEach(topic => processTopics(topic));
     handleClearCart();
     setToggleCart(false);
