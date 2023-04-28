@@ -3,6 +3,7 @@ const Input = ({
   name,
   type,
   value,
+  defaultValue,
   handleChange,
   customStyles
 }) => {
@@ -17,6 +18,7 @@ const Input = ({
       name={name}
       type={type}
       value={value}
+      defaultValue={defaultValue}
       onChange={e => handleChange(e, name)}
       className={styles}
     />
