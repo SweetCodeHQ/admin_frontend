@@ -25,11 +25,17 @@ const UPDATE_TOPIC = gql`
 const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
   const cancelButtonRef = useRef(null);
   const [editModeEnabled, setEditModeEnabled] = useState(false);
+
+  const [editedTopicText, setEditedTopicText] = useState(null);
+
   const [modalFormData, setModalFormData] = useState({
-    topicText: "",
+    topicText: topic?.text,
     abstractText: ""
   });
+
   //Problem is: TopicDashboard is re-rendering when the topic text is updated. I think it has something to do with the fetch policy. Change it but be careful about the effects on other parts of the application--the TopicInput and saving generated topics.
+
+  //might need to refetchTopics on close of Modal
   const handleChange = (e, name) => {
     setModalFormData(prevState => ({ ...prevState, [name]: e.target.value }));
   };
@@ -37,19 +43,18 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
   const handleCloseModal = () => {
     setEditModeEnabled(false);
     setOpen(false);
-    //check if topic and abstract are the same as rendered
-    //if not, run the mutations
-    //have modal asking if the user wants to save changes
-    // setOpen(false)
+    refetchTopic();
   };
 
-  const handleSave = () => {
+  const handleSave = event => {
     setEditModeEnabled(false);
+    if (topic.text === modalFormData.topicText) return;
     handleSubmit();
+    //handleSubmitTopic()
+    //handleSubmitAbstract()
   };
 
   const handleSubmit = () => {
-    if (topic.text === modalFormData.topicText) return;
     editTopic(topic.id, modalFormData.topicText);
     // topic.abstract.text === modalFormData.abstractText
   };
@@ -60,14 +65,14 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
     topicUpdateData({ variables: input });
   };
 
-  const [topicUpdateData, { error: topicUpdateError }] = useMutation(
-    UPDATE_TOPIC,
-    {
-      ignoreResults: true,
-      onError: error => console.log(error),
-      onCompleted: data => console.log(data)
-    }
-  );
+  const [topicUpdateData] = useMutation(UPDATE_TOPIC, {
+    ignoreResults: true,
+    fetchPolicy: "no-cache",
+    onError: error => console.log(error),
+    onCompleted: data => setEditedTopicText(data.updateTopic.text)
+  });
+
+  const displayTitle = editedTopicText ? editedTopicText : topic?.text;
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -136,7 +141,7 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
                           }
                         />
                       ) : (
-                        topic?.text
+                        displayTitle
                       )}
                     </Dialog.Title>
                     <Abstract
