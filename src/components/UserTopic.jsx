@@ -1,12 +1,31 @@
 import { useState, useContext, useRef, useEffect, forwardRef } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { EditTopicMenu, TopicCartIcon, TopicAbstractMenu } from "../components";
+import {
+  EditTopicMenu,
+  TopicCartIcon,
+  TopicAbstractMenu,
+  UserTopicModal
+} from "../components";
 import { CartContext } from "../context/CartContext";
 
 import { MdDeleteForever } from "react-icons/md";
 import { HiPencilAlt } from "react-icons/hi";
 import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { RiMailCheckFill } from "react-icons/ri";
+
+const GET_TOPIC = gql`
+  query topic($id: ID!) {
+    topic(id: $id) {
+      id
+      text
+      submitted
+      abstract {
+        id
+        text
+      }
+    }
+  }
+`;
 
 const DESTROY_TOPIC = gql`
   mutation($id: ID!) {
@@ -19,6 +38,9 @@ const DESTROY_TOPIC = gql`
 const UserTopic = ({ topic, refetch, id }) => {
   const [toggleEditMenu, setToggleEditMenu] = useState(false);
   const [toggleAbstract, setToggleAbstract] = useState(false);
+
+  const [open, setOpen] = useState(false);
+  const handleModal = () => setOpen(prev => !prev);
 
   const userTopicRef = useRef();
   const abstractRef = useRef();
@@ -41,6 +63,11 @@ const UserTopic = ({ topic, refetch, id }) => {
 
     destroyTopicData({ variables: input });
   };
+
+  const { data: topicData, refetch: refetchTopic } = useQuery(GET_TOPIC, {
+    variables: { id: topic.id },
+    onError: error => console.log(error)
+  });
 
   const handleToggleAbstract = currentlyOpen => {
     setToggleAbstract(prev => !currentlyOpen);
@@ -103,23 +130,30 @@ const UserTopic = ({ topic, refetch, id }) => {
           >
             <MdDeleteForever />
           </button>
+          <UserTopicModal
+            key={id}
+            open={open}
+            setOpen={setOpen}
+            topic={topicData?.topic}
+            refetchTopic={refetchTopic}
+          />
           <div
             className={`text-white text-lg cursor-grab ${
               toggleAbstract ? "font-bold text-lg" : "text-base"
             }`}
-            onClick={e => handleToggleSubmenus(false)}
+            onClick={handleModal}
           >
             {topic.text}
           </div>
         </div>
       )}
-      {toggleAbstract && (
+      {/*{toggleAbstract && (
         <TopicAbstractMenu
           ref={abstractRef}
           topic={topic}
           handleToggleAbstract={handleToggleAbstract}
         />
-      )}
+      )}*/}
     </div>
   );
 };
