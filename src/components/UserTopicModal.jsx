@@ -33,9 +33,6 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
     abstractText: ""
   });
 
-  //Problem is: TopicDashboard is re-rendering when the topic text is updated. I think it has something to do with the fetch policy. Change it but be careful about the effects on other parts of the application--the TopicInput and saving generated topics.
-
-  //might need to refetchTopics on close of Modal
   const handleChange = (e, name) => {
     setModalFormData(prevState => ({ ...prevState, [name]: e.target.value }));
   };

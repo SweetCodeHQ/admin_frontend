@@ -1,11 +1,6 @@
-import { useState, useContext, useRef, useEffect, forwardRef } from "react";
+import { useState, useContext } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import {
-  EditTopicMenu,
-  TopicCartIcon,
-  TopicAbstractMenu,
-  UserTopicModal
-} from "../components";
+import { TopicCartIcon, UserTopicModal } from "../components";
 import { CartContext } from "../context/CartContext";
 
 import { MdDeleteForever } from "react-icons/md";
@@ -36,18 +31,8 @@ const DESTROY_TOPIC = gql`
 `;
 
 const UserTopic = ({ topic, refetch, id }) => {
-  const [toggleEditMenu, setToggleEditMenu] = useState(false);
-  const [toggleAbstract, setToggleAbstract] = useState(false);
-
   const [open, setOpen] = useState(false);
   const handleModal = () => setOpen(prev => !prev);
-
-  const userTopicRef = useRef();
-  const abstractRef = useRef();
-  const topicRef = useRef();
-  {
-    /*State is getting complex...use the reduceState hook instead*/
-  }
 
   const { handleAddToCart, cartTopics } = useContext(CartContext);
 
@@ -69,91 +54,36 @@ const UserTopic = ({ topic, refetch, id }) => {
     onError: error => console.log(error)
   });
 
-  const handleToggleAbstract = currentlyOpen => {
-    setToggleAbstract(prev => !currentlyOpen);
-  };
-
-  const handleToggleEditMenu = currentlyOpen => {
-    setToggleEditMenu(prev => !currentlyOpen);
-  };
-
-  const handleToggleSubmenus = currentlyOpen => {
-    handleToggleAbstract(currentlyOpen);
-    handleToggleEditMenu(currentlyOpen);
-  };
-
-  useEffect(() => {
-    const handleClick = event => {
-      if (
-        userTopicRef.current &&
-        !userTopicRef.current.contains(event.target)
-      ) {
-        setTimeout(() => {
-          handleToggleSubmenus(true);
-        }, 100);
-      }
-    };
-    document.addEventListener("click", handleClick, true);
-    return () => {
-      document.removeEventListener("click", handleClick, true);
-    };
-  }, [userTopicRef, toggleAbstract, toggleEditMenu]);
-
   return (
-    <div
-      ref={userTopicRef}
-      className={`${toggleAbstract && "bg-[#240B3E] rounded-lg p-3"}`}
-    >
-      {toggleEditMenu ? (
-        <EditTopicMenu
-          topic={topic}
-          handleToggleEditMenu={handleToggleEditMenu}
-          refetch={refetch}
-        />
-      ) : (
-        <div className="flex items-left items-center">
-          {topic.submitted && (
-            <div className="text-blue-500 mr-10 text-xl">
-              <RiMailCheckFill />
-            </div>
-          )}
-          <TopicCartIcon
-            topic={topic}
-            handleAddToCart={handleAddToCart}
-            cartIds={cartIds}
-          />
-          <button
-            type="button"
-            className={`text-blue-300 text-xl mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 ${topic.submitted &&
-              "hidden"}`}
-            onClick={destroyTopicMutation}
-          >
-            <MdDeleteForever />
-          </button>
-          <UserTopicModal
-            key={id}
-            open={open}
-            setOpen={setOpen}
-            topic={topicData?.topic}
-            refetchTopic={refetchTopic}
-          />
-          <div
-            className={`text-white text-lg cursor-grab ${
-              toggleAbstract ? "font-bold text-lg" : "text-base"
-            }`}
-            onClick={handleModal}
-          >
-            {topic.text}
-          </div>
+    <div className="flex items-left items-center">
+      {topic.submitted && (
+        <div className="text-blue-500 mr-10 text-xl">
+          <RiMailCheckFill />
         </div>
       )}
-      {/*{toggleAbstract && (
-        <TopicAbstractMenu
-          ref={abstractRef}
-          topic={topic}
-          handleToggleAbstract={handleToggleAbstract}
-        />
-      )}*/}
+      <TopicCartIcon
+        topic={topic}
+        handleAddToCart={handleAddToCart}
+        cartIds={cartIds}
+      />
+      <button
+        type="button"
+        className={`text-blue-300 text-xl mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 ${topic.submitted &&
+          "hidden"}`}
+        onClick={destroyTopicMutation}
+      >
+        <MdDeleteForever />
+      </button>
+      <UserTopicModal
+        key={id}
+        open={open}
+        setOpen={setOpen}
+        topic={topicData?.topic}
+        refetchTopic={refetchTopic}
+      />
+      <div className="text-white text-lg cursor-grab" onClick={handleModal}>
+        {topic.text}
+      </div>
     </div>
   );
 };
