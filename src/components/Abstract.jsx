@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { ArrowPathIcon } from "@heroicons/react/24/solid";
-import { NoAbstract } from "../components";
+import { NoAbstract, Loader } from "../components";
 
 const CREATE_ABSTRACT = gql`
   mutation CreateAbstract($topicId: ID!, $text: String!) {
@@ -12,14 +12,21 @@ const CREATE_ABSTRACT = gql`
   }
 `;
 
-const Abstract = ({ topic, refetchTopic, editModeEnabled }) => {
-  // Abstract exists
-  // -Editable in edit mode (shows Input)
-  //
-  //
-  // Abstract does not exist
-  // -Add a regenerate button in editable mode where the Google Doc button is.
+const DESTROY_ABSTRACT = gql`
+  mutation DestroyAbstract($id: ID!) {
+    destroyAbstract(input: { id: $id }) {
+      id
+    }
+  }
+`;
 
+const Abstract = ({
+  topic,
+  refetchTopic,
+  editModeEnabled,
+  displayedAbstract,
+  displayedTopic
+}) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const generateAbstract = async () => {
@@ -31,7 +38,7 @@ const Abstract = ({ topic, refetchTopic, editModeEnabled }) => {
 
     const url = `${process.env.AI_API_URL}/api/v1/abstracts?`;
 
-    const fullUrl = `${url}topic="${topic.text}"`;
+    const fullUrl = `${url}topic="${displayedTopic}"`;
 
     const response = await fetch(fullUrl)
       .then(response => response.json())
@@ -41,7 +48,7 @@ const Abstract = ({ topic, refetchTopic, editModeEnabled }) => {
     return instract;
   };
 
-  const [abstractMutationData, { error: abstractError }] = useMutation(
+  const [abstractCreationData, { error: abstractError }] = useMutation(
     CREATE_ABSTRACT,
     {
       onCompleted: data => console.log(data),
@@ -49,28 +56,51 @@ const Abstract = ({ topic, refetchTopic, editModeEnabled }) => {
     }
   );
 
+  const [abstractDestroyData, { error: abstractDestroyError }] = useMutation(
+    DESTROY_ABSTRACT,
+    {
+      onError: error => console.log(error),
+      onCompleted: data => console.log(data)
+    }
+  );
+
   const createAbstract = async text => {
     const input = { topicId: topic.id, text: text };
 
-    await abstractMutationData({ variables: input });
+    await abstractCreationData({ variables: input });
+  };
+
+  const destroyAbstract = async () => {
+    const input = { id: topic.abstract.id };
+
+    const destruction = await abstractDestroyData({ variables: input });
   };
 
   const handleCreateAbstract = async () => {
     setIsLoading(true);
+    await processNewAbstract();
+    setIsLoading(false);
+  };
+
+  const handleRecreateAbstract = async () => {
+    setIsLoading(true);
+    await destroyAbstract();
+    await processNewAbstract();
+    setIsLoading(false);
+  };
+
+  const processNewAbstract = async () => {
     const abstract = await generateAbstract();
 
     const newInstract = await createAbstract(abstract);
     await refetchTopic();
-    setIsLoading(false);
   };
 
   return (
     <>
       <div className="mt-2 bg-[#4E376A]/75 rounded-lg p-2">
-        {topic?.abstract ? (
-          <p className="text-sm text-white text-justify">
-            {topic?.abstract?.text}
-          </p>
+        {displayedAbstract && !isLoading ? (
+          <p className="text-sm text-white text-justify">{displayedAbstract}</p>
         ) : (
           <NoAbstract
             handleCreateAbstract={handleCreateAbstract}
@@ -79,19 +109,20 @@ const Abstract = ({ topic, refetchTopic, editModeEnabled }) => {
         )}
       </div>
       <button
-        disabled={topic?.submitted}
-        className={`mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4E376A]/75 ${editModeEnabled &&
-          "invisible"}
-        } ${
-          topic?.submitted
+        onClick={handleRecreateAbstract}
+        disabled={topic?.submitted || isLoading}
+        className={`mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4E376A]/75 ${
+          topic?.submitted || !topic?.abstract || editModeEnabled
             ? "cursor-not-allowed"
             : "transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        } mt-2`}
+        } ${isLoading ? "cursor-progress" : null} mt-2`}
       >
         <ArrowPathIcon
           className={`h-6 w-6 ${
-            topic?.submitted ? "text-gray-300" : "text-blue-300"
-          }`}
+            topic?.submitted || !topic?.abstract || editModeEnabled
+              ? "text-gray-300"
+              : "text-blue-300"
+          } `}
           aria-hidden="true"
         />
       </button>
