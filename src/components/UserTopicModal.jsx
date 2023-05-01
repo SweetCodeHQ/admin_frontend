@@ -22,16 +22,32 @@ const UPDATE_TOPIC = gql`
   }
 `;
 
+const UPDATE_ABSTRACT = gql`
+  mutation UpdateAbstract($id: ID!, $text: String!) {
+    updateAbstract(input: { id: $id, text: $text }) {
+      id
+      text
+    }
+  }
+`;
+
 const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
-  const cancelButtonRef = useRef(null);
   const [editModeEnabled, setEditModeEnabled] = useState(false);
 
-  const [editedTopicText, setEditedTopicText] = useState(null);
-
   const [modalFormData, setModalFormData] = useState({
-    topicText: topic?.text,
+    topicText: "",
     abstractText: ""
   });
+
+  const cancelButtonRef = useRef(null);
+
+  const abstractTextRef = useRef(null);
+  useEffect(() => {
+    if (abstractTextRef && abstractTextRef.current) {
+      abstractTextRef.current.style.height = "auto";
+      abstractTextRef.current.style.height = `${abstractTextRef.current.scrollHeight}px`;
+    }
+  }, [abstractTextRef, modalFormData, editModeEnabled]);
 
   const handleChange = (e, name) => {
     setModalFormData(prevState => ({ ...prevState, [name]: e.target.value }));
@@ -45,15 +61,21 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
 
   const handleSave = event => {
     setEditModeEnabled(false);
-    if (topic.text === modalFormData.topicText) return;
-    handleSubmit();
-    //handleSubmitTopic()
-    //handleSubmitAbstract()
+    handleSubmitTopic();
+    handleSubmitAbstract();
   };
 
-  const handleSubmit = () => {
+  const handleSubmitTopic = () => {
+    if (modalFormData.topicText === "") return;
+
     editTopic(topic.id, modalFormData.topicText);
-    // topic.abstract.text === modalFormData.abstractText
+  };
+  //An abstract must be created first. Then, it can be edited.
+
+  const handleSubmitAbstract = () => {
+    if (!topic.abstract || modalFormData.abstractText === "") return;
+
+    editAbstract(topic.abstract.id, modalFormData.abstractText);
   };
 
   const editTopic = (topicId, newTopicText) => {
@@ -66,11 +88,36 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
     ignoreResults: true,
     fetchPolicy: "no-cache",
     onError: error => console.log(error),
-    onCompleted: data => setEditedTopicText(data.updateTopic.text)
+    onCompleted: data =>
+      setModalFormData(prev => ({ ...prev, topicText: data.updateTopic.text }))
   });
 
-  const displayTitle = editedTopicText ? editedTopicText : topic?.text;
+  const editAbstract = (abstractId, newAbstractText) => {
+    console.log("mutation");
+    const input = { id: abstractId, text: newAbstractText };
 
+    abstractUpdateData({ variables: input });
+  };
+
+  const [abstractUpdateData] = useMutation(UPDATE_ABSTRACT, {
+    ignoreResults: true,
+    fetchPolicy: "no-cache",
+    onError: error => console.log(error),
+    onCompleted: data =>
+      setModalFormData(prev => ({
+        ...prev,
+        abstractText: data.updateAbstract.text
+      }))
+  });
+
+  const displayedTopic = modalFormData.topicText
+    ? modalFormData.topicText
+    : topic?.text;
+
+  const displayedAbstract = modalFormData.abstractText
+    ? modalFormData.abstractText
+    : topic?.abstract?.text;
+  //abstract is not updating when edited
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
@@ -102,7 +149,7 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-[#3A1F5C] px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-[#3A1F5C] px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 w-full max-w-lg sm:p-6">
                 <div>
                   {/*The icons reflect the current status. When you add statuses, update the icon possibilities. Submitted, writing, etc. If it's submitted, you shouldn't be able to edit it.*/}
                   {topic?.submitted ? (
@@ -132,20 +179,36 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
                           placeholder={topic.text}
                           name="topicText"
                           type="text"
-                          defaultValue={topic.text}
+                          defaultValue={displayedTopic}
                           customStyles={
                             "w-full rounded-lg outline-none text-white bg-[#4E376A]/75 placeholder-gray-400 border-violet-500 text-sm shadow-inner shadow-lg"
                           }
                         />
                       ) : (
-                        displayTitle
+                        displayedTopic
                       )}
                     </Dialog.Title>
-                    <Abstract
-                      topic={topic}
-                      refetchTopic={refetchTopic}
-                      editModeEnabled={editModeEnabled}
-                    />
+                    {editModeEnabled && topic?.abstract ? (
+                      <textarea
+                        ref={abstractTextRef}
+                        placeholder="Draft Abstract Here!"
+                        name="abstractText"
+                        type="text"
+                        defaultValue={displayedAbstract}
+                        onChange={e => handleChange(e, "abstractText")}
+                        className={
+                          "w-full rounded-lg outline-none text-white bg-[#4E376A]/75 placeholder-gray-400 border-violet-500 text-sm shadow-inner shadow-lg max-h-[350px] resize-none min-h-[100px] mb-11"
+                        }
+                      />
+                    ) : (
+                      <Abstract
+                        topic={topic}
+                        refetchTopic={refetchTopic}
+                        editModeEnabled={editModeEnabled}
+                        displayedAbstract={displayedAbstract}
+                        displayedTopic={displayedTopic}
+                      />
+                    )}
                   </div>
                 </div>
                 <div className="mt-6 grid grid-flow-row-dense grid-cols-3 gap-3">
@@ -180,7 +243,7 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
                     }`}
                   >
                     <DocumentArrowUpIcon
-                      className="h-6 w-6 text-blue-300"
+                      className="h-6 w-6 editModeEnabled ? text-blue-300"
                       aria-hidden="true"
                     />
                   </button>
