@@ -3,14 +3,12 @@ import { Dialog, Transition } from "@headlessui/react";
 import {
   DocumentTextIcon,
   DocumentCheckIcon,
-  DocumentArrowUpIcon,
   PencilSquareIcon,
   ArrowUturnLeftIcon,
-  XMarkIcon,
-  ArrowPathIcon
+  XMarkIcon
 } from "@heroicons/react/24/solid";
 import { RiMailCheckFill } from "react-icons/ri";
-import { Input, Button, Abstract } from "../components";
+import { Input, Button, Abstract, ExportButton } from "../components";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
 const UPDATE_TOPIC = gql`
@@ -70,7 +68,6 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
 
     editTopic(topic.id, modalFormData.topicText);
   };
-  //An abstract must be created first. Then, it can be edited.
 
   const handleSubmitAbstract = () => {
     if (!topic.abstract || modalFormData.abstractText === "") return;
@@ -117,7 +114,7 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
   const displayedAbstract = modalFormData.abstractText
     ? modalFormData.abstractText
     : topic?.abstract?.text;
-  //abstract is not updating when edited
+
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
@@ -237,16 +234,11 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
                       />
                     </button>
                   )}
-                  <button
-                    className={`mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4E376A]/75 transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${
-                      editModeEnabled ? "invisible" : null
-                    }`}
-                  >
-                    <DocumentArrowUpIcon
-                      className="h-6 w-6 editModeEnabled ? text-blue-300"
-                      aria-hidden="true"
-                    />
-                  </button>
+                  <ExportButton
+                    editModeEnabled={editModeEnabled}
+                    displayedTopic={displayedTopic}
+                    displayedAbstract={displayedAbstract}
+                  />
                   {editModeEnabled ? (
                     <button
                       onClick={() => setEditModeEnabled(false)}
@@ -269,23 +261,6 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
                     </button>
                   )}
                 </div>
-                {/*<div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-                  <button
-                    type="button"
-                    className="inline-flex w-full justify-center rounded-full bg-white px-3 py-2 text-sm font-bold text-[#4E376A] shadow-sm hover:text-white hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
-                    onClick={() => setOpen(false)}
-                  >
-                    Export to Google Docs
-                  </button>
-                  <button
-                    type="button"
-                    className="mt-3 inline-flex w-full justify-center rounded-full bg-[#4E376A] px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-[#4E376A]/50 sm:col-start-1 sm:mt-0"
-                    onClick={() => setOpen(false)}
-                    ref={cancelButtonRef}
-                  >
-                    Cancel
-                  </button>
-                </div>*/}
               </Dialog.Panel>
             </Transition.Child>
           </div>
