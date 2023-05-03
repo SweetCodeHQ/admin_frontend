@@ -19,9 +19,8 @@ const ExportButton = ({
   };
 
   const handleSuccessfulToken = async tokenResponse => {
-    console.log(tokenResponse);
     setGToken(tokenResponse);
-    const doc = await exportGoogleDoc();
+    const doc = await exportGoogleDoc(tokenResponse);
     setShowExportAlert(true);
   };
 
@@ -31,19 +30,19 @@ const ExportButton = ({
     flow: "implicit"
   });
 
-  const exportGoogleDoc = async () => {
-    const promise = await handleCreateGoogleDoc();
-    await handleAddTextToDoc(promise);
+  const exportGoogleDoc = async token => {
+    const promise = await handleCreateGoogleDoc(token);
+    await handleAddTextToDoc(promise, token);
   };
 
-  const handleCreateGoogleDoc = async () => {
+  const handleCreateGoogleDoc = async token => {
     let documentId;
     const url = "https://docs.googleapis.com/v1/documents";
 
     const fetch_options = {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${gToken.access_token}`,
+        Authorization: `Bearer ${token.access_token}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
@@ -60,14 +59,14 @@ const ExportButton = ({
     return documentId;
   };
 
-  const handleAddTextToDoc = documentId => {
+  const handleAddTextToDoc = (documentId, token) => {
     const abstractText = displayedAbstract || "Abstract not yet generated";
 
     const url = `https://docs.googleapis.com/v1/documents/${documentId}:batchUpdate`;
     const fetch_options = {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${gToken.access_token}`,
+        Authorization: `Bearer ${token.access_token}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
