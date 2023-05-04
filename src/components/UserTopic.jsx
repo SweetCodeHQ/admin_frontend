@@ -34,9 +34,9 @@ const UserTopic = ({ topic, refetch, id }) => {
   const [open, setOpen] = useState(false);
   const handleModal = () => setOpen(prev => !prev);
 
-  const { handleAddToCart, cartTopics } = useContext(CartContext);
+  // const { handleAddToCart, cartTopics } = useContext(CartContext);
 
-  const cartIds = cartTopics?.map(topic => topic.id);
+  // const cartIds = cartTopics?.map(topic => topic.id);
 
   const [destroyTopicData, { loading, error }] = useMutation(DESTROY_TOPIC, {
     onCompleted: refetch,
@@ -61,14 +61,10 @@ const UserTopic = ({ topic, refetch, id }) => {
           <RiMailCheckFill />
         </div>
       )}
-      <TopicCartIcon
-        topic={topic}
-        handleAddToCart={handleAddToCart}
-        cartIds={cartIds}
-      />
+      <TopicCartIcon topic={topic} />
       <button
         type="button"
-        className={`text-blue-300 text-xl mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 ${topic.submitted &&
+        className={`text-blue-300 ml-2 text-2xl mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 ${topic.submitted &&
           "hidden"}`}
         onClick={destroyTopicMutation}
       >
