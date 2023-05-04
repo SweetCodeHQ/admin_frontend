@@ -180,8 +180,7 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
     {
       variables: { email: megaphoneUserInfo?.email },
       onError: error => console.log(error),
-      onCompleted: data => setUserTopics(data.user.topics),
-      fetchPolicy: "network-first"
+      onCompleted: data => setUserTopics(data.user.topics)
     }
   );
 
@@ -521,11 +520,7 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
                   userId={megaphoneUserInfo?.id}
                   refetch={refetchUserTopics}
                 />
-                <div
-                  className={
-                    "p-5 flex flex-col items-left space-y-2 pl-5 md:min-h-[400px] h-full"
-                  }
-                >
+                <div className="p-5 flex flex-col items-left space-y-2 pl-5 md:min-h-[400px] h-full">
                   {topicPages[currentPage].map((topic, i) => (
                     <UserTopic
                       id={i}

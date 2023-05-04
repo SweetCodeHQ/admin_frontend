@@ -10,8 +10,6 @@ export const CartContextProvider = ({ children }) => {
     return initialValue || [];
   });
 
-  const [includeGoogleDoc, setIncludeGoogleDoc] = useState(false);
-
   const handleAddToCart = topic => {
     setCartTopics(prev => [...prev, topic]);
   };
@@ -41,9 +39,7 @@ export const CartContextProvider = ({ children }) => {
         handleAddToCart,
         handleTopicAlertEmail,
         handleClearCart,
-        handleRemoveFromCart,
-        includeGoogleDoc,
-        setIncludeGoogleDoc
+        handleRemoveFromCart
       }}
     >
       {children}

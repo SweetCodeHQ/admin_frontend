@@ -7,7 +7,7 @@ const Navbar = () => {
   const { handleSignOut, googleUser } = useContext(UserContext);
 
   return (
-    <nav className="w-full gradient-bg-purple-welcome fixed z-20">
+    <nav className="w-full gradient-bg-purple-welcome fixed z-10">
       <div className="w-full flex justify-between items-center p-4">
         {googleUser && (
           <>
