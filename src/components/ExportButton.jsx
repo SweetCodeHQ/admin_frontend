@@ -94,21 +94,39 @@ const ExportButton = ({
             }
           },
           {
+            insertInlineImage: {
+              location: {
+                index: 1
+              },
+              uri:
+                "https://fixate.io/wp-content/uploads/2021/10/Fixate-Logo-RGB1-e1422906323203@2x.png",
+              objectSize: {
+                height: {
+                  magnitude: 144,
+                  unit: "PT"
+                },
+                width: {
+                  magnitude: 155,
+                  unit: "PT"
+                }
+              }
+            }
+          },
+          {
             updateParagraphStyle: {
               paragraphStyle: {
                 alignment: "CENTER"
               },
               fields: "alignment",
               range: {
-                startIndex: 5,
+                startIndex: 3,
                 endIndex: 100
               }
             }
           },
           {
             insertText: {
-              text: `Published on Website: [Add Date and URL here when available]\n\n
-              `,
+              text: `Keywords:\n\n`,
               location: {
                 index: 1
               }
@@ -122,31 +140,19 @@ const ExportButton = ({
               fields: "bold",
               range: {
                 startIndex: 1,
-                endIndex: 61
+                endIndex: 10
               }
             }
           },
           {
-            insertText: {
-              text: `Keywords:\n\n`,
-              location: {
-                index: 1
-              }
-            }
-          },
-          {
-            insertText: {
-              text: `Target Audience:\n\n`,
-              location: {
-                index: 1
-              }
-            }
-          },
-          {
-            insertText: {
-              text: `Type of Content:\n\n`,
-              location: {
-                index: 1
+            updateParagraphStyle: {
+              paragraphStyle: {
+                alignment: "CENTER"
+              },
+              fields: "alignment",
+              range: {
+                startIndex: 13,
+                endIndex: 14
               }
             }
           },
@@ -228,15 +234,6 @@ const ExportButton = ({
                 startIndex: 1,
                 endIndex: 14
               }
-            }
-          },
-          {
-            insertInlineImage: {
-              location: {
-                index: 1
-              },
-              uri:
-                "https://fixate.io/wp-content/uploads/2021/10/Fixate-Logo-RGB1-e1422906323203@2x.png"
             }
           }
         ]
