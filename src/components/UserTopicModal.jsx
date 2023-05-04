@@ -8,7 +8,7 @@ import {
   XMarkIcon
 } from "@heroicons/react/24/solid";
 import { RiMailCheckFill } from "react-icons/ri";
-import { Input, Button, Abstract, ExportButton } from "../components";
+import { Input, Button, Abstract, TopicCartIcon } from "../components";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
 const UPDATE_TOPIC = gql`
@@ -234,11 +234,15 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
                       />
                     </button>
                   )}
-                  <ExportButton
-                    editModeEnabled={editModeEnabled}
-                    displayedTopic={displayedTopic}
-                    displayedAbstract={displayedAbstract}
-                  />
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4E376A]/75">
+                    {topic?.submitted ? (
+                      <div className="text-blue-500 text-2xl">
+                        <RiMailCheckFill />
+                      </div>
+                    ) : (
+                      <TopicCartIcon topic={topic} />
+                    )}
+                  </div>
                   {editModeEnabled ? (
                     <button
                       onClick={() => setEditModeEnabled(false)}
