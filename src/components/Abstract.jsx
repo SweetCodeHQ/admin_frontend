@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { ArrowPathIcon } from "@heroicons/react/24/solid";
-import { NoAbstract, Loader } from "../components";
+import { RiMailCheckFill } from "react-icons/ri";
+import { NoAbstract, Loader, TopicCartIcon } from "../components";
 
 const CREATE_ABSTRACT = gql`
   mutation CreateAbstract($topicId: ID!, $text: String!) {
@@ -108,24 +109,36 @@ const Abstract = ({
           />
         )}
       </div>
-      <button
-        onClick={handleRecreateAbstract}
-        disabled={topic?.submitted || isLoading}
-        className={`mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4E376A]/75 ${
-          topic?.submitted || !topic?.abstract || editModeEnabled
-            ? "cursor-not-allowed"
-            : "transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        } ${isLoading ? "cursor-progress" : null} mt-2`}
-      >
-        <ArrowPathIcon
-          className={`h-6 w-6 ${
+      <div className="grid grid-flow-row-dense grid-cols-3 gap-3">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4E376A]/75 mt-2">
+          {topic.submitted ? (
+            <div className="text-blue-500 text-2xl">
+              <RiMailCheckFill />
+            </div>
+          ) : (
+            <TopicCartIcon topic={topic} />
+          )}
+        </div>
+        <div></div>
+        <button
+          onClick={handleRecreateAbstract}
+          disabled={topic?.submitted || isLoading}
+          className={`mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4E376A]/75 ${
             topic?.submitted || !topic?.abstract || editModeEnabled
-              ? "text-gray-300"
-              : "text-blue-300"
-          } `}
-          aria-hidden="true"
-        />
-      </button>
+              ? "cursor-not-allowed"
+              : "transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          } ${isLoading ? "cursor-progress" : null} mt-2`}
+        >
+          <ArrowPathIcon
+            className={`h-6 w-6 ${
+              topic?.submitted || !topic?.abstract || editModeEnabled
+                ? "text-gray-300"
+                : "text-blue-300"
+            } `}
+            aria-hidden="true"
+          />
+        </button>
+      </div>
     </>
   );
 };
