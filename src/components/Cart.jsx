@@ -1,11 +1,7 @@
 import { useContext } from "react";
-
 import { UserContext, CartContext } from "../context";
-
 import { LaunchCartModalButton, Button, CartTopic } from "../components";
-
 import { AiOutlineClose } from "react-icons/ai";
-
 import { gql, useMutation } from "@apollo/client";
 
 const UPDATE_TOPIC = gql`
@@ -23,15 +19,9 @@ const UPDATE_TOPIC = gql`
 `;
 
 const Cart = ({ setToggleCart }) => {
-  const {
-    handleTopicAlertEmail,
-    handleClearCart,
-    cartTopics,
-    includeGoogleDoc,
-    setIncludeGoogleDoc
-  } = useContext(CartContext);
-
-  const { gToken } = useContext(UserContext);
+  const { handleTopicAlertEmail, handleClearCart, cartTopics } = useContext(
+    CartContext
+  );
 
   const updateSubmitted = async id => {
     let promise;
@@ -56,74 +46,12 @@ const Cart = ({ setToggleCart }) => {
     const abstractText = topicInfo.data.updateTopic.abstract?.text;
 
     handleTopicAlertEmail(topic.id);
-
-    if (includeGoogleDoc) {
-      promise = await handleCreateGoogleDoc(topic);
-      handleAddTextToDoc(promise, abstractText);
-    }
-
-    setIncludeGoogleDoc(false);
   };
 
   const handleSubmitTopics = () => {
     cartTopics.forEach(topic => processTopics(topic));
     handleClearCart();
     setToggleCart(false);
-  };
-
-  const handleCreateGoogleDoc = async topic => {
-    let documentId;
-    const url = "https://docs.googleapis.com/v1/documents";
-
-    const fetch_options = {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${gToken.access_token}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        title: `CURATE: ${topic.text}`
-      })
-    };
-
-    await fetch(url, fetch_options)
-      .then(response => response.json())
-      .then(response => {
-        documentId = response.documentId;
-      });
-    return documentId;
-  };
-
-  const handleAddTextToDoc = (
-    documentId,
-    abstractText = "No Text Provided"
-  ) => {
-    const url = `https://docs.googleapis.com/v1/documents/${documentId}:batchUpdate`;
-    const fetch_options = {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${gToken.access_token}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        requests: [
-          {
-            insertText: {
-              text: abstractText,
-              location: {
-                index: 1
-              }
-            }
-          }
-        ]
-      })
-    };
-
-    fetch(url, fetch_options)
-      .then(response => response.json())
-      .then(response => {
-        console.log(response);
-      });
   };
 
   return (
