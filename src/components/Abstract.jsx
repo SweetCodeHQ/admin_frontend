@@ -1,8 +1,7 @@
 import { useState, useContext } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { ArrowPathIcon } from "@heroicons/react/24/solid";
-import { RiMailCheckFill } from "react-icons/ri";
-import { NoAbstract, Loader, TopicCartIcon } from "../components";
+import { NoAbstract, Loader, ExportButton } from "../components";
 
 const CREATE_ABSTRACT = gql`
   mutation CreateAbstract($topicId: ID!, $text: String!) {
@@ -110,15 +109,11 @@ const Abstract = ({
         )}
       </div>
       <div className="grid grid-flow-row-dense grid-cols-3 gap-3">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4E376A]/75 mt-2">
-          {topic.submitted ? (
-            <div className="text-blue-500 text-2xl">
-              <RiMailCheckFill />
-            </div>
-          ) : (
-            <TopicCartIcon topic={topic} />
-          )}
-        </div>
+        <ExportButton
+          editModeEnabled={editModeEnabled}
+          displayedTopic={displayedTopic}
+          displayedAbstract={displayedAbstract}
+        />
         <div></div>
         <button
           onClick={handleRecreateAbstract}
