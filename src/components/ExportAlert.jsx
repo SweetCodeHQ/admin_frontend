@@ -1,9 +1,15 @@
 import { Fragment, useState } from "react";
 import { Transition } from "@headlessui/react";
+import { Loader } from "../components";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import { CheckCircleIcon } from "@heroicons/react/24/outline";
 
-const ExportAlert = ({ showExportAlert, setShowExportAlert, docId }) => {
+const ExportAlert = ({
+  showExportAlert,
+  setShowExportAlert,
+  docId,
+  isLoading
+}) => {
   const openInNewTab = url => {
     window.open(url, "_blank", "noopener,noreferrer");
   };
@@ -34,22 +40,34 @@ const ExportAlert = ({ showExportAlert, setShowExportAlert, docId }) => {
             <div className="p-4">
               <div className="flex items-center">
                 <div className="flex-shrink-0 mr-2">
-                  <CheckCircleIcon
-                    className="h-6 w-6 text-green-400"
-                    aria-hidden="true"
-                  />
+                  {isLoading ? (
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-700" />
+                  ) : (
+                    <CheckCircleIcon
+                      className="h-6 w-6 text-green-400"
+                      aria-hidden="true"
+                    />
+                  )}
                 </div>
                 <div className="flex w-0 flex-1 justify-between">
-                  <p className="w-0 flex-1 text-sm font-medium text-gray-900">
-                    Export successful!
-                  </p>
-                  <button
-                    onClick={handleClick}
-                    type="button"
-                    className="ml-3 flex-shrink-0 rounded-md bg-white text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  >
-                    Visit
-                  </button>
+                  {isLoading ? (
+                    <p className="w-0 flex-1 text-sm font-medium text-gray-900">
+                      Exporting...
+                    </p>
+                  ) : (
+                    <>
+                      <p className="w-0 flex-1 text-sm font-medium text-gray-900">
+                        Export successful!
+                      </p>
+                      <button
+                        onClick={handleClick}
+                        type="button"
+                        className="ml-3 flex-shrink-0 rounded-md bg-white text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      >
+                        Visit
+                      </button>
+                    </>
+                  )}
                 </div>
                 <div className="ml-4 flex flex-shrink-0">
                   <button
