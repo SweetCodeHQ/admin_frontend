@@ -108,13 +108,21 @@ const Abstract = ({
           />
         )}
       </div>
-      <div className="grid grid-flow-row-dense grid-cols-3 gap-3">
+      <div className="text-white text-sm font-semibold mb-3 mt-1">
+        <ul className="flex justify-around">
+          {topic?.keywords?.map(word => (
+            <li>{word.word.toUpperCase()}</li>
+          ))}
+        </ul>
+      </div>
+      <div className="grid grid-flow-row-dense grid-cols-4 gap-3">
+        <div></div>
         <ExportButton
           editModeEnabled={editModeEnabled}
           displayedTopic={displayedTopic}
           displayedAbstract={displayedAbstract}
+          keywords={topic?.keywords?.map(keyword => keyword.word)}
         />
-        <div></div>
         <button
           onClick={handleRecreateAbstract}
           disabled={topic?.submitted || isLoading}
@@ -133,6 +141,7 @@ const Abstract = ({
             aria-hidden="true"
           />
         </button>
+        <div></div>
       </div>
     </>
   );
