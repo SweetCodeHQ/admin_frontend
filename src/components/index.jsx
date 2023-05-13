@@ -5,7 +5,7 @@ export { default as Welcome } from "./Welcome";
 
 export { default as Input } from "./Input";
 export { default as Button } from "./Button";
-
+export { default as Tooltip } from "./Tooltip";
 export { default as Dashboard } from "./Dashboard";
 export { default as AdminDashboards } from "./AdminDashboards";
 export { default as EntityDashboard } from "./EntityDashboard";

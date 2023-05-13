@@ -8,7 +8,7 @@ import {
   XMarkIcon
 } from "@heroicons/react/24/solid";
 import { RiMailCheckFill } from "react-icons/ri";
-import { Input, Button, Abstract, TopicCartIcon } from "../components";
+import { Input, Button, Abstract, TopicCartIcon, Tooltip } from "../components";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
 const UPDATE_TOPIC = gql`
@@ -234,10 +234,12 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
                       />
                     </button>
                   )}
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4E376A]/75">
+                  <div className="mx-auto flex h-12 w-12 justify-center items-center rounded-full bg-[#4E376A]/75">
                     {topic?.submitted ? (
                       <div className="text-blue-500 text-2xl">
-                        <RiMailCheckFill />
+                        <Tooltip text="Already Submitted">
+                          <RiMailCheckFill />
+                        </Tooltip>
                       </div>
                     ) : (
                       <TopicCartIcon topic={topic} />

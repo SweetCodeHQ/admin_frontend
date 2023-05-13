@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
-import { ExportAlert } from "../components";
+import { ExportAlert, Tooltip } from "../components";
 import { UserContext } from "../context";
 import { DocumentArrowUpIcon } from "@heroicons/react/24/solid";
 
@@ -13,7 +13,6 @@ const ExportButton = ({
   const { gToken, setGToken } = useContext(UserContext);
 
   const [isLoading, setIsLoading] = useState(false);
-
   const [showExportAlert, setShowExportAlert] = useState(false);
 
   const [docId, setDocId] = useState(null);
@@ -275,10 +274,12 @@ const ExportButton = ({
           editModeEnabled ? "invisible" : null
         }`}
       >
-        <DocumentArrowUpIcon
-          className="h-6 w-6 editModeEnabled ? text-blue-300"
-          aria-hidden="true"
-        />
+        <Tooltip text="Export to Google Docs">
+          <DocumentArrowUpIcon
+            className="h-6 w-6 editModeEnabled ? text-blue-300"
+            aria-hidden="true"
+          />
+        </Tooltip>
       </button>
     </>
   );
