@@ -13,8 +13,26 @@ const CREATE_TOPIC = gql`
   }
 `;
 
-const TopicRow = ({ topic, userId, i, refetch }) => {
+const CREATE_TOPIC_KEYWORD = gql`
+  mutation CreateTopicKeyword($topicId: ID!, $keywordId: ID!) {
+    createTopicKeyword(input: { topicId: $topicId, keywordId: $keywordId }) {
+      id
+    }
+  }
+`;
+
+const TopicRow = ({ topic, userId, i, refetch, keywordIds }) => {
   const [hasBeenSaved, setHasBeenSaved] = useState(false);
+
+  const [createTopicKeywordData] = useMutation(CREATE_TOPIC_KEYWORD, {
+    onCompleted: data => console.log(data),
+    onError: error => console.log(error)
+  });
+
+  const createTopicKeyword = (keywordId, topicId) => {
+    const input = { topicId: topicId, keywordId: keywordId };
+    createTopicKeywordData({ variables: input });
+  };
 
   const formatTopic = () => {
     if (topic.charAt(0) === "-") {
@@ -52,7 +70,11 @@ const TopicRow = ({ topic, userId, i, refetch }) => {
   const handleAddTopicToUser = async () => {
     const newTopic = await handleSaveTopic();
     refetch();
-    const topicId = newTopic.data.createTopic.id;
+    const topicId = newTopic?.data.createTopic.id;
+
+    for (const id of keywordIds) {
+      createTopicKeyword(id, topicId);
+    }
   };
 
   return (

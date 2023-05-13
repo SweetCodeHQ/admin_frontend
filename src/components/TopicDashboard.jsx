@@ -15,7 +15,6 @@ import {
   TopicInputForm,
   TopicFilter
 } from "../components";
-import { ImBullhorn } from "react-icons/im";
 import { INDUSTRIES } from "../constants/industries";
 import { filterBySubmitted, filterByNotSubmitted } from "../constants/filters";
 
@@ -105,6 +104,8 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
 
   const [inputKeywords, setInputKeywords] = useState(null);
 
+  const [keywordIds, setKeywordIds] = useState([]);
+
   const [freshTopics, setFreshTopics] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -173,8 +174,6 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
     if (!direction) return setCurrentPage(prev => (prev -= 1));
   };
 
-  const handleAddToCart = useContext(CartContext);
-
   const { data: userTopicsData, refetch: refetchUserTopics } = useQuery(
     GET_USER_TOPICS,
     {
@@ -189,9 +188,11 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
     onError: error => console.log(error)
   });
 
-  const createKeyword = keyword => {
+  const createKeyword = async keyword => {
     const input = { word: keyword };
-    keywordMutationData({ variables: input });
+    const data = await keywordMutationData({ variables: input });
+
+    return data;
   };
 
   const [updateKeywordData] = useMutation(UPDATE_KEYWORD, {
@@ -303,6 +304,7 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
     getTopicSuggestions();
     setIsLoading(true);
     setInputKeywords(words);
+    setKeywordIds([]);
     setFormData({ word1: "", word2: "", word3: "", word4: "", word5: "" });
 
     updateClickedGenerateCount(megaphoneUserInfo.id);
@@ -324,9 +326,15 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
 
   const keywordActions = async words => {
     for (const word of words) {
-      await createKeyword(word);
-      await createUserKeyword(word);
-      await updateKeyword(word);
+      if (word) {
+        const keywordData = await createKeyword(word.toLowerCase().trim());
+
+        const keywordId = keywordData.data.createKeyword.id;
+        createUserKeyword(word);
+
+        updateKeyword(word.toLowerCase());
+        setKeywordIds(prev => [...prev, keywordId]);
+      }
     }
   };
 
@@ -473,11 +481,12 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
                           userId={megaphoneUserInfo.id}
                           i={i}
                           refetch={refetchUserTopics}
+                          keywordIds={keywordIds}
                         />
                       ))
                     ) : (
                       <h1 className="text-purple-400/70 text-center text-xl">
-                        Make Topics Using Our Generator
+                        Input keywords and click 'Generate' to see topics.
                       </h1>
                     )}
                   </ul>
@@ -527,6 +536,7 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
                       key={topic.id}
                       topic={topic}
                       refetch={refetchUserTopics}
+                      keywordIds={keywordIds}
                     />
                   ))}
                 </div>
