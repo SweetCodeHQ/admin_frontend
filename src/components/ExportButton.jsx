@@ -7,9 +7,18 @@ import { DocumentArrowUpIcon } from "@heroicons/react/24/solid";
 const ExportButton = ({
   editModeEnabled,
   displayedTopic,
-  displayedAbstract
+  displayedAbstract,
+  keywords
 }) => {
   const { gToken, setGToken } = useContext(UserContext);
+
+  const formatKeywords = () => {
+    let display = "";
+    keywords.map(keyword => (display += `${keyword}, `));
+    return display.substring(0, display.length - 2);
+  };
+
+  const displayedKeywords = formatKeywords();
 
   const [showExportAlert, setShowExportAlert] = useState(false);
   const [docId, setDocId] = useState(null);
@@ -126,7 +135,7 @@ const ExportButton = ({
           },
           {
             insertText: {
-              text: `Keywords:\n\n`,
+              text: `Keywords: ${displayedKeywords}\n\n`,
               location: {
                 index: 1
               }
@@ -151,8 +160,8 @@ const ExportButton = ({
               },
               fields: "alignment",
               range: {
-                startIndex: 13,
-                endIndex: 14
+                startIndex: displayedKeywords.length + 13,
+                endIndex: displayedKeywords.length + 14
               }
             }
           },
