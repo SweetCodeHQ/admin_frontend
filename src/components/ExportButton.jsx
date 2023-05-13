@@ -12,6 +12,12 @@ const ExportButton = ({
 }) => {
   const { gToken, setGToken } = useContext(UserContext);
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [showExportAlert, setShowExportAlert] = useState(false);
+
+  const [docId, setDocId] = useState(null);
+
   const formatKeywords = () => {
     let display = "";
     keywords.map(keyword => (display += `${keyword}, `));
@@ -20,17 +26,16 @@ const ExportButton = ({
 
   const displayedKeywords = formatKeywords();
 
-  const [showExportAlert, setShowExportAlert] = useState(false);
-  const [docId, setDocId] = useState(null);
-
   const handleClick = () => {
     handleAccessToken();
   };
 
   const handleSuccessfulToken = async tokenResponse => {
+    setIsLoading(true);
+    setShowExportAlert(true);
     setGToken(tokenResponse);
     const doc = await exportGoogleDoc(tokenResponse);
-    setShowExportAlert(true);
+    setIsLoading(false);
   };
 
   const handleAccessToken = useGoogleLogin({
@@ -262,6 +267,7 @@ const ExportButton = ({
         showExportAlert={showExportAlert}
         setShowExportAlert={setShowExportAlert}
         docId={docId}
+        isLoading={isLoading}
       />
       <button
         onClick={handleClick}
