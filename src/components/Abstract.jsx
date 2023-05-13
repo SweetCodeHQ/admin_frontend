@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { ArrowPathIcon } from "@heroicons/react/24/solid";
-import { NoAbstract, Loader, ExportButton } from "../components";
+import { NoAbstract, Loader, ExportButton, Tooltip } from "../components";
 
 const CREATE_ABSTRACT = gql`
   mutation CreateAbstract($topicId: ID!, $text: String!) {
@@ -132,14 +132,20 @@ const Abstract = ({
               : "transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           } ${isLoading ? "cursor-progress" : null} mt-2`}
         >
-          <ArrowPathIcon
-            className={`h-6 w-6 ${
-              topic?.submitted || !topic?.abstract || editModeEnabled
-                ? "text-gray-300"
-                : "text-blue-300"
-            } `}
-            aria-hidden="true"
-          />
+          <Tooltip
+            text={
+              topic?.submitted ? "Already submitted" : "Regenerate Abstract"
+            }
+          >
+            <ArrowPathIcon
+              className={`h-6 w-6 ${
+                topic?.submitted || !topic?.abstract || editModeEnabled
+                  ? "text-gray-300"
+                  : "text-blue-300"
+              } `}
+              aria-hidden="true"
+            />
+          </Tooltip>
         </button>
         <div></div>
       </div>
