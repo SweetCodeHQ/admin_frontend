@@ -1,11 +1,7 @@
 import { useState, useContext } from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { TopicCartIcon, UserTopicModal } from "../components";
-import { CartContext } from "../context/CartContext";
-
 import { MdDeleteForever } from "react-icons/md";
-import { HiPencilAlt } from "react-icons/hi";
-import { IoIosArrowDropdownCircle } from "react-icons/io";
 import { RiMailCheckFill } from "react-icons/ri";
 
 const GET_TOPIC = gql`
@@ -17,6 +13,9 @@ const GET_TOPIC = gql`
       abstract {
         id
         text
+      }
+      keywords {
+        word
       }
     }
   }
@@ -33,10 +32,6 @@ const DESTROY_TOPIC = gql`
 const UserTopic = ({ topic, refetch, id }) => {
   const [open, setOpen] = useState(false);
   const handleModal = () => setOpen(prev => !prev);
-
-  // const { handleAddToCart, cartTopics } = useContext(CartContext);
-
-  // const cartIds = cartTopics?.map(topic => topic.id);
 
   const [destroyTopicData, { loading, error }] = useMutation(DESTROY_TOPIC, {
     onCompleted: refetch,
