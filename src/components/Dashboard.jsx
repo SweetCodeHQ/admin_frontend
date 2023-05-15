@@ -6,7 +6,8 @@ import {
   Welcome,
   IndustryModal,
   GoogleLoginButton,
-  AdminDashboards
+  AdminDashboards,
+  Tour
 } from "../components";
 
 import { gql, useQuery, useMutation } from "@apollo/client";
@@ -24,6 +25,7 @@ const GET_USER_PROFILE = gql`
       clickedGenerateCount
       topicCount
       industry
+      onboarded
     }
   }
 `;
@@ -76,6 +78,13 @@ const Dashboard = () => {
       onError: error => console.log(error)
     }
   );
+
+  const [openTour, setOpenTour] = useState(false);
+
+  useEffect(() => {
+    if (megaphoneUserData && !megaphoneUserData?.user.onboarded)
+      setOpenTour(true);
+  }, [megaphoneUserData]);
 
   const { data: entityData, refetch: refetchEntity } = useQuery(GET_ENTITY, {
     variables: { url: userHd },
@@ -168,12 +177,18 @@ const Dashboard = () => {
               {googleUser?.googleUser?.given_name}!
             </h1>
           )}
-          {megaphoneUserData?.user.industry === 0 ? (
+          {megaphoneUserData?.user.industry === 0 &&
+          megaphoneUserData?.user?.onboarded ? (
             <IndustryModal
               setToggleIndustryModal={setToggleIndustryModal}
               megaphoneUserId={megaphoneUserData?.user.id}
             />
           ) : null}
+          <Tour
+            userId={megaphoneUserData?.user.id}
+            openTour={openTour}
+            setOpenTour={setOpenTour}
+          />
           {userIsLoggedInAndIsAdmin && <AdminDashboards />}
           {userIsLoggedInAndIsNotAdmin && (
             <TopicDashboard megaphoneUserInfo={megaphoneUserData?.user} />
