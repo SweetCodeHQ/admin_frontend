@@ -16,21 +16,43 @@ const UPDATE_ONBOARDED = gql`
   }
 `;
 
-const Tour = ({ userId, openTour, setOpenTour }) => {
-  const TITLES = [
-    "Welcome",
-    "What Is Curio?",
-    "How Does It Work?",
-    "Why Curio?",
-    "What Then?"
-  ];
+const TourBullet = ({ phase, bulletNumber, setPhase }) => {
+  return (
+    <div
+      onClick={() => setPhase(bulletNumber)}
+      className={`${phase === bulletNumber &&
+        "h-6 w-6 border-2 border-white"} ${phase !== bulletNumber &&
+        "h-3 w-3"} ${phase >= bulletNumber ? "bg-indigo-500" : "bg-white"}
+    } rounded-full cursor-pointer hover:bg-indigo-300`}
+    />
+  );
+};
 
-  const BODIES = [
-    "Welcome to Curio! We're so glad you're here. We've taken the latest in artificial intelligence to help you write faster.",
-    "WHAT: Curio is a topic generator powered by OpenAI",
-    "HOW: You input your keywords. Then, we use AI to suggest 5 topics. You can choose which ones to save.",
-    "WHY: Curio makes inspiration easy.",
-    "WHAT THEN: You can export your topic or add it to your cart and send it to the experts at Fixate."
+const Tour = ({ userId, openTour, setOpenTour }) => {
+  const COPY = [
+    {
+      title: "Welcome",
+      body:
+        "Welcome to Curio! We're so glad you're here. We've taken the latest in artificial intelligence to help you write faster."
+    },
+    {
+      title: "What Is Curio?",
+      body: "Curio is a topic generator powered by OpenAI."
+    },
+    {
+      title: "How Does It Work?",
+      body:
+        "You input your keywords. Then, we use AI to suggest 5 topics. You can choose which ones to save."
+    },
+    {
+      title: "Why Curio?",
+      body: "Curio makes inspiration easy."
+    },
+    {
+      title: "What Then?",
+      body:
+        "You can export your topic or add it to your cart and send it to the experts at Fixate."
+    }
   ];
 
   const [phase, setPhase] = useState(0);
@@ -56,21 +78,11 @@ const Tour = ({ userId, openTour, setOpenTour }) => {
     forward ? setPhase(prev => prev + 1) : setPhase(prev => prev - 1);
   };
 
-  const displayTitle = () => {
-    if (phase === 4) return TITLES[4];
-    if (phase === 3) return TITLES[3];
-    if (phase === 2) return TITLES[2];
-    if (phase === 1) return TITLES[1];
-    return TITLES[0];
+  const determineCopy = () => {
+    return COPY[phase];
   };
 
-  const displayBody = () => {
-    if (phase === 4) return BODIES[4];
-    if (phase === 3) return BODIES[3];
-    if (phase === 2) return BODIES[2];
-    if (phase === 1) return BODIES[1];
-    return BODIES[0];
-  };
+  const displayedCopy = determineCopy();
 
   return (
     <Transition.Root show={openTour} as={Fragment}>
@@ -116,15 +128,15 @@ const Tour = ({ userId, openTour, setOpenTour }) => {
                       as="h3"
                       className="text-xl font-semibold leading-6 text-white"
                     >
-                      {displayTitle()}
+                      {displayedCopy.title}
                     </Dialog.Title>
                     <div className="mt-2 bg-[#4E376A]/75 rounded-lg p-2 min-h-[75px]">
-                      <p className="text-md text-white">{displayBody()}</p>
+                      <p className="text-md text-white">{displayedCopy.body}</p>
                     </div>
                   </div>
                 </div>
                 <div className="flex mt-3 sm:mt-3 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-                  {phase === 4 ? (
+                  {phase === COPY.length - 1 ? (
                     <button
                       type="button"
                       className="flex w-2/3 justify-center justify-self-center py-2 rounded-full bg-white cursor-pointer font-bold text-[#2D104F] text-sm transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
@@ -154,41 +166,16 @@ const Tour = ({ userId, openTour, setOpenTour }) => {
                   </button>
                 </div>
                 <div className="flex justify-around items-center mt-5">
-                  <div
-                    onClick={() => setPhase(0)}
-                    className={`${phase === 0 &&
-                      "h-6 w-6 border-2 border-white"} ${phase !== 0 &&
-                      "h-3 w-3"} ${phase >= 0 ? "bg-indigo-500" : "bg-white"}
-                    } rounded-full cursor-pointer hover:bg-indigo-300`}
-                  />
-                  <div
-                    onClick={() => setPhase(1)}
-                    className={`${phase === 1 &&
-                      "h-6 w-6 border-2 border-white"} ${phase !== 1 &&
-                      "h-3 w-3"} ${phase >= 1 ? "bg-indigo-500" : "bg-white"}
-                    } rounded-full cursor-pointer hover:bg-indigo-300`}
-                  />
-                  <div
-                    onClick={() => setPhase(2)}
-                    className={`${phase === 2 &&
-                      "h-6 w-6 border-2 border-white"} ${phase !== 2 &&
-                      "h-3 w-3"} ${phase >= 2 ? "bg-indigo-500" : "bg-white"}
-                    } rounded-full cursor-pointer hover:bg-indigo-300`}
-                  />
-                  <div
-                    onClick={() => setPhase(3)}
-                    className={`${phase === 3 &&
-                      "h-6 w-6 border-2 border-white"} ${phase !== 3 &&
-                      "h-3 w-3"} ${phase >= 3 ? "bg-indigo-500" : "bg-white"}
-                    } rounded-full cursor-pointer hover:bg-indigo-300`}
-                  />
-                  <div
-                    onClick={() => setPhase(4)}
-                    className={`${phase === 4 &&
-                      "h-6 w-6 border-2 border-white"} ${phase !== 4 &&
-                      "h-3 w-3"} ${phase >= 4 ? "bg-indigo-500" : "bg-white"}
-                    } rounded-full cursor-pointer hover:bg-indigo-300`}
-                  />
+                  {COPY.map((title, i) => {
+                    return (
+                      <TourBullet
+                        key={i}
+                        phase={phase}
+                        setPhase={setPhase}
+                        bulletNumber={i}
+                      />
+                    );
+                  })}
                 </div>
               </Dialog.Panel>
             </Transition.Child>
