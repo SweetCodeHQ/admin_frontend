@@ -139,7 +139,7 @@ const Tour = ({ userId, openTour, setOpenTour }) => {
                   {phase === COPY.length - 1 ? (
                     <button
                       type="button"
-                      className="flex w-2/3 justify-center justify-self-center py-2 rounded-full bg-white cursor-pointer font-bold text-[#2D104F] text-sm transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
+                      className="flex w-2/3 justify-center items-center justify-self-center rounded-full bg-white cursor-pointer font-bold text-[#2D104F] text-sm transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
                       onClick={handleEndTour}
                     >
                       Let's Get Started!
