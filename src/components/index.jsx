@@ -2,6 +2,7 @@ export { default as Loader } from "./Loader";
 export { default as Footer } from "./Footer";
 export { default as Navbar } from "./Navbar";
 export { default as Welcome } from "./Welcome";
+export { default as Tour } from "./Tour";
 
 export { default as Input } from "./Input";
 export { default as Button } from "./Button";
