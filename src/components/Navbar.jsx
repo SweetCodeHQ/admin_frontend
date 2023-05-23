@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import { CartContext } from "../context/CartContext";
-import { Cart, Button, CartIcon } from "../components";
+import { Cart, Button, CartIcon, BlanketNotification } from "../components";
 
 const Navbar = () => {
   const { handleSignOut, googleUser } = useContext(UserContext);
@@ -12,6 +12,7 @@ const Navbar = () => {
         {googleUser && (
           <>
             <Button text={"Logout"} handleClick={handleSignOut} />
+            <BlanketNotification />
             <CartIcon />
           </>
         )}
