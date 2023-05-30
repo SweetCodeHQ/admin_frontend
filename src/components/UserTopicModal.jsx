@@ -90,7 +90,6 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
   });
 
   const editAbstract = (abstractId, newAbstractText) => {
-    console.log("mutation");
     const input = { id: abstractId, text: newAbstractText };
 
     abstractUpdateData({ variables: input });
