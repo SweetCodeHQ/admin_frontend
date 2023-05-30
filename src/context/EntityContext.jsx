@@ -32,9 +32,10 @@ export const EntityContextProvider = ({ children }) => {
     setFormData(prevState => ({ ...prevState, [name]: e.target.value }));
   };
 
-  const sendEntity = formData => {
+  const sendEntity = async formData => {
     const input = formData;
-    entityMutationData({ variables: input });
+    const promise = await entityMutationData({ variables: input });
+    return promise;
   };
 
   const editEntity = updateInfo => {
