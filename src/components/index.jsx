@@ -8,6 +8,13 @@ export { default as Input } from "./Input";
 export { default as Button } from "./Button";
 export { default as Tooltip } from "./Tooltip";
 export { default as BlanketNotification } from "./BlanketNotification";
+export { default as AdminSwitch } from "./AdminSwitch";
+
+export { default as AllUsersTable } from "./AllUsersTable";
+
+export { default as Table } from "./Table";
+export { default as TableAddItemForm } from "./TableAddItemForm";
+export { default as PaginationNav } from "./PaginationNav";
 
 export { default as Dashboard } from "./Dashboard";
 export { default as AdminDashboards } from "./AdminDashboards";
