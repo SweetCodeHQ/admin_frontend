@@ -3,7 +3,7 @@ import { Transition } from "@headlessui/react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 
-const BlanketNotification = () => {
+const BlanketNotification = ({ displayTitle, displayText, link, mutation }) => {
   const [show, setShow] = useState(true);
 
   return (
@@ -36,13 +36,33 @@ const BlanketNotification = () => {
                   </div>
                   <div className="ml-3 w-0 flex-1 pt-0.5">
                     <p className="text-sm font-medium text-gray-900">
-                      News from The Fixate Desk!
+                      {displayTitle}
                     </p>
-                    <p className="mt-1 text-sm text-gray-500">
-                      We've added another fantastic feature to our app!
-                    </p>
+                    <p className="mt-1 text-sm text-gray-500">{displayText}</p>
+                    <div className="flex items-center">
+                      {link ? (
+                        <a
+                          href={link}
+                          className="mt-1 text-sm mr-2 text-indigo-500 hover:text-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        >
+                          More Here
+                        </a>
+                      ) : null}
+                      {true ? (
+                        <button
+                          onClick={mutation}
+                          className="mt-1 text-sm cursor-pointer bg-indigo-500 rounded-lg text-white p-2 hover:bg-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        >
+                          Got it!
+                        </button>
+                      ) : null}
+                    </div>
                   </div>
-                  <div className="ml-4 flex flex-shrink-0">
+                  <div
+                    className={`ml-4 flex flex-shrink-0 ${
+                      mutation ? "invisible" : null
+                    }`}
+                  >
                     <button
                       type="button"
                       className="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
