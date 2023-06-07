@@ -26,6 +26,10 @@ const GET_USER_PROFILE = gql`
       topicCount
       industry
       onboarded
+      acceptedEulaOn
+      acceptedCookiesOn
+      acceptedPrivacyOn
+      sawBannerOn
     }
   }
 `;
@@ -75,6 +79,7 @@ const Dashboard = () => {
     GET_USER_PROFILE,
     {
       variables: { email },
+      onCompleted: data => setMegaphoneUserInfo(data.user),
       onError: error => console.log(error)
     }
   );
