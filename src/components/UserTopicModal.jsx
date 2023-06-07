@@ -43,7 +43,8 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
   useEffect(() => {
     if (abstractTextRef && abstractTextRef.current) {
       abstractTextRef.current.style.height = "auto";
-      abstractTextRef.current.style.height = `${abstractTextRef.current.scrollHeight}px`;
+      abstractTextRef.current.style.height = `${abstractTextRef.current
+        .scrollHeight + 2}px`;
     }
   }, [abstractTextRef, modalFormData, editModeEnabled]);
 
