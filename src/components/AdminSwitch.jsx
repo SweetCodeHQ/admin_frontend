@@ -12,7 +12,7 @@ const UPDATE_ADMIN_STATUS = gql`
   }
 `;
 
-export const AdminSwitch = ({ isOn, index, userId, forAdmin }) => {
+export const AdminSwitch = ({ isOn, userId, forAdmin }) => {
   const [isEnabled, setIsEnabled] = useState(true);
 
   const enabledClass = "transform translate-x-5 bg-purple-500";
@@ -21,7 +21,6 @@ export const AdminSwitch = ({ isOn, index, userId, forAdmin }) => {
     const input = forAdmin
       ? { id: userId, isAdmin: changeStatusTo }
       : { id: userId, isBlocked: changeStatusTo };
-    console.log(input);
     userUpdateData({ variables: input });
   };
 
@@ -61,3 +60,5 @@ export const AdminSwitch = ({ isOn, index, userId, forAdmin }) => {
     </>
   );
 };
+
+export default AdminSwitch;

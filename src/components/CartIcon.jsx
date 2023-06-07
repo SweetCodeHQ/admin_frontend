@@ -20,7 +20,7 @@ const CartIcon = () => {
               onClick={() => setToggleCart(true)}
             />
             {cartTopics.length !== 0 && (
-              <h4 className="text-purple-800 rounded-full text-base font-bold pt-1 pl-2 pr-2 pb-1 -translate-y-4 bg-yellow-400">
+              <h4 className="text-purple-800 rounded-full text-base font-bold pt-1 pl-2 pr-2 pb-1 -translate-y-4 z-5 bg-yellow-400">
                 {cartTopics.length}
               </h4>
             )}

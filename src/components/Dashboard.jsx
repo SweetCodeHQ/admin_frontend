@@ -26,6 +26,10 @@ const GET_USER_PROFILE = gql`
       topicCount
       industry
       onboarded
+      acceptedEulaOn
+      acceptedCookiesOn
+      acceptedPrivacyOn
+      sawBannerOn
     }
   }
 `;
@@ -75,6 +79,7 @@ const Dashboard = () => {
     GET_USER_PROFILE,
     {
       variables: { email },
+      onCompleted: data => setMegaphoneUserInfo(data.user),
       onError: error => console.log(error)
     }
   );
@@ -172,7 +177,7 @@ const Dashboard = () => {
             </>
           )}
           {googleUser?.googleUser && (
-            <h1 className="text-3xl sm:text-5xl text-white text-gradient font-bold py-1">
+            <h1 className="text-3xl sm:text-5xl text-white text-gradient font-bold pt-7">
               Welcome back, <br />
               {googleUser?.googleUser?.given_name}!
             </h1>
