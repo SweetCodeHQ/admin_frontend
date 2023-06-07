@@ -77,24 +77,18 @@ const AllUsersTable = ({ flipPage, connection }) => {
         {headers.map((header, i) => (
           <td
             key={`${i}${header}`}
-            className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-3"
+            className="whitespace-nowrap py-7 pl-4 pr-3 text-sm font-medium sm:pl-3"
           >
             {null}
           </td>
         ))}
-        <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
-          <a
-            href="#"
-            className="text-sm font-bold text-indigo-500 hover:text-indigo-300 invisible"
-          >
-            Edit<span className="sr-only">, Item Name</span>
-          </a>
-        </td>
       </tr>
     );
   };
 
   const generateEmptyRows = () => {
+    if (tableItems?.length === 10) return;
+
     let rows = [];
     const numOfEmptyRows = 10 - tableItems?.length;
 
