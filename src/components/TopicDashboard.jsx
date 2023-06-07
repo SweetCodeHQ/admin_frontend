@@ -21,6 +21,7 @@ import { filterBySubmitted, filterByNotSubmitted } from "../constants/filters";
 const GET_USER_TOPICS = gql`
   query User($email: String!) {
     user(email: $email) {
+      id
       topics {
         id
         text
@@ -530,7 +531,7 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
                   refetch={refetchUserTopics}
                 />
                 <div className="p-5 flex flex-col items-left space-y-2 pl-5 md:min-h-[400px] h-full">
-                  {topicPages[currentPage].map((topic, i) => (
+                  {topicPages[currentPage]?.map((topic, i) => (
                     <UserTopic
                       id={i}
                       key={topic.id}
