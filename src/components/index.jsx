@@ -7,6 +7,7 @@ export { default as Tour } from "./Tour";
 export { default as Input } from "./Input";
 export { default as Button } from "./Button";
 export { default as Tooltip } from "./Tooltip";
+export { default as ExpandableTextArea } from "./ExpandableTextArea";
 export { default as BlanketNotification } from "./BlanketNotification";
 export { default as AdminSwitch } from "./AdminSwitch";
 
@@ -20,6 +21,7 @@ export { default as Dashboard } from "./Dashboard";
 export { default as AdminDashboards } from "./AdminDashboards";
 export { default as EntityDashboard } from "./EntityDashboard";
 export { default as AdminUserDashboard } from "./AdminUserDashboard";
+export { default as BannerDashboard } from "./BannerDashboard";
 
 export { default as TopicDashboard } from "./TopicDashboard";
 export { default as TopicFilter } from "./TopicFilter";
