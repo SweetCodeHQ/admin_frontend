@@ -2,6 +2,7 @@ export { default as Loader } from "./Loader";
 export { default as Footer } from "./Footer";
 export { default as Navbar } from "./Navbar";
 export { default as Welcome } from "./Welcome";
+export { default as LoginCard } from "./LoginCard";
 export { default as Tour } from "./Tour";
 
 export { default as Input } from "./Input";
@@ -12,8 +13,8 @@ export { default as BlanketNotification } from "./BlanketNotification";
 export { default as AdminSwitch } from "./AdminSwitch";
 
 export { default as AllUsersTable } from "./AllUsersTable";
+export { default as EntitiesTable } from "./EntitiesTable";
 
-export { default as Table } from "./Table";
 export { default as TableAddItemForm } from "./TableAddItemForm";
 export { default as PaginationNav } from "./PaginationNav";
 
