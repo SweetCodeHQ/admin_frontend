@@ -4,6 +4,7 @@ const Input = ({
   type,
   value,
   defaultValue,
+  step,
   handleChange,
   customStyles
 }) => {
@@ -21,6 +22,7 @@ const Input = ({
       defaultValue={defaultValue}
       onChange={e => handleChange(e, name)}
       className={styles}
+      step="1"
     />
   );
 };
