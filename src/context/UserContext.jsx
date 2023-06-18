@@ -8,6 +8,7 @@ const CREATE_USER = gql`
       id
       email
       isAdmin
+      loginCount
     }
   }
 `;
@@ -86,6 +87,7 @@ export const UserContextProvider = ({ children }) => {
         megaphoneUserInfo,
         setMegaphoneUserInfo,
         handleSignupAlertEmail,
+        createUserMutation,
         gToken,
         setGToken
       }}
