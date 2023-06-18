@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
-import { Table } from "../components";
+import { EntitiesTable } from "../components";
 import { EntityContext } from "../context/EntityContext";
 
 const GET_PAGINATED_ENTITIES = gql`
@@ -21,6 +21,7 @@ const GET_PAGINATED_ENTITIES = gql`
           url
           userCount
           topicCount
+          credits
         }
       }
     }
@@ -34,13 +35,14 @@ const EntityDashboard = () => {
 
   const { data, refetch, fetchMore } = useQuery(GET_PAGINATED_ENTITIES, {
     onError: error => console.log(error),
-    onCompleted: data => setEntities(data),
-    fetchPolicy: "network-first"
+    onCompleted: data => setEntities(data.entitiesConnection),
+    fetchPolicy: "network-only"
   });
 
   const entityForm = {
     name: "",
-    url: ""
+    url: "",
+    credits: null
   };
 
   const handleCreateEntity = async data => {
@@ -63,15 +65,11 @@ const EntityDashboard = () => {
 
   return (
     <div className="mt-10">
-      <Table
-        tableName="Entities"
-        tableDescription="A list of all companies in our database."
-        headers={["name", "url", "userCount", "topicCount"]}
-        connection={entities?.entitiesConnection}
-        flipPage={flipEntityPage}
-        form={entityForm}
-        handleCreate={handleCreateEntity}
-        handleEdit={editEntity}
+      <EntitiesTable
+        entities={entities}
+        refetch={refetch}
+        fetchMore={fetchMore}
+        flipEntityPage={flipEntityPage}
       />
     </div>
   );
