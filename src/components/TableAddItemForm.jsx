@@ -33,6 +33,7 @@ const TableAddItemForm = ({
         {keys.map(key => {
           return (
             <Input
+              key={`create ${tableName} ${key}`}
               placeholder={key.toUpperCase()}
               name={key}
               handleChange={handleChange}
