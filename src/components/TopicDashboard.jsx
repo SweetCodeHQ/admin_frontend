@@ -395,35 +395,35 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
               </h3>
               <div className="p-5 pt-3 mt-3 w-4/5 flex flex-col justify-start items-start bg-[#3A1F5C] rounded-xl self-center">
                 <Input
-                  placeholder="Word 1"
+                  placeholder="Keyword 1"
                   name="word1"
                   value={formData.word1}
                   type="text"
                   handleChange={handleChange}
                 />
                 <Input
-                  placeholder="Word 2"
+                  placeholder="Keyword 2"
                   name="word2"
                   value={formData.word2}
                   type="text"
                   handleChange={handleChange}
                 />
                 <Input
-                  placeholder="Word 3"
+                  placeholder="Keyword 3"
                   name="word3"
                   value={formData.word3}
                   type="text"
                   handleChange={handleChange}
                 />
                 <Input
-                  placeholder="Word 4 (optional)"
+                  placeholder="Keyword 4 (optional)"
                   name="word4"
                   value={formData.word4}
                   type="text"
                   handleChange={handleChange}
                 />
                 <Input
-                  placeholder="Word 5 (optional)"
+                  placeholder="Keyword 5 (optional)"
                   name="word5"
                   value={formData.word5}
                   type="text"
