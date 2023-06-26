@@ -1,16 +1,12 @@
-import { useContext, useState } from "react";
-import { useGoogleLogin } from "@react-oauth/google";
-
 import "tw-elements";
 
-const LaunchCartModalButton = ({ handleSubmitTopics }) => {
-  const handleSendTopics = () => {
-    {
-      /*Try block, with an option for if the doc creation returns with 1. expired token and 2. other processing error*/
-    }
-    handleSubmitTopics();
-  };
-
+const LaunchCartModalButton = ({
+  headerText,
+  bodyText,
+  submitButtonText,
+  initialButtonText,
+  handleClick
+}) => {
   return (
     <>
       <button
@@ -19,7 +15,7 @@ const LaunchCartModalButton = ({ handleSubmitTopics }) => {
         data-bs-toggle="modal"
         data-bs-target="#submitTopicsConfirmation"
       >
-        Send All
+        {initialButtonText}
       </button>
       <div
         className="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
@@ -29,13 +25,13 @@ const LaunchCartModalButton = ({ handleSubmitTopics }) => {
         aria-hidden="true"
       >
         <div className="modal-dialog relative w-auto pointer-events-none">
-          <div className="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+          <div className="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md rounded-t-lg outline-none text-current">
             <div className="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md bg-[#2D104F]">
               <h5
                 className="text-xl font-medium leading-normal text-white"
                 id="exampleModalLabel"
               >
-                Send these topics?
+                {headerText}
               </h5>
               <button
                 type="button"
@@ -45,8 +41,7 @@ const LaunchCartModalButton = ({ handleSubmitTopics }) => {
               ></button>
             </div>
             <div className="modal-body relative p-4 text-black bg-purple-100">
-              Click "Send Topics" to confirm that you want to send these topics
-              to the experts at Fixate.
+              {bodyText}
             </div>
             <div className="modal-footer flex flex-shrink-0 flex-wrap items-center justify-end p-4 border-t border-gray-200 rounded-b-md bg-purple-300">
               <button
@@ -60,9 +55,9 @@ const LaunchCartModalButton = ({ handleSubmitTopics }) => {
                 type="button"
                 className="px-6 py-2.5 bg-blue-600 text-white font-bold text-sm leading-tight uppercase rounded-full shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out ml-1 hover:-translate-y-1 hover:scale-105"
                 data-bs-dismiss="modal"
-                onClick={handleSendTopics}
+                onClick={handleClick}
               >
-                Send Topics
+                {submitButtonText}
               </button>
             </div>
           </div>
