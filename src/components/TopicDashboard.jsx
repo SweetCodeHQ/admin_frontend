@@ -26,6 +26,7 @@ const GET_USER_TOPICS = gql`
         id
         text
         submitted
+        contentType
       }
     }
   }
@@ -112,7 +113,6 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
 
   const [userTopics, setUserTopics] = useState([]);
   const [topicPages, setTopicPages] = useState([]);
-
   const [currentPage, setCurrentPage] = useState(0);
 
   const calculateCurrentPage = () => {
@@ -450,7 +450,7 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
             <div className="w-full flex flex-col items-center">
               <div className="flex flex-col mt-2 w-full">
                 <h2 className="text-white font-bold self-center rounded-full p-2">
-                  Keywords for You
+                  Inspiration Words
                 </h2>
                 <div className="flex flex-wrap justify-evenly w-full self-center">
                   {smartKeywords.map((keyword, i) => (
