@@ -10,6 +10,7 @@ const GET_TOPIC = gql`
       id
       text
       submitted
+      contentType
       abstract {
         id
         text

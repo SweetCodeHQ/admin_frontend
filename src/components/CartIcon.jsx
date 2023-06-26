@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { Cart } from "../components";
 import { CartContext, UserContext } from "../context";
+import { EntityContextProvider } from "../context/EntityContext";
 
 import { BsCart4 } from "react-icons/bs";
 
@@ -25,7 +26,9 @@ const CartIcon = () => {
               </h4>
             )}
           </div>
-          {toggleCart && <Cart setToggleCart={setToggleCart} />}
+          <EntityContextProvider>
+            {toggleCart && <Cart setToggleCart={setToggleCart} />}
+          </EntityContextProvider>
         </>
       )}
     </>
