@@ -41,6 +41,13 @@ const UPDATE_USER_BANNER_DATE = gql`
   }
 `;
 
+const TITLES = [
+  "News from the Fixate Desk",
+  "We've updated our privacy statement.",
+  "We've updated our cookie policy.",
+  "We've updated our EULA."
+];
+
 const Navbar = () => {
   const { handleSignOut, googleUser, megaphoneUserInfo } = useContext(
     UserContext
@@ -102,19 +109,12 @@ const Navbar = () => {
     fetchPolicy: "network-only"
   });
 
-  const TITLES = [
-    "News from the Fixate Desk",
-    "We've updated our privacy statement.",
-    "We've updated our cookie policy.",
-    "We've updated our EULA."
-  ];
-
   return (
     <nav className="w-full gradient-bg-purple-welcome fixed z-10">
       <div className="w-full flex justify-between items-center p-4">
         {googleUser && (
           <>
-            <Button text={"Logout"} handleClick={handleSignOut} />
+            <Button text={"Log Out"} handleClick={handleSignOut} />
             {showBanners()}
             <CartIcon />
           </>
