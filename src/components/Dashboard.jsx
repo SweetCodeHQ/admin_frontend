@@ -30,6 +30,12 @@ const GET_USER_PROFILE = gql`
       acceptedCookiesOn
       acceptedPrivacyOn
       sawBannerOn
+      entities {
+        id
+        url
+        credits
+        requestInProgress
+      }
     }
   }
 `;
@@ -46,8 +52,9 @@ const GET_ENTITY = gql`
   query entityByUrl($url: String!) {
     entity(url: $url) {
       id
-      name
       url
+      credits
+      requestInProgress
     }
   }
 `;
@@ -94,7 +101,8 @@ const Dashboard = () => {
   const { data: entityData, refetch: refetchEntity } = useQuery(GET_ENTITY, {
     variables: { url: userHd },
     onError: error => console.log(error),
-    onCompleted: data => console.log(data)
+    onCompleted: data => console.log(data),
+    fetchPolicy: "network-only"
   });
 
   const updateUserLoginCount = id => {
@@ -122,21 +130,33 @@ const Dashboard = () => {
     return user;
   };
 
-  const userEntityCallback = async currentUser => {
-    const data = await megaphoneUserRefetch(currentUser.email);
+  const handleEntityCreation = async url => {
+    await sendEntity({ url: url });
+  };
 
-    if (data.data.user.loginCount === 0)
-      handleSignupAlertEmail(data.data.user.id);
-    setMegaphoneUserInfo(data.data.user);
-    updateUserLoginCount(data.data.user.id);
+  const userEntityCallback = async currentUser => {
+    const userData = await megaphoneUserRefetch(currentUser.email);
+
+    if (userData.data.user.loginCount === 0)
+      handleSignupAlertEmail(userData.data.user.id);
+    setMegaphoneUserInfo(userData.data.user);
+    updateUserLoginCount(userData.data.user.id);
 
     const megaphoneEntityResponse = await refetchEntity({
       url: currentUser.hd
     });
 
-    const entityId = megaphoneEntityResponse.data.entity.id;
+    let entityId;
 
-    createUserEntityMutation(data.data.user.id, entityId);
+    if (megaphoneEntityResponse.data.entity.id) {
+      entityId = megaphoneEntityResponse.data.entity.id;
+    } else {
+      const promise = await handleEntityCreation(currentUser.hd);
+      entityId = promise.data.createEntity.id;
+    }
+
+    if (!userData.data.user.entities[0])
+      createUserEntityMutation(userData.data.user.id, entityId);
   };
 
   const [userEntityMutationData, { loading, error }] = useMutation(
@@ -165,15 +185,16 @@ const Dashboard = () => {
 
   return (
     <div
-      className="flex w-full justify-center items-center bg-cover bg-center"
+      className={`flex w-full justify-center items-center ${
+        googleUser.googleUser ? "bg-cover" : null
+      }`}
       style={background}
     >
       <div className="flex items-start justify-between md:p-20 py-12">
         <div className="flex flex-1 justify-start flex-col mf:mr-10">
           {!googleUser.googleUser && (
             <>
-              <GoogleLoginButton loginCallback={loginCallback} />
-              <Welcome />
+              <Welcome loginCallback={loginCallback} />
             </>
           )}
           {googleUser?.googleUser && (
