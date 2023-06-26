@@ -10,6 +10,18 @@ export const CartContextProvider = ({ children }) => {
     return initialValue || [];
   });
 
+  const updateCartTopic = (topicIndex, newContentType) => {
+    console.log("updated");
+    const updatedTopic = {
+      ...cartTopics[topicIndex],
+      contentType: newContentType
+    };
+
+    const tempTopics = [...cartTopics];
+    tempTopics.splice(topicIndex, 1, updatedTopic);
+    setCartTopics(tempTopics);
+  };
+
   const handleAddToCart = topic => {
     setCartTopics(prev => [...prev, topic]);
   };
@@ -39,7 +51,8 @@ export const CartContextProvider = ({ children }) => {
         handleAddToCart,
         handleTopicAlertEmail,
         handleClearCart,
-        handleRemoveFromCart
+        handleRemoveFromCart,
+        updateCartTopic
       }}
     >
       {children}
