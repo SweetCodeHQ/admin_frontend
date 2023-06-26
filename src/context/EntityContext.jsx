@@ -12,14 +12,27 @@ const CREATE_ENTITY = gql`
 `;
 
 const EDIT_ENTITY = gql`
-  mutation EditEntity($id: ID!, $name: String, $url: String, $credits: Int) {
+  mutation EditEntity(
+    $id: ID!
+    $name: String
+    $url: String
+    $credits: Float
+    $requestInProgress: Boolean
+  ) {
     updateEntity(
-      input: { id: $id, name: $name, url: $url, credits: $credits }
+      input: {
+        id: $id
+        name: $name
+        url: $url
+        credits: $credits
+        requestInProgress: $requestInProgress
+      }
     ) {
       id
       name
       url
       credits
+      requestInProgress
     }
   }
 `;
