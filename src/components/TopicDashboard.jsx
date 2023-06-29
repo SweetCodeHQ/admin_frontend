@@ -502,6 +502,7 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
                     (keyword, i) =>
                       keyword != "" && (
                         <Button
+                          key={`inspiration ${i}`}
                           text={keyword}
                           handleClick={() => moveKeyword(keyword)}
                           customStyles={
