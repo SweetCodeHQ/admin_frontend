@@ -8,7 +8,14 @@ import {
   XMarkIcon
 } from "@heroicons/react/24/solid";
 import { RiMailCheckFill } from "react-icons/ri";
-import { Input, Button, Abstract, TopicCartIcon, Tooltip } from "../components";
+import {
+  Input,
+  Button,
+  Abstract,
+  TopicCartIcon,
+  Tooltip,
+  BasicAlert
+} from "../components";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
 const UPDATE_TOPIC = gql`
@@ -36,6 +43,8 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
     topicText: "",
     abstractText: ""
   });
+
+  const [showAlert, setShowAlert] = useState(false);
 
   const cancelButtonRef = useRef(null);
 
@@ -165,6 +174,11 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
                     </div>
                   )}
                   <div className="mt-3 text-center sm:mt-5">
+                    <BasicAlert
+                      showBasicAlert={showAlert}
+                      setShowBasicAlert={setShowAlert}
+                      text="Saved!"
+                    />
                     <Dialog.Title
                       as="h3"
                       className="text-base font-semibold leading-6 text-white"
@@ -199,6 +213,7 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
                       />
                     ) : (
                       <Abstract
+                        key={`TopicAbstract:${topic?.id}`}
                         topic={topic}
                         refetchTopic={refetchTopic}
                         editModeEnabled={editModeEnabled}
