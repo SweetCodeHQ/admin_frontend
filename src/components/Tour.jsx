@@ -33,25 +33,27 @@ const Tour = ({ userId, openTour, setOpenTour }) => {
     {
       title: "Welcome",
       body:
-        "Welcome to Curio! We're so glad you're here. We've taken the latest in artificial intelligence to help you write faster."
+        "Intelligent Content Creation starts here. Curio uses the latest in AI to help you write faster by curating inspired topics."
     },
     {
       title: "What Is Curio?",
-      body: "Curio is a topic generator powered by OpenAI."
+      body:
+        "Curio is a topic generator - a customized curator - powered by OpenAI."
     },
     {
       title: "How Does It Work?",
       body:
-        "You input your keywords. Then, we use AI to suggest 5 topics. You can choose which ones to save."
+        "You input keywords. Curio uses AI to suggest topics. You choose which ones to edit and save."
     },
     {
       title: "Why Curio?",
-      body: "Curio makes inspiration easy."
+      body:
+        "Because intelligent content creation starts with your curiosity. Curio uses AI to Accelerate Inspiration."
     },
     {
       title: "What Then?",
       body:
-        "You can export your topic or add it to your cart and send it to the experts at Fixate."
+        "You export your final topics or add them to your cart to let the industry experts at Fixate draft your technical content."
     }
   ];
 
