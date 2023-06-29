@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { UserContext } from "../context";
+import { UserContext, EntityContext } from "../context";
 
 import {
   TopicDashboard,
@@ -32,6 +32,7 @@ const GET_USER_PROFILE = gql`
       sawBannerOn
       entities {
         id
+        name
         url
         credits
         requestInProgress
@@ -76,6 +77,8 @@ const Dashboard = () => {
     handleSignupAlertEmail
   } = useContext(UserContext);
 
+  const { sendEntity } = useContext(EntityContext);
+
   const [toggleIndustryModal, setToggleIndustryModal] = useState(false);
 
   const googleUser = useContext(UserContext);
@@ -94,7 +97,7 @@ const Dashboard = () => {
   const [openTour, setOpenTour] = useState(false);
 
   useEffect(() => {
-    if (megaphoneUserData && !megaphoneUserData?.user.onboarded)
+    if (megaphoneUserData && !megaphoneUserData?.user?.onboarded)
       setOpenTour(true);
   }, [megaphoneUserData]);
 
@@ -131,16 +134,17 @@ const Dashboard = () => {
   };
 
   const handleEntityCreation = async url => {
-    await sendEntity({ url: url });
+    const promise = await sendEntity({ url: url });
+    return promise;
   };
 
   const userEntityCallback = async currentUser => {
     const userData = await megaphoneUserRefetch(currentUser.email);
 
-    if (userData.data.user.loginCount === 0)
-      handleSignupAlertEmail(userData.data.user.id);
-    setMegaphoneUserInfo(userData.data.user);
-    updateUserLoginCount(userData.data.user.id);
+    if (userData?.data?.user?.loginCount === 0)
+      handleSignupAlertEmail(userData?.data?.user?.id);
+    setMegaphoneUserInfo(userData?.data?.user);
+    updateUserLoginCount(userData?.data?.user?.id);
 
     const megaphoneEntityResponse = await refetchEntity({
       url: currentUser.hd
@@ -148,7 +152,7 @@ const Dashboard = () => {
 
     let entityId;
 
-    if (megaphoneEntityResponse.data.entity.id) {
+    if (megaphoneEntityResponse.data.entity) {
       entityId = megaphoneEntityResponse.data.entity.id;
     } else {
       const promise = await handleEntityCreation(currentUser.hd);
@@ -203,7 +207,7 @@ const Dashboard = () => {
               {googleUser?.googleUser?.given_name}!
             </h1>
           )}
-          {megaphoneUserData?.user.industry === 0 &&
+          {megaphoneUserData?.user?.industry === 0 &&
           megaphoneUserData?.user?.onboarded ? (
             <IndustryModal
               setToggleIndustryModal={setToggleIndustryModal}
@@ -211,7 +215,7 @@ const Dashboard = () => {
             />
           ) : null}
           <Tour
-            userId={megaphoneUserData?.user.id}
+            userId={megaphoneUserData?.user?.id}
             openTour={openTour}
             setOpenTour={setOpenTour}
           />

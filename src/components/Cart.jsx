@@ -5,7 +5,8 @@ import {
   LaunchCartModalButton,
   Button,
   CartTopic,
-  BasicAlert
+  BasicAlert,
+  Tooltip
 } from "../components";
 import { AiOutlineClose } from "react-icons/ai";
 import { gql, useMutation } from "@apollo/client";
@@ -30,13 +31,14 @@ const CartButton = ({
   handleSubmitTopics,
   handleRequestCredits,
   megaphoneUserInfo,
-  calculateCreditsNeeded
+  calculateCreditsNeeded,
+  verifySelections
 }) => {
   //can be moved into its own component
   return (
     <>
-      {!megaphoneUserInfo.entities[0].credits ||
-      megaphoneUserInfo.entities[0].credits < calculateCreditsNeeded() ? (
+      {!megaphoneUserInfo.entities[0]?.credits ||
+      megaphoneUserInfo.entities[0]?.credits < calculateCreditsNeeded() ? (
         <LaunchCartModalButton
           initialButtonText="Request Units"
           headerText="Request more Units?"
@@ -128,7 +130,7 @@ const Cart = ({ setToggleCart }) => {
 
   const handleRequestCredits = () => {
     editEntity({
-      id: megaphoneUserInfo.entities[0].id,
+      id: megaphoneUserInfo.entities[0]?.id,
       requestInProgress: true
     });
     handleCreditRequestAlertEmail();
@@ -143,7 +145,7 @@ const Cart = ({ setToggleCart }) => {
   };
 
   const setEntityName = () => {
-    megaphoneUserInfo.entities[0]?.name
+    return megaphoneUserInfo.entities[0]?.name
       ? megaphoneUserInfo.entities[0]?.name
       : megaphoneUserInfo.entities[0]?.url;
   };
@@ -209,12 +211,13 @@ const Cart = ({ setToggleCart }) => {
                 "text-[#2D104F] bg-white pr-5 pl-5 p-2 mt-2 font-bold rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
               }
             />
-            {megaphoneUserInfo.entities[0].requestInProgress ? (
+            {megaphoneUserInfo.entities[0]?.requestInProgress ? (
               <div className="bg-[#2D104F] py-3 px-4 rounded-md cursor-not-allowed font-bold text-white">
                 Units Requested
               </div>
             ) : (
               <CartButton
+                verifySelections={verifyTypeSelectedForAllTopics}
                 handleSubmitTopics={handleSubmitTopics}
                 handleRequestCredits={handleRequestCredits}
                 megaphoneUserInfo={megaphoneUserInfo}

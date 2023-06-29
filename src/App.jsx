@@ -1,6 +1,7 @@
 import { Navbar, Footer, Dashboard } from "./components";
 import { UserContextProvider } from "./context/UserContext";
 import { CartContextProvider } from "./context/CartContext";
+import { EntityContextProvider } from "./context/EntityContext";
 
 const App = () => {
   return (
@@ -9,7 +10,9 @@ const App = () => {
         <UserContextProvider>
           <CartContextProvider>
             <Navbar />
-            <Dashboard />
+            <EntityContextProvider>
+              <Dashboard />
+            </EntityContextProvider>
           </CartContextProvider>
         </UserContextProvider>
         <Footer />

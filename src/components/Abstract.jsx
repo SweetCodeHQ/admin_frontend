@@ -111,7 +111,7 @@ const Abstract = ({
       <div className="text-white text-sm font-semibold mb-3 mt-1">
         <ul className="flex justify-around">
           {topic?.keywords?.map(word => (
-            <li>{word.word.toUpperCase()}</li>
+            <li key={word.word}>{word.word.toUpperCase()}</li>
           ))}
         </ul>
       </div>
