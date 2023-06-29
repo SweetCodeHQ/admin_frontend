@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
 
 const CREATE_ENTITY = gql`
-  mutation createEntity($name: String!, $url: String!) {
+  mutation createEntity($name: String, $url: String!) {
     createEntity(input: { name: $name, url: $url }) {
       id
       name
