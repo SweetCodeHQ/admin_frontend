@@ -308,6 +308,7 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
     setKeywordIds([]);
     setFormData({ word1: "", word2: "", word3: "", word4: "", word5: "" });
 
+    window.dataLayer.push({'event': 'generate_topics', 'keywords': [formData.word1, formData.word2, formData.word3, formData.word4, formData.word5]})
     updateClickedGenerateCount(megaphoneUserInfo.id);
     keywordActions(words);
   };
