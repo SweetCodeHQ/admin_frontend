@@ -172,7 +172,7 @@ const ExportButton = ({
           },
           {
             insertText: {
-              text: `${displayedAbstract}\n\n`,
+              text: `${displayedAbstract || "No abstract generated."}\n\n`,
               location: {
                 index: 1
               }
@@ -186,7 +186,7 @@ const ExportButton = ({
               fields: "bold",
               range: {
                 startIndex: 1,
-                endIndex: displayedAbstract.length + 1
+                endIndex: displayedAbstract?.length + 1 || 2
               }
             }
           },
@@ -226,7 +226,7 @@ const ExportButton = ({
               fields: "bold",
               range: {
                 startIndex: 1,
-                endIndex: displayedTopic.length + 1
+                endIndex: displayedTopic?.length + 1 || 2
               }
             }
           },
