@@ -72,6 +72,8 @@ const TopicRow = ({ topic, userId, i, refetch, keywordIds }) => {
     refetch();
     const topicId = newTopic?.data.createTopic.id;
 
+    window.dataLayer.push({'event': 'save_topic', 'topic': newTopic})
+
     for (const id of keywordIds) {
       createTopicKeyword(id, topicId);
     }
