@@ -14,7 +14,9 @@
       }
       gtag("js", new Date());
 
-      gtag("config", "G-C9P5N8XVPV");
+      gtag("config", "G-C9P5N8XVPV", {
+        "user_id": JSON.parse(localStorage.megaphoneUser).id
+      });
     </script>
     <meta charset="UTF-8" />
     <link rel="icon" type="image" href="/images/black_white_logo.png" />
