@@ -26,7 +26,7 @@ const ExportButton = ({
   const displayedKeywords = formatKeywords();
 
   const handleClick = () => {
-    window.dataLayer.push({'event': 'google_doc_export', 'topic': `${displayedTopic}` });
+    window.dataLayer.push({'event': 'google_doc_export', 'topic': displayedTopic});
     handleAccessToken();
   };
 
