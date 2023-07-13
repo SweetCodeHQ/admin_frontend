@@ -21,6 +21,9 @@ const TableRow = ({ user }) => {
   return (
     <tr className="even:bg-[#4E376A] bg-[#3A1F5C]/95 text-white">
       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-3">
+        {user.id}
+      </td>
+      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-3">
         {user.email}
       </td>
       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-3 text-center">
@@ -59,13 +62,14 @@ const TableRow = ({ user }) => {
 
 const AllUsersTable = ({ flipPage, connection }) => {
   const headers = [
+    "id",
     "email",
     "topics",
     "logins",
     "generations",
-    "blocked?",
-    "joined on",
-    "admin?"
+    "blocked",
+    "joined",
+    "admin"
   ];
   const tableItems = connection?.edges.map(edge => edge.node);
   const totalItemCount = connection?.totalCount;
