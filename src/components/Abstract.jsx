@@ -33,7 +33,7 @@ const Abstract = ({
     let instract;
 
     const handleResponse = response => {
-      instract = response.data.attributes.text.split("\n")[2];
+      instract = response.data.attributes.text;
     };
 
     const url = `${process.env.AI_API_URL}/api/v1/abstracts?`;
