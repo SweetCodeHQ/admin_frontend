@@ -268,7 +268,7 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
   const handleKeywordResponse = response => {
     const keywords = response.data.attributes.text;
 
-    const extractedKeywords = keywords.split("\n").splice(2, 5);
+    const extractedKeywords = keywords.split("\n").splice(0, 5);
 
     const formattedKeywords = extractedKeywords.map(keyword =>
       keyword.substring(3)
@@ -280,7 +280,8 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
   const getKeywordSuggestions = () => {
     const url = `${process.env.AI_API_URL}/api/v1/keywords?`;
 
-    const queryTerm = toggleUseIndustry ? userIndustryName : "technology";
+    const queryTerm =
+      toggleUseIndustry && userIndustryName ? userIndustryName : "technology";
 
     const fullUrl = `${url}industry="${queryTerm}"`;
 
@@ -308,7 +309,16 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
     setKeywordIds([]);
     setFormData({ word1: "", word2: "", word3: "", word4: "", word5: "" });
 
-    window.dataLayer.push({'event': 'generate_topics', 'keywords': [formData.word1, formData.word2, formData.word3, formData.word4, formData.word5]})
+    window.dataLayer.push({
+      event: "generate_topics",
+      keywords: [
+        formData.word1,
+        formData.word2,
+        formData.word3,
+        formData.word4,
+        formData.word5
+      ]
+    });
     updateClickedGenerateCount(megaphoneUserInfo.id);
     keywordActions(words);
   };
