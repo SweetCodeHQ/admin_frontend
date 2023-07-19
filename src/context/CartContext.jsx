@@ -11,6 +11,7 @@ export const CartContextProvider = ({ children }) => {
   });
 
   const handleAddToCart = topic => {
+    window.dataLayer.push({'event': "add_to_cart", 'items':[{'item_name': topic}]})
     setCartTopics(prev => [...prev, topic]);
   };
 
@@ -19,6 +20,7 @@ export const CartContextProvider = ({ children }) => {
   };
 
   const handleRemoveFromCart = index => {
+    window.dataLayer.push({'event': "remove_from_cart", 'items':[{'item_name': topic}]})
     setCartTopics(prev => prev.filter((topic, i) => i !== index));
   };
 
