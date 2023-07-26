@@ -79,8 +79,8 @@ const LoginCard = ({ loginCallback }) => {
   };
 
   return (
-    <>
-      <div className="sm:mx-auto sm:w-full sm:max-w-[480px] py-6">
+    <div id="loginCard">
+      <div className="sm:mx-auto sm:w-full sm:max-w-[480px] py-6 mt-20">
         <div className="bg-white/25 px-6 py-7 shadow sm:rounded-lg sm:px-12">
           <div className="relative">
             <div className="relative flex justify-center text-lg font-medium leading-6">
@@ -122,7 +122,7 @@ const LoginCard = ({ loginCallback }) => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
