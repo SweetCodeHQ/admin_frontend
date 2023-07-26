@@ -33,6 +33,12 @@ const Footer = () => {
         <p className="text-white text-small text-center">
           @Fixate IO, LLC {year}
         </p>
+        <a
+          href="https://fixate.io/curio-terms-of-use-privacy-policy/"
+          className="text-white text-small text-center underline underline-offset-2 hover:no-underline"
+        >
+          Privacy Policy
+        </a>
         <p className="text-white text-small text-center">All Rights Reserved</p>
       </div>
     </div>
