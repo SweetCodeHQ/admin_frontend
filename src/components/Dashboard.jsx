@@ -194,8 +194,12 @@ const Dashboard = () => {
       }`}
       style={background}
     >
-      <div className="flex items-start justify-between md:p-20 py-12">
-        <div className="flex flex-1 justify-start flex-col mf:mr-10">
+      <div
+        className={`${
+          googleUser.googleUser ? "md:p-20" : null
+        } flex items-start justify-between py-20`}
+      >
+        <div className="flex flex-1 justify-start flex-col">
           {!googleUser.googleUser && (
             <>
               <Welcome loginCallback={loginCallback} />

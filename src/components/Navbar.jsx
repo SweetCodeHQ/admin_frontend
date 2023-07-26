@@ -109,14 +109,24 @@ const Navbar = () => {
     fetchPolicy: "network-only"
   });
 
+  const showLogin = () => {
+    const card = document.getElementById("loginCard");
+    card.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <nav className="w-full gradient-bg-purple-welcome fixed z-10">
       <div className="w-full flex justify-between items-center p-4">
-        {googleUser && (
+        {googleUser ? (
           <>
             <Button text={"Log Out"} handleClick={handleSignOut} />
             {showBanners()}
             <CartIcon />
+          </>
+        ) : (
+          <>
+            <div></div>
+            <Button text="Login" handleClick={showLogin} />
           </>
         )}
       </div>
