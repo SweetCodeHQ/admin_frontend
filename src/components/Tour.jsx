@@ -1,11 +1,9 @@
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { gql, useMutation } from "@apollo/client";
-import {
-  ArrowRightCircleIcon,
-  ArrowLeftCircleIcon
-} from "@heroicons/react/24/solid";
-import { FaComments } from "react-icons/fa";
+import { ChevronRightIcon, ChevronLeftIcon } from "@heroicons/react/24/solid";
+import tourBackground from "../assets/tourBackground.png";
+import curioLogo from "../assets/curioLogo.png";
 
 const UPDATE_ONBOARDED = gql`
   mutation UpdateOnboarded($id: ID!) {
@@ -20,9 +18,10 @@ const TourBullet = ({ phase, bulletNumber, setPhase }) => {
   return (
     <div
       onClick={() => setPhase(bulletNumber)}
-      className={`${phase === bulletNumber &&
-        "h-6 w-6 border-2 border-white"} ${phase !== bulletNumber &&
-        "h-3 w-3"} ${phase >= bulletNumber ? "bg-indigo-500" : "bg-white"}
+      className={`h-4 w-4 ${phase === bulletNumber &&
+        "border-2 border-white"} ${phase < bulletNumber &&
+        "bg-white"} ${phase === bulletNumber && "bg-indigo-500"} ${phase >
+        bulletNumber && "bg-[#ffc857]"}
     } rounded-full cursor-pointer hover:bg-indigo-300`}
     />
   );
@@ -31,29 +30,24 @@ const TourBullet = ({ phase, bulletNumber, setPhase }) => {
 const Tour = ({ userId, openTour, setOpenTour }) => {
   const COPY = [
     {
-      title: "Welcome",
+      title: "What is Curio?",
       body:
         "Intelligent Content Creation starts here. Curio uses the latest in AI to help you write faster by curating inspired topics."
     },
     {
-      title: "What Is Curio?",
+      title: "How Does Curio Work?",
       body:
-        "Curio is a topic generator - a customized curator - powered by OpenAI."
-    },
-    {
-      title: "How Does It Work?",
-      body:
-        "You input keywords. Curio uses AI to suggest topics. You choose which ones to edit and save."
+        "You input keywords. AI + Curio's digital experts suggest topics. You choose which ones you want to edit and save."
     },
     {
       title: "Why Curio?",
       body:
-        "Because intelligent content creation starts with your curiosity. Curio uses AI to Accelerate Inspiration."
+        "Because Curio adds industry expertise, accelerates inspiration, breaks through writer's block, and saves you time."
     },
     {
       title: "What Then?",
       body:
-        "You export your final topics or add them to your cart to let the industry experts at Fixate draft your technical content."
+        "You export your final topics or send them to the industry experts at Fixate IO who will wrap it up."
     }
   ];
 
@@ -117,13 +111,13 @@ const Tour = ({ userId, openTour, setOpenTour }) => {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-[#3A1F5C] px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+              <Dialog.Panel
+                style={{ backgroundImage: `url(${tourBackground})` }}
+                className="relative transform overflow-hidden bg-cover rounded-lg bg-[#3A1F5C] px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6"
+              >
                 <div>
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white">
-                    <FaComments
-                      className="h-6 w-6 text-[#3A1F5C]"
-                      aria-hidden="true"
-                    />
+                  <div className="mx-auto flex h-12 w-14 items-center justify-center rounded-full bg-white">
+                    <img src={curioLogo} className="bg-[#3A1F5C]" />
                   </div>
                   <div className="mt-3 text-center sm:mt-5">
                     <Dialog.Title
@@ -132,7 +126,7 @@ const Tour = ({ userId, openTour, setOpenTour }) => {
                     >
                       {displayedCopy.title}
                     </Dialog.Title>
-                    <div className="mt-2 bg-[#4E376A]/75 rounded-lg p-2 min-h-[75px]">
+                    <div className="mt-2 bg-[#4E376A]/75 rounded-lg p-2 min-h-[90px] place-self-center">
                       <p className="text-md text-white">{displayedCopy.body}</p>
                     </div>
                   </div>
@@ -149,22 +143,22 @@ const Tour = ({ userId, openTour, setOpenTour }) => {
                   ) : (
                     <button
                       type="button"
-                      className="flex w-1/6 justify-center rounded-full bg-white cursor-pointer font-semibold text-[#2D104F] text-sm transition delay-50 ease-in-out hover:scale-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
+                      className="flex w-1/6 justify-center rounded-full px-1 ml-5 bg-[#2D104F] cursor-pointer font-semibold text-white border-2 transition delay-50 ease-in-out hover:scale-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
                       onClick={() => handleClick(true)}
                     >
-                      <ArrowRightCircleIcon className="h-10" />
+                      <ChevronRightIcon className="h-9" />
                     </button>
                   )}
 
                   <button
                     type="button"
-                    className={`inline-flex w-1/6 justify-self-end justify-center bg-white rounded-full cursor-pointer text-[#2D104F] transition delay-50 ease-in-out hover:scale-110 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${
+                    className={`inline-flex w-1/6 px-1 mr-5 justify-self-end bg-[#2D104F] rounded-full cursor-pointer border-2 text-white transition delay-50 ease-in-out hover:scale-110 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${
                       phase === 0 ? "hidden" : null
                     }`}
                     onClick={() => handleClick(false)}
                     ref={cancelButtonRef}
                   >
-                    <ArrowLeftCircleIcon className="h-10" />
+                    <ChevronLeftIcon className="h-9" />
                   </button>
                 </div>
                 <div className="flex justify-around items-center mt-5">
