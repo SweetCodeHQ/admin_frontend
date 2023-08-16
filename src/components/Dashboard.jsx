@@ -126,6 +126,12 @@ const Dashboard = () => {
   const loginCallback = async response => {
     const currentUser = await userCallback(response);
     userEntityCallback(currentUser);
+    moveToTop();
+  };
+
+  const moveToTop = () => {
+    const bar = document.getElementById("titleCard");
+    bar.scrollIntoView(false);
   };
 
   const megaphoneUserRefetch = async mail => {
@@ -206,7 +212,10 @@ const Dashboard = () => {
             </>
           )}
           {googleUser?.googleUser && (
-            <h1 className="text-3xl sm:text-5xl text-white text-gradient font-bold pt-7">
+            <h1
+              className="text-3xl sm:text-5xl text-white text-gradient font-bold pt-7"
+              id="titleCard"
+            >
               Welcome back, <br />
               {googleUser?.googleUser?.given_name}!
             </h1>

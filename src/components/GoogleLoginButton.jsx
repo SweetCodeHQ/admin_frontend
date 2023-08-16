@@ -1,11 +1,11 @@
 import { GoogleLogin } from "@react-oauth/google";
 
-const GoogleLoginButton = ({ loginCallback }) => {
+const GoogleLoginButton = ({ loginCallback, text }) => {
   return (
     <div className="p-5 w-full items-center flex flex-col">
       <GoogleLogin
         shape="pill"
-        text="continue_with"
+        text={text}
         onSuccess={credentialResponse => {
           loginCallback(credentialResponse);
         }}

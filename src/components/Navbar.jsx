@@ -1,7 +1,13 @@
 import { useState, useContext } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { UserContext, CartContext } from "../context/";
-import { Cart, Button, CartIcon, BlanketNotification } from "../components";
+import {
+  Cart,
+  Button,
+  CartIcon,
+  BlanketNotification,
+  BasicAlert
+} from "../components";
 
 const GET_BANNERS = gql`
   query Banners {
@@ -52,6 +58,13 @@ const Navbar = () => {
   const { handleSignOut, googleUser, megaphoneUserInfo } = useContext(
     UserContext
   );
+
+  const [showBasicAlert, setShowBasicAlert] = useState(false);
+
+  const logUserOut = () => {
+    setShowBasicAlert(true);
+    handleSignOut();
+  };
 
   const updateUserBannerDate = (id, userAttribute) => {
     const currentDate = new Date(Date.now()).toISOString();
@@ -116,10 +129,15 @@ const Navbar = () => {
 
   return (
     <nav className="w-full gradient-bg-purple-welcome fixed z-10">
-      <div className="w-full flex justify-between items-center p-4">
+      <div className="w-full flex justify-between items-center p-4" id="navBar">
+        <BasicAlert
+          showBasicAlert={showBasicAlert}
+          setShowBasicAlert={setShowBasicAlert}
+          text="You have been logged out."
+        />
         {googleUser ? (
           <>
-            <Button text={"Log Out"} handleClick={handleSignOut} />
+            <Button text={"Log Out"} handleClick={logUserOut} />
             {showBanners()}
             <CartIcon />
           </>
