@@ -66,6 +66,8 @@ const LoginCard = ({ loginCallback }) => {
   const [clickedEmail, setClickedEmail] = useState(false);
   const [clickedJoin, setClickedJoin] = useState(false);
 
+  const [clickedSignup, setClickedSignup] = useState(false);
+
   const { createUserMutation } = useContext(UserContext);
 
   const handleClickJoin = async email => {
@@ -89,9 +91,21 @@ const LoginCard = ({ loginCallback }) => {
               </span>
             </div>
           </div>
-          <GoogleLoginButton loginCallback={loginCallback} />
+          <GoogleLoginButton
+            loginCallback={loginCallback}
+            text={clickedSignup ? "signin_with" : "signup_with"}
+          />
           <div>
-            <div className="relative mt-10">
+            <div className="mt-5 bg-[#3A1F5C] rounded-lg w-2/5 py-1">
+              <span
+                onClick={() => setClickedSignup(prev => !prev)}
+                className="bg-gradient-to-r pl-4 cursor-pointer from-[#ffc857] to-red-300 text-transparent underline-offset-4 decoration-red-300 bg-clip-text hover:underline mr-1"
+              >
+                {clickedSignup ? "Sign up" : "Sign in"}
+              </span>
+              <span className="text-white">instead?</span>
+            </div>
+            <div className="relative mt-5">
               <div
                 className="absolute inset-0 flex items-center"
                 aria-hidden="true"
