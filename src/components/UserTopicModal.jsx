@@ -249,7 +249,7 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
                       />
                     </button>
                   )}
-                  <div className="mx-auto flex h-12 w-12 justify-center items-center rounded-full bg-[#4E376A]/75">
+                  <div className="mx-auto flex h-12 w-12 justify-center items-center rounded-full transition delay-50 ease-in-out cursor-pointer hover:scale-105 hover:-translate-y-1 bg-[#4E376A]/75 block">
                     {topic?.submitted ? (
                       <div className="text-blue-500 text-2xl">
                         <Tooltip text="Already Submitted">
