@@ -8,14 +8,14 @@ import { gql, useQuery, useMutation } from "@apollo/client";
 
 import {
   Button,
-  Input,
   Loader,
   TopicRow,
   UserTopic,
   TopicInputForm,
-  TopicFilter
+  TopicFilter,
+  KeywordInterface
 } from "../components";
-import { INDUSTRIES } from "../constants/industries";
+
 import { filterBySubmitted, filterByNotSubmitted } from "../constants/filters";
 
 const GET_USER_TOPICS = gql`
@@ -31,67 +31,6 @@ const GET_USER_TOPICS = gql`
     }
   }
 `;
-
-const CREATE_KEYWORD = gql`
-  mutation CreateKeyword($word: String!) {
-    createKeyword(input: { word: $word }) {
-      id
-      word
-    }
-  }
-`;
-
-const UPDATE_KEYWORD = gql`
-  mutation UpdateKeyword($word: String!) {
-    updateKeyword(input: { word: $word }) {
-      id
-      word
-    }
-  }
-`;
-
-const CREATE_USER_KEYWORD = gql`
-  mutation CreateUserKeyword($userId: ID!, $word: String!) {
-    createUserKeyword(input: { userId: $userId, word: $word }) {
-      id
-    }
-  }
-`;
-
-const UPDATE_CLICKED_GENERATE_COUNT = gql`
-  mutation UpdateClickedGenerateCount($id: ID!) {
-    updateUser(input: { id: $id, clickedGenerateCount: 1 }) {
-      id
-      clickedGenerateCount
-    }
-  }
-`;
-
-export const IndustrySwitch = ({ toggleUseIndustry, setToggleUseIndustry }) => {
-  const enabledClass = "transform translate-x-5 bg-purple-500";
-
-  const flipStatus = () => {
-    setToggleUseIndustry(prev => !prev);
-  };
-
-  return (
-    <>
-      <div
-        className="md:w-10 md:h-4 w-10 h-3 flex items-center white-glassmorphism rounded-full p-1 cursor-pointer"
-        onClick={() => {
-          flipStatus();
-        }}
-      >
-        <div
-          className={
-            "white-glassmorphism md:w-3 md:h-3 h-2 w-2 rounded-full shadow-md transform duration-300 ease-in-out" +
-            (toggleUseIndustry ? enabledClass : null)
-          }
-        ></div>
-      </div>
-    </>
-  );
-};
 
 const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
   const [formData, setFormData] = useState({
@@ -131,8 +70,6 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
   };
 
   const [userTopicsConnection, setUserTopicsConnection] = useState([]);
-
-  const [toggleUseIndustry, setToggleUseIndustry] = useState(true);
 
   const [filterTopicsBy, setFilterTopicsBy] = useState("ALL");
 
@@ -184,58 +121,11 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
     }
   );
 
-  const [keywordMutationData] = useMutation(CREATE_KEYWORD, {
-    onCompleted: data => console.log(data),
-    onError: error => console.log(error)
-  });
-
-  const createKeyword = async keyword => {
-    const input = { word: keyword };
-    const data = await keywordMutationData({ variables: input });
-
-    return data;
-  };
-
-  const [updateKeywordData] = useMutation(UPDATE_KEYWORD, {
-    onCompleted: data => console.log(data),
-    onError: error => console.log(error)
-  });
-
-  const updateKeyword = keyword => {
-    const input = { word: keyword };
-    updateKeywordData({ variables: input });
-  };
-
-  const [userKeywordMutationData] = useMutation(CREATE_USER_KEYWORD, {
-    onCompleted: data => console.log(data),
-    onError: error => console.log(error)
-  });
-
-  const createUserKeyword = word => {
-    const input = { userId: megaphoneUserInfo.id, word: word };
-    userKeywordMutationData({ variables: input });
-  };
-
   const updateQuery = (prev, { fetchMoreResult }) => {
     return fetchMoreResult.userTopicsConnection.edges.length
       ? fetchMoreResult
       : prev;
   };
-
-  const updateClickedGenerateCount = id => {
-    const input = { id: id };
-    updateClickedGenerateMutationData({ variables: input });
-  };
-  {
-    /*Pull this back into the userContext*/
-  }
-  const [
-    updateClickedGenerateMutationData,
-    { loading: loginLoading, error: loginError }
-  ] = useMutation(UPDATE_CLICKED_GENERATE_COUNT, {
-    onCompleted: data => console.log(data),
-    onError: error => console.log(error)
-  });
 
   const handleTopicResponse = response => {
     {
@@ -258,97 +148,6 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
       .then(response => response.json())
       .then(response => handleTopicResponse(response))
       .then(error => console.log(error));
-  };
-
-  useEffect(() => {
-    getKeywordSuggestions();
-  }, [toggleUseIndustry]);
-
-  const [smartKeywords, setSmartKeywords] = useState([]);
-
-  const handleKeywordResponse = response => {
-    const keywords = response.data.attributes.text;
-
-    const extractedKeywords = keywords.split("\n").splice(0, 5);
-
-    const formattedKeywords = extractedKeywords.map(keyword =>
-      keyword.substring(3)
-    );
-
-    setSmartKeywords(formattedKeywords);
-  };
-
-  const getKeywordSuggestions = () => {
-    const url = `${process.env.AI_API_URL}/api/v1/keywords?`;
-
-    const queryTerm =
-      toggleUseIndustry && userIndustryName ? userIndustryName : "technology";
-
-    const fullUrl = `${url}industry="${queryTerm}"`;
-
-    fetch(fullUrl)
-      .then(response => response.json())
-      .then(response => handleKeywordResponse(response))
-      .then(error => console.log(error));
-  };
-
-  const handleChange = (e, name) => {
-    setFormData(prevState => ({ ...prevState, [name]: e.target.value }));
-  };
-
-  const handleSubmit = e => {
-    if (!formData.word1 || !formData.word2 || !formData.word3)
-      return alert("Please provide at least three keywords.");
-    {
-      /*Add something that normalizes the formatting here for words--remove spaces, downcase*/
-    }
-    const words = Object.values(formData);
-
-    getTopicSuggestions();
-    setIsLoading(true);
-    setInputKeywords(words);
-    setKeywordIds([]);
-    setFormData({ word1: "", word2: "", word3: "", word4: "", word5: "" });
-
-    window.dataLayer.push({
-      event: "generate_topics",
-      keywords: [
-        formData.word1,
-        formData.word2,
-        formData.word3,
-        formData.word4,
-        formData.word5
-      ]
-    });
-    updateClickedGenerateCount(megaphoneUserInfo.id);
-    keywordActions(words);
-  };
-
-  const handleSuggest = e => {
-    const words = randomKeywordsData.randomKeywords;
-
-    setFormData({
-      word1: words[0].word,
-      word2: words[1].word,
-      word3: words[2].word,
-      word4: words[3].word,
-      word5: words[4].word
-    });
-    refetchRandomKeywords();
-  };
-
-  const keywordActions = async words => {
-    for (const word of words) {
-      if (word) {
-        const keywordData = await createKeyword(word.toLowerCase().trim());
-
-        const keywordId = keywordData.data.createKeyword.id;
-        createUserKeyword(word);
-
-        updateKeyword(word.toLowerCase());
-        setKeywordIds(prev => [...prev, keywordId]);
-      }
-    }
   };
 
   const moveKeyword = (word, i) => {
@@ -388,10 +187,6 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
     setFormData(newForm);
   };
 
-  const userIndustryName = Object.keys(INDUSTRIES).find(
-    key => INDUSTRIES[key] === megaphoneUserInfo?.industry
-  );
-
   return (
     <>
       <p className="text-left mt-5 text-white font-semibold text-lg md:w-9/12 w-11/12 text-base">
@@ -401,130 +196,72 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
       <div className="w-full justify-center items-center 2xl:px20">
         <div className="flex w-full flex-col items-center mt-5">
           <div className="w-full justify-between flex flex-wrap md:flex-nowrap">
-            <div className="w-full flex flex-col justify-items-center">
-              <h3 className="text-white text-3xl font-bold text-center">
-                My Keywords
-              </h3>
-              <div className="p-5 pt-3 mt-3 w-4/5 flex flex-col justify-start items-start bg-[#3A1F5C] rounded-xl self-center">
-                <Input
-                  placeholder="Keyword 1"
-                  name="word1"
-                  value={formData.word1}
-                  type="text"
-                  handleChange={handleChange}
-                />
-                <Input
-                  placeholder="Keyword 2"
-                  name="word2"
-                  value={formData.word2}
-                  type="text"
-                  handleChange={handleChange}
-                />
-                <Input
-                  placeholder="Keyword 3"
-                  name="word3"
-                  value={formData.word3}
-                  type="text"
-                  handleChange={handleChange}
-                />
-                <Input
-                  placeholder="Keyword 4 (optional)"
-                  name="word4"
-                  value={formData.word4}
-                  type="text"
-                  handleChange={handleChange}
-                />
-                <Input
-                  placeholder="Keyword 5 (optional)"
-                  name="word5"
-                  value={formData.word5}
-                  type="text"
-                  handleChange={handleChange}
-                />
-                <div className="h-[1px] w-full bg-gray-400 my-2" />
-                <div className="flex w-full justify-around flex-wrap">
-                  <Button text={"Generate"} handleClick={handleSubmit} />
-                </div>
-                <div className="flex w-full justify-around">
-                  <div className="text-white pt-5 pb-2">
-                    <p>Use your industry:</p>
-                    <p>({userIndustryName})?</p>
-                  </div>
-                  <div className="self-right self-center">
-                    <IndustrySwitch
-                      toggleUseIndustry={toggleUseIndustry}
-                      setToggleUseIndustry={setToggleUseIndustry}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="w-full flex flex-col items-center">
-              <div className="flex flex-col mt-2 w-full">
-                <h2 className="text-white font-bold self-center rounded-full p-2">
-                  Inspiration Words
-                </h2>
-                <div className="flex flex-wrap justify-evenly w-full self-center">
-                  {smartKeywords.map((keyword, i) => (
-                    <button
-                      className="text-[#2D104F] font-bold bg-white rounded-full text-center text-sm pr-3 pl-3 mt-2 mr-3 pt-1 pb-1 cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
-                      key={i}
-                      onClick={() => moveKeyword(keyword, i)}
-                    >
-                      {keyword}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div className="flex items-center justify-between w-full mt-5">
+            <KeywordInterface
+              formData={formData}
+              setFormData={setFormData}
+              userIndustry={megaphoneUserInfo?.industry}
+              userId={megaphoneUserInfo?.id}
+              keywordIds={keywordIds}
+              setKeywordIds={setKeywordIds}
+              getTopicSuggestions={getTopicSuggestions}
+              setIsLoading={setIsLoading}
+              setInputKeywords={setInputKeywords}
+              moveKeyword={moveKeyword}
+            />
+            <div className="w-full flex flex-col justify-around">
+              <div className="flex flex-col w-full">
                 <h3 className="text-white text-3xl font-bold text-center my-2 w-full">
                   Generated Topics
                 </h3>
+                <div className="bg-[#3A1F5C] rounded-xl mt-2 w-4/5 md:w-full">
+                  {isLoading ? (
+                    <Loader />
+                  ) : (
+                    <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
+                      {freshTopics.length != 0 ? (
+                        freshTopics.map((topic, i) => (
+                          <TopicRow
+                            topic={topic}
+                            key={i}
+                            userId={megaphoneUserInfo.id}
+                            i={i}
+                            refetch={refetchUserTopics}
+                            keywordIds={keywordIds}
+                          />
+                        ))
+                      ) : (
+                        <h1 className="text-purple-400/70 text-center text-xl">
+                          Input keywords and click 'Generate' to see topics.
+                        </h1>
+                      )}
+                    </ul>
+                  )}
+                </div>
               </div>
-              <div className="bg-[#3A1F5C] rounded-xl mt-2 w-4/5 md:w-full">
-                {isLoading ? (
-                  <Loader />
-                ) : (
-                  <ul className="p-5 flex flex-col items-left space-y-2 pl-5">
-                    {freshTopics.length != 0 ? (
-                      freshTopics.map((topic, i) => (
-                        <TopicRow
-                          topic={topic}
-                          key={i}
-                          userId={megaphoneUserInfo.id}
-                          i={i}
-                          refetch={refetchUserTopics}
-                          keywordIds={keywordIds}
-                        />
-                      ))
-                    ) : (
-                      <h1 className="text-purple-400/70 text-center text-xl">
-                        Input keywords and click 'Generate' to see topics.
-                      </h1>
-                    )}
-                  </ul>
+              <div>
+                {inputKeywords && (
+                  <div className="flex flex-col">
+                    <h4 className="font-bold text-white bg-[#3A1F5C] border-2 border-b-0 text-sm rounded-t-xl rounded-b-md border-solid text-center mt-2 pt-2 pb-2 w-2/5 self-center">
+                      You used:
+                    </h4>
+                    <ul className="flex w-full justify-around bg-[#3A1F5C] border-2 p-3 rounded-xl">
+                      {inputKeywords.map(
+                        (keyword, i) =>
+                          keyword != "" && (
+                            <Button
+                              key={`inspiration ${i}`}
+                              text={keyword.toUpperCase()}
+                              handleClick={() => moveKeyword(keyword)}
+                              customStyles={
+                                "text-[#2D104F] font-bold bg-white rounded-full text-center text-sm pr-3 pl-3 pt-1 pb-1 cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
+                              }
+                            />
+                          )
+                      )}
+                    </ul>
+                  </div>
                 )}
               </div>
-              {inputKeywords && (
-                <ul className="flex flex-wrap justify-between w-full">
-                  <li className="font-bold text-white border-[#4E376A] border-2 text-sm rounded-xl border-solid text-center pr-5 pl-5 mt-2 mr-3 pt-2 pb-2">
-                    You used:
-                  </li>
-                  {inputKeywords.map(
-                    (keyword, i) =>
-                      keyword != "" && (
-                        <Button
-                          key={`inspiration ${i}`}
-                          text={keyword}
-                          handleClick={() => moveKeyword(keyword)}
-                          customStyles={
-                            "text-[#2D104F] font-bold bg-white rounded-full text-center text-sm pr-3 pl-3 mt-2 mr-3 pt-1 pb-1 cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
-                          }
-                        />
-                      )
-                  )}
-                </ul>
-              )}
             </div>
           </div>
           {userTopics.length != 0 && (
