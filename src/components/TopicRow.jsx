@@ -89,6 +89,7 @@ const TopicRow = ({ topic, userId, i, refetch, keywordIds }) => {
         <button
           type="button"
           className="text-white text-lg border-[1px] border-none outline-none rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 hover:text-purple-400 pr-5"
+          data-id="save-topic"
           onClick={handleAddTopicToUser}
         >
           <BsFillBookmarkPlusFill />

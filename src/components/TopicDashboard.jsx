@@ -409,6 +409,7 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
                 <Input
                   placeholder="Keyword 1"
                   name="word1"
+                  data-id="word1"
                   value={formData.word1}
                   type="text"
                   handleChange={handleChange}
@@ -416,6 +417,7 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
                 <Input
                   placeholder="Keyword 2"
                   name="word2"
+                  data-id="word2"
                   value={formData.word2}
                   type="text"
                   handleChange={handleChange}
@@ -423,6 +425,7 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
                 <Input
                   placeholder="Keyword 3"
                   name="word3"
+                  data-id="word3"
                   value={formData.word3}
                   type="text"
                   handleChange={handleChange}
@@ -430,6 +433,7 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
                 <Input
                   placeholder="Keyword 4 (optional)"
                   name="word4"
+                  data-id="word4"
                   value={formData.word4}
                   type="text"
                   handleChange={handleChange}
@@ -437,13 +441,14 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
                 <Input
                   placeholder="Keyword 5 (optional)"
                   name="word5"
+                  data-id="word5"
                   value={formData.word5}
                   type="text"
                   handleChange={handleChange}
                 />
                 <div className="h-[1px] w-full bg-gray-400 my-2" />
                 <div className="flex w-full justify-around flex-wrap">
-                  <Button text={"Generate"} handleClick={handleSubmit} />
+                  <Button text={"Generate"} data-id="generate-button" handleClick={handleSubmit} />
                 </div>
                 <div className="flex w-full justify-around">
                   <div className="text-white pt-5 pb-2">
@@ -569,7 +574,7 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
                   </div>
                   <div className="text-blue-300 pb-8">
                     {userTopics !== 0 && (
-                      <div>
+                      <div data-id="num-pages" data-num-pages={numOfPages}>
                         {currentPage + 1} of {numOfPages}
                       </div>
                     )}
@@ -578,6 +583,7 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
                     {forwardArrowVisible() ? (
                       <p
                         className="cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 text-xl"
+                        data-id="next-button"
                         onClick={() => flipTopicPageForward(true)}
                       >
                         <BsFillArrowRightCircleFill />

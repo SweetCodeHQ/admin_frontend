@@ -73,7 +73,7 @@ const UserTopic = ({ topic, refetch, id }) => {
         topic={topicData?.topic}
         refetchTopic={refetchTopic}
       />
-      <div className="text-white text-lg cursor-grab" onClick={handleModal}>
+      <div className="text-white text-lg cursor-grab" data-id="saved-topic" onClick={handleModal}>
         {topic.text}
       </div>
     </div>

@@ -125,6 +125,7 @@ const Abstract = ({
         />
         <button
           onClick={handleRecreateAbstract}
+          data-id='regenerate-abstract'
           disabled={topic?.submitted || isLoading}
           className={`mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4E376A]/75 ${
             topic?.submitted || !topic?.abstract || editModeEnabled

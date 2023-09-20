@@ -227,6 +227,7 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
                   {editModeEnabled ? (
                     <button
                       onClick={handleSave}
+                      data-id="save-abstract"
                       className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4E376A] transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 text-blue-300"
                     >
                       Save
@@ -234,6 +235,7 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
                   ) : (
                     <button
                       onClick={e => setEditModeEnabled(true)}
+                      data-id="edit-abstract"
                       disabled={topic?.submitted}
                       className={`mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4E376A] ${
                         topic?.submitted
@@ -263,6 +265,7 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
                   {editModeEnabled ? (
                     <button
                       onClick={() => setEditModeEnabled(false)}
+                      data-id="cancel-edit-abstract"
                       className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4E376A]/75 transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     >
                       <XMarkIcon
@@ -273,6 +276,7 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
                   ) : (
                     <button
                       onClick={handleCloseModal}
+                      data-id="back-button-modal"
                       className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4E376A]/75 transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     >
                       <ArrowUturnLeftIcon
