@@ -306,7 +306,7 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
                   </div>
                   <div className="text-blue-300 pb-8">
                     {userTopics !== 0 && (
-                      <div>
+                      <div data-id="num-pages" data-num-pages={numOfPages}>
                         {currentPage + 1} of {numOfPages}
                       </div>
                     )}
@@ -315,6 +315,7 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
                     {forwardArrowVisible() ? (
                       <p
                         className="cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 text-xl"
+                        data-id="next-button"
                         onClick={() => flipTopicPageForward(true)}
                       >
                         <BsFillArrowRightCircleFill />
