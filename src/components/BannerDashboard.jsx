@@ -126,7 +126,9 @@ const Banner = ({ title, banner, refetch }) => {
             <div className="h-5 w-5 mr-3 py-1 shrink-0">
               <ChatBubbleOvalLeftEllipsisIcon />
             </div>
-            <p>{banner?.text}</p>
+            <p className="max-h-[250px] overflow-auto overscroll-contain whitespace-pre-line">
+              {banner?.text}
+            </p>
           </div>
         </div>
       )}
