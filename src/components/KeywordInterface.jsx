@@ -262,7 +262,7 @@ const KeywordInterface = ({
         />
         <div className="flex w-full my-3">
           <div className="text-white">
-            <p>Use your domain:</p>
+            <p>Use your industry segment:</p>
             <p> ({userIndustryName ? userIndustryName : "your industry"})?</p>
           </div>
           <div className="self-center ml-10">
