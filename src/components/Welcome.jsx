@@ -1,6 +1,6 @@
-import { LoginCard } from "../components";
+import { LoginCard, Button } from "../components";
 
-const Welcome = ({ loginCallback }) => {
+const Welcome = ({ loginCallback, setClickedAbout }) => {
   return (
     <>
       <div className="flex flex-col h-full">
@@ -49,7 +49,7 @@ const Welcome = ({ loginCallback }) => {
                 recommend them for you. From there, Curio curates an unlimited
                 number of variations of titles and abstracts for blogs,
                 whitepapers, eBooks and other content based on topics relevant
-                for your industry.
+                for your industry segment.
               </p>
               <br />
               <p>
@@ -87,8 +87,18 @@ const Welcome = ({ loginCallback }) => {
             </div>
           </div>
         </div>
+        {setClickedAbout ? (
+          <>
+            <Button
+              customStyles="bg-white py-2 px-7 rounded-full mt-10 cursor-pointer font-bold text-[#2D104F] transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 w-1/6 self-center"
+              handleClick={() => setClickedAbout(prev => !prev)}
+              text={"Close"}
+            />
+            <div className="invisible mt-3">blank div</div>
+          </>
+        ) : null}
       </div>
-      <LoginCard loginCallback={loginCallback} />
+      {loginCallback ? <LoginCard loginCallback={loginCallback} /> : null}
     </>
   );
 };
