@@ -27,6 +27,7 @@ const GET_USER_TOPICS = gql`
         text
         submitted
         contentType
+        createdAt
       }
     }
   }

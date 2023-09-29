@@ -11,6 +11,7 @@ const GET_TOPIC = gql`
       text
       submitted
       contentType
+      createdAt
       abstract {
         id
         text
@@ -50,8 +51,22 @@ const UserTopic = ({ topic, refetch, id }) => {
     onError: error => console.log(error)
   });
 
+  const recentlySaved = () => {
+    const createdAt = new Date(topic?.createdAt);
+    const thresholdTime = new Date(Date.now());
+
+    thresholdTime.setMinutes(thresholdTime.getMinutes() - 5);
+
+    return createdAt > thresholdTime;
+  };
+
   return (
-    <div className="flex items-left items-center">
+    <div className="flex items-center">
+      <span
+        className={`rounded-full bg-pink-400 h-2 w-2 text-xs mr-2 ${
+          recentlySaved() ? "" : "invisible"
+        }`}
+      ></span>
       {topic.submitted && (
         <div className="text-blue-500 mr-10 text-xl">
           <RiMailCheckFill />

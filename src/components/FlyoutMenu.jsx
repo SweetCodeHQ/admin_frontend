@@ -37,7 +37,7 @@ const FlyoutMenu = ({ menuState, handleState, options, menuName }) => {
                   <div className="flex justify-between">
                     <h4 className="mr-3">{option.name}</h4>
                     <h4>{`${option.credits} ${
-                      option.credits === 1 ? "credit" : "credits"
+                      option.credits === 1 ? "unit" : "units"
                     }`}</h4>
                   </div>
                 </div>

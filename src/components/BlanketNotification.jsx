@@ -25,7 +25,7 @@ const BlanketNotification = ({ displayTitle, displayText, link, mutation }) => {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="pointer-events-auto w-full max-w-sm md:max-w-lg overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+            <div className="pointer-events-auto max-h-[250px] w-full max-w-sm whitespace-pre-line md:max-w-lg overflow-auto rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
               <div className="p-4">
                 <div className="flex items-start">
                   <div className="flex-shrink-0">

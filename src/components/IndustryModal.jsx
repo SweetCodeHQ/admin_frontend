@@ -43,7 +43,7 @@ const IndustryModal = ({ megaphoneUserId }) => {
   return (
     <div className="z-50 fixed top-0 -left-2 p-3 w-full h-screen shadow-2xl list-none flex flex-col items-center rounded-md blue-glassmorphism text-white animate-slide-in">
       <h1 className="font-extrabold text-2xl underline underline-offset-2 pb-10">
-        Please select a domain from within the tech industry.
+        Please select a segment from within the tech industry.
       </h1>
       <div className="flex justify-center">
         <div>
@@ -55,7 +55,7 @@ const IndustryModal = ({ megaphoneUserId }) => {
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              {selectedIndustry ? selectedIndustry[0] : "Domain"}
+              {selectedIndustry ? selectedIndustry[0] : "Segment"}
               <svg
                 aria-hidden="true"
                 focusable="false"

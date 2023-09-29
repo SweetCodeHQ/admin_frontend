@@ -1,9 +1,10 @@
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { gql, useMutation } from "@apollo/client";
+import { PrivacyPolicy } from "../components";
 import { ChevronRightIcon, ChevronLeftIcon } from "@heroicons/react/24/solid";
 import tourBackground from "../assets/tourBackground.png";
-import curioLogo from "../assets/curioLogo.png";
+import curioLogo from "../assets/curioLogo2.png";
 
 const UPDATE_ONBOARDED = gql`
   mutation UpdateOnboarded($id: ID!) {
@@ -48,10 +49,16 @@ const Tour = ({ userId, openTour, setOpenTour }) => {
       title: "What Then?",
       body:
         "You export your final topics or send them to the industry experts at Fixate IO who will wrap it up."
+    },
+    {
+      title: "Privacy",
+      body:
+        "We take your privacy very seriously. Please read our privacy policy linked below to see exactly what we do with your data."
     }
   ];
 
   const [phase, setPhase] = useState(0);
+  const [clickedPrivacyPolicy, setClickedPrivacyPolicy] = useState(false);
 
   const cancelButtonRef = useRef(null);
 
@@ -101,6 +108,13 @@ const Tour = ({ userId, openTour, setOpenTour }) => {
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
+          {clickedPrivacyPolicy ? (
+            <div className="z-50 overflow-y-scroll overscroll-none fixed top-0 w-screen h-screen shadow-2xl flex flex-col rounded-md blue-glassmorphism animate-slide-in transition ease-in-out">
+              <PrivacyPolicy
+                setClickedPrivacyPolicy={setClickedPrivacyPolicy}
+              />
+            </div>
+          ) : null}
           <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
             <Transition.Child
               as={Fragment}
@@ -117,7 +131,10 @@ const Tour = ({ userId, openTour, setOpenTour }) => {
               >
                 <div>
                   <div className="mx-auto flex h-12 w-14 items-center justify-center rounded-full bg-white">
-                    <img src={curioLogo} className="bg-[#3A1F5C]" />
+                    <img
+                      src={curioLogo}
+                      className="bg-[#3A1F5C] rounded-full"
+                    />
                   </div>
                   <div className="mt-3 text-center sm:mt-5">
                     <Dialog.Title
@@ -126,19 +143,31 @@ const Tour = ({ userId, openTour, setOpenTour }) => {
                     >
                       {displayedCopy.title}
                     </Dialog.Title>
-                    <div className="mt-2 bg-[#4E376A]/75 rounded-lg p-2 min-h-[90px] place-self-center">
+                    <div className="mt-2 bg-[#4E376A]/75 rounded-lg pt-3 min-h-[75px]">
                       <p className="text-md text-white">{displayedCopy.body}</p>
                     </div>
+                    {phase === 4 ? (
+                      <button
+                        className="underline text-white mt-2"
+                        onClick={() => setClickedPrivacyPolicy(true)}
+                      >
+                        View Privacy Policy
+                      </button>
+                    ) : null}
                   </div>
                 </div>
-                <div className="flex mt-3 sm:mt-3 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
+                <div
+                  className={`flex ${
+                    phase === 4 ? "mt-3" : "mt-10"
+                  } sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3`}
+                >
                   {phase === COPY.length - 1 ? (
                     <button
                       type="button"
                       className="flex w-2/3 justify-center items-center justify-self-center rounded-full bg-white cursor-pointer font-bold text-[#2D104F] text-sm transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
                       onClick={handleEndTour}
                     >
-                      Let's Get Started!
+                      Accept & Continue
                     </button>
                   ) : (
                     <button
