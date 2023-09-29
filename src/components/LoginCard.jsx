@@ -93,17 +93,19 @@ const LoginCard = ({ loginCallback }) => {
           </div>
           <GoogleLoginButton
             loginCallback={loginCallback}
-            text={clickedSignup ? "signin_with" : "signup_with"}
+            text={clickedSignup ? "signup_with" : "signin_with"}
           />
           <div>
-            <div className="mt-5 bg-[#3A1F5C] rounded-lg w-2/5 py-1">
-              <span
-                onClick={() => setClickedSignup(prev => !prev)}
-                className="bg-gradient-to-r pl-4 cursor-pointer from-[#ffc857] to-red-300 text-transparent underline-offset-4 decoration-red-300 bg-clip-text hover:underline mr-1"
-              >
-                {clickedSignup ? "Sign up" : "Sign in"}
-              </span>
-              <span className="text-white">instead?</span>
+            <div className="mt-5 w-full flex justify-center">
+              <div className="flex bg-[#3A1F5C] rounded-lg py-1 w-2/5">
+                <span
+                  onClick={() => setClickedSignup(prev => !prev)}
+                  className="bg-gradient-to-r pl-4 cursor-pointer from-[#ffc857] to-red-300 text-transparent underline-offset-4 decoration-red-300 bg-clip-text hover:underline mr-1"
+                >
+                  {clickedSignup ? "Sign in" : "Sign up"}
+                </span>
+                <span className="text-white">instead?</span>
+              </div>
             </div>
             <div className="relative mt-5">
               <div
