@@ -49,3 +49,4 @@ export { default as IndustryModal } from "./IndustryModal";
 export { default as GoogleLoginButton } from "./GoogleLoginButton";
 export { default as ExportButton } from "./ExportButton";
 export { default as ExportAlert } from "./ExportAlert";
+export { default as PrivacyPolicy } from "./PrivacyPolicy";
