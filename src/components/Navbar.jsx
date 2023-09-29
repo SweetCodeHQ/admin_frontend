@@ -133,18 +133,18 @@ const Navbar = () => {
         <BasicAlert
           showBasicAlert={showBasicAlert}
           setShowBasicAlert={setShowBasicAlert}
-          text="You have been logged out."
+          text="You have been signed out."
         />
         {googleUser ? (
           <>
-            <Button text={"Log Out"} handleClick={logUserOut} />
+            <Button text={"Sign Out"} handleClick={logUserOut} />
             {showBanners()}
             <CartIcon />
           </>
         ) : (
           <>
             <div></div>
-            <Button text="Login" handleClick={showLogin} />
+            <Button text="Sign In" handleClick={showLogin} />
           </>
         )}
       </div>
