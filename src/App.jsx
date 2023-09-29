@@ -14,8 +14,8 @@ const App = () => {
               <Dashboard />
             </EntityContextProvider>
           </CartContextProvider>
+          <Footer />
         </UserContextProvider>
-        <Footer />
       </div>
     </div>
   );
