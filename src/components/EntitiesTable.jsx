@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import { PaginationNav, Input, TableAddItemForm } from "../components";
 import { EntityContext } from "../context/EntityContext";
 
-const HEADERS = ["name", "url", "users", "topics", "credits"];
+const HEADERS = ["name", "url", "users", "topics", "units"];
 
 const TableRow = ({ entity, editEntity, i }) => {
   const [clickedEdit, setClickedEdit] = useState(false);
