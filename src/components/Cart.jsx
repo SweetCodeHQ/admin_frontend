@@ -160,7 +160,7 @@ const Cart = ({ setToggleCart }) => {
         />
         <div></div>
         <div>
-          <h1 className="w-full text-center font-extrabold text-3xl underline underline-offset-2">
+          <h1 className="w-full text-center font-extrabold text-3xl">
             Your Cart
           </h1>
           {cartTopics.length === 0 && (
