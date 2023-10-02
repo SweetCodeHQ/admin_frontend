@@ -3,16 +3,17 @@ import logo from "../../images/logo.png";
 import { Button, Welcome, PrivacyPolicy } from "../components";
 
 const Footer = () => {
-  const openInNewTab = url => {
-    window.open(url, "_blank", "noopener,noreferrer");
-  };
-
   const today = new Date();
   const year = today.getFullYear();
 
   const [clickedAbout, setClickedAbout] = useState(false);
 
-  const [clickedPrivacyPolicy, setClickedPrivacyPolicy] = useState(false);
+  const [clickedPrivacyPolicy, setClickedPrivacyPolicy] = useState(() => {
+    const slug = window.location.href.split("/").slice(-1)[0];
+
+    const privacySlug = slug.toLowerCase() === "privacy" ? true : false;
+    return privacySlug;
+  });
 
   return (
     <div className="w-full flex md:justify-center justify-between items-center flex-col p-4">

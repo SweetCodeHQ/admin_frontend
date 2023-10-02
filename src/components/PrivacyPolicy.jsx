@@ -19,14 +19,18 @@ const PrivacyPolicy = ({ setClickedPrivacyPolicy }) => {
     fetchPolicy: "network-only"
   });
 
+  const handleClosePrivacyPolicy = () => {
+    window.location.href = "https://curio.fixate.io";
+    setClickedPrivacyPolicy(false);
+  };
+
   const formatPolicyDate = () => {
     const policyDate = new Date(bannersData?.banners[1]?.updatedAt);
-
     const policyMonth = policyDate?.getMonth();
-    const policyDay = policyDate?.getDay();
+    const policyDay = policyDate?.getDate();
     const policyYear = policyDate?.getFullYear();
 
-    const displayedDate = `${policyMonth}/${policyDay}/${policyYear}`;
+    const displayedDate = `${policyMonth + 1}/${policyDay}/${policyYear}`;
 
     return displayedDate;
   };
@@ -47,7 +51,7 @@ const PrivacyPolicy = ({ setClickedPrivacyPolicy }) => {
       <Button
         customStyles="w-1/2 bg-white py-2 px-7 mx-4 rounded-full cursor-pointer font-bold text-[#2D104F] transition delay-50 ease-in-out hover:scale-105"
         text="Close"
-        handleClick={() => setClickedPrivacyPolicy(false)}
+        handleClick={handleClosePrivacyPolicy}
       />
     </div>
   );
