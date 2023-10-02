@@ -166,20 +166,6 @@ const BannerDashboard = () => {
           banner={bannersData?.banners[1]}
           refetch={refetchBanners}
         />
-        <Banner
-          key="cookiePolicy"
-          name="cookiePolicy"
-          title="Cookie Policy"
-          banner={bannersData?.banners[2]}
-          refetch={refetchBanners}
-        />
-        <Banner
-          key="eula"
-          name="eula"
-          title="End User License Agreement"
-          banner={bannersData?.banners[3]}
-          refetch={refetchBanners}
-        />
       </div>
     </div>
   );
