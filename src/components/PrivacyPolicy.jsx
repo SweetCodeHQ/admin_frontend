@@ -20,7 +20,7 @@ const PrivacyPolicy = ({ setClickedPrivacyPolicy }) => {
   });
 
   const handleClosePrivacyPolicy = () => {
-    window.location.href = "https://curio.fixate.io";
+    // window.location.href = "https://curio.fixate.io";
     setClickedPrivacyPolicy(false);
   };
 
