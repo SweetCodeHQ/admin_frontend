@@ -26,32 +26,24 @@ const UPDATE_USER_BANNER_DATE = gql`
     $id: ID!
     $sawBannerOn: ISO8601DateTime
     $acceptedPrivacyOn: ISO8601DateTime
-    $acceptedCookiesOn: ISO8601DateTime
-    $acceptedEulaOn: ISO8601DateTime
   ) {
     updateUser(
       input: {
         id: $id
         sawBannerOn: $sawBannerOn
         acceptedPrivacyOn: $acceptedPrivacyOn
-        acceptedCookiesOn: $acceptedCookiesOn
-        acceptedEulaOn: $acceptedEulaOn
       }
     ) {
       id
       sawBannerOn
       acceptedPrivacyOn
-      acceptedCookiesOn
-      acceptedEulaOn
     }
   }
 `;
 
 const TITLES = [
   "News from the Fixate Desk",
-  "We've updated our privacy statement.",
-  "We've updated our cookie policy.",
-  "We've updated our EULA."
+  "We've updated our privacy statement."
 ];
 
 const Navbar = () => {
@@ -94,12 +86,7 @@ const Navbar = () => {
   };
 
   const showBanner = (banner, i) => {
-    const attributesArray = [
-      "sawBannerOn",
-      "acceptedPrivacyOn",
-      "acceptedCookiesOn",
-      "acceptedEulaOn"
-    ];
+    const attributesArray = ["sawBannerOn", "acceptedPrivacyOn"];
 
     let bannerSeen = megaphoneUserInfo
       ? banner?.updatedAt < megaphoneUserInfo[attributesArray[banner.id - 1]]
