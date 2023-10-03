@@ -60,6 +60,8 @@ const Tour = ({ userId, openTour, setOpenTour }) => {
   const [phase, setPhase] = useState(0);
   const [clickedPrivacyPolicy, setClickedPrivacyPolicy] = useState(false);
 
+  const cancelButtonRef = useRef(null);
+
   const updateOnboarded = id => {
     const input = { id: id };
     updateOnboardedData({ variables: input });
@@ -87,7 +89,12 @@ const Tour = ({ userId, openTour, setOpenTour }) => {
 
   return (
     <Transition.Root show={openTour} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={handleEndTour}>
+      <Dialog
+        as="div"
+        className="relative z-10"
+        initialFocus={cancelButtonRef}
+        onClose={() => {}}
+      >
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -178,6 +185,7 @@ const Tour = ({ userId, openTour, setOpenTour }) => {
                       phase === 0 ? "hidden" : null
                     }`}
                     onClick={() => handleClick(false)}
+                    ref={cancelButtonRef}
                   >
                     <ChevronLeftIcon className="h-9" />
                   </button>
