@@ -44,6 +44,7 @@ export const UserContextProvider = ({ children }) => {
 
   const userCallback = async response => {
     console.log("logged in");
+    window.dataLayer.push({'event':'login', 'method': 'Google'})
     var userObject = jwt_decode(response.credential);
     if (userObject.hd) {
       setGoogleUser(userObject);
