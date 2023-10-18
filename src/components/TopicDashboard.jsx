@@ -191,7 +191,7 @@ const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
   return (
     <>
       <p className="text-left mt-5 text-white font-semibold text-lg md:w-9/12 w-11/12 text-base">
-        Use this portal to get topic suggestions and more using the latest in
+        Use this portal to get topic suggestions and abstracts using the latest in
         artificial intelligence.
       </p>
       <div className="w-full justify-center items-center 2xl:px20">
