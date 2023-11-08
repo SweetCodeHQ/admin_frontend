@@ -1,12 +1,13 @@
 import { useState, useContext } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
-import { UserContext, CartContext } from "../context/";
+import { UserContext } from "../context/";
+
 import {
-  Cart,
   Button,
   CartIcon,
   BlanketNotification,
-  BasicAlert
+  BasicAlert,
+  InboxIcon
 } from "../components";
 
 const GET_BANNERS = gql`
@@ -126,6 +127,7 @@ const Navbar = () => {
           <>
             <Button text={"Sign Out"} handleClick={logUserOut} />
             {showBanners()}
+            <InboxIcon />
             <CartIcon />
           </>
         ) : (
