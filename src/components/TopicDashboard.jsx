@@ -1,5 +1,4 @@
-import { useState, useContext, useEffect } from "react";
-import { CartContext, CartContextProvider } from "../context/CartContext";
+import { useState, useEffect } from "react";
 import {
   BsFillArrowLeftCircleFill,
   BsFillArrowRightCircleFill
@@ -33,7 +32,7 @@ const GET_USER_TOPICS = gql`
   }
 `;
 
-const TopicDashboard = ({ megaphoneUserInfo, refetchUser }) => {
+const TopicDashboard = ({ megaphoneUserInfo }) => {
   const [formData, setFormData] = useState({
     word1: "",
     word2: "",
