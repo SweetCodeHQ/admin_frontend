@@ -5,8 +5,7 @@ import {
   LaunchCartModalButton,
   Button,
   CartTopic,
-  BasicAlert,
-  Tooltip
+  BasicAlert
 } from "../components";
 import { AiOutlineClose } from "react-icons/ai";
 import { gql, useMutation } from "@apollo/client";
