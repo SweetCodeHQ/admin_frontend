@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { gql, useQuery, useMutation } from "@apollo/client";
+import { useState, useContext } from "react";
+import { gql, useMutation } from "@apollo/client";
+import { UserContext } from "../context"
 
 import { BsFillBookmarkPlusFill } from "react-icons/bs";
-import { MdBookmarkAdd } from "react-icons/md";
 
 const CREATE_TOPIC = gql`
   mutation CreateTopic($userId: ID!, $text: String!) {
@@ -21,8 +21,10 @@ const CREATE_TOPIC_KEYWORD = gql`
   }
 `;
 
-const TopicRow = ({ topic, userId, i, refetch, keywordIds }) => {
+const TopicRow = ({ topic, i, refetch, keywordIds }) => {
   const [hasBeenSaved, setHasBeenSaved] = useState(false);
+
+  const { megaphoneUserInfo } = useContext(UserContext)
 
   const [createTopicKeywordData] = useMutation(CREATE_TOPIC_KEYWORD, {
     onCompleted: data => console.log(data),
@@ -53,7 +55,7 @@ const TopicRow = ({ topic, userId, i, refetch, keywordIds }) => {
   });
 
   const createTopicMutation = async text => {
-    const input = { userId: userId, text: text };
+    const input = { userId: megaphoneUserInfo.id, text: text };
 
     const newTopic = await topicCreationData({ variables: input });
     return newTopic;
