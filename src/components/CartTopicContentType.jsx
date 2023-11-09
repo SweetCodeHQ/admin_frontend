@@ -1,8 +1,8 @@
-import { useContext } from "react";
-import { gql, useMutation } from "@apollo/client";
-import { FlyoutMenu } from "../components";
-import { CartContext } from "../context";
-import { CONTENT_TYPES } from "../constants/contentTypes";
+import { useContext } from 'react';
+import { gql, useMutation } from '@apollo/client';
+import { FlyoutMenu } from '.';
+import { CartContext } from '../context';
+import { CONTENT_TYPES } from '../constants/contentTypes';
 
 const UPDATE_TOPIC_TYPE = gql`
   mutation UpdateType($id: ID!, $contentType: Int!) {
@@ -17,31 +17,30 @@ const UPDATE_TOPIC_TYPE = gql`
 const CartTopicContentType = ({ topicId, contentType, topicIndex }) => {
   const { updateCartTopic } = useContext(CartContext);
 
-  const handleChangeContentType = async typeIndex => {
+  const handleChangeContentType = async (typeIndex) => {
     const type = typeIndex + 1;
     try {
       const promise = await updateTopicType(topicId, type);
       updateCartTopic(topicIndex, type);
     } catch (error) {
       console.log(error);
-      alert("Sorry, I goofed! Please try again.");
+      alert('Sorry, I goofed! Please try again.');
     }
   };
 
   const updateTopicType = async (id, type) => {
     let promise;
-    const input = { contentType: type, id: id };
+    const input = { contentType: type, id };
     promise = await topicUpdateTypeData({ variables: input });
     return promise;
   };
 
-  const [
-    topicUpdateTypeData,
-    { loading: updateLoading, error: updateError }
-  ] = useMutation(UPDATE_TOPIC_TYPE, {
-    onError: error => console.log(error),
-    onCompleted: data => console.log(data)
-  });
+  const [topicUpdateTypeData, { loading: updateLoading, error: updateError }] =
+    useMutation(UPDATE_TOPIC_TYPE, {
+      context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+      onError: (error) => console.log(error),
+      onCompleted: (data) => console.log(data),
+    });
 
   return (
     <div className="flex font-bold justify-between">
@@ -53,8 +52,8 @@ const CartTopicContentType = ({ topicId, contentType, topicIndex }) => {
       />
       {contentType === 0 ? null : (
         <h4>
-          {CONTENT_TYPES[contentType - 1].credits}{" "}
-          {CONTENT_TYPES[contentType - 1].credits > 1 ? "Units" : "Unit"}
+          {CONTENT_TYPES[contentType - 1].credits}{' '}
+          {CONTENT_TYPES[contentType - 1].credits > 1 ? 'Units' : 'Unit'}
         </h4>
       )}
     </div>
