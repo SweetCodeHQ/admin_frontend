@@ -1,23 +1,21 @@
-import { BiFilter } from "react-icons/bi";
-import { FILTERS } from "../constants/filters";
+import { BiFilter } from 'react-icons/bi';
+import { FILTERS } from '../constants/filters';
 
-const Filter = ({ name, setFilterTopicsBy, filterTopicsBy }) => {
-  return (
-    <li>
-      <a
-        className={`
+const Filter = ({ name, setFilterTopicsBy, filterTopicsBy }) => (
+  <li>
+    <a
+      className={`
           dropdown-item text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-gray-300 hover:bg-gray-700 hover:text-white focus:text-white focus:bg-gray-700
         `}
-        onClick={e => setFilterTopicsBy(name)}
-      >
-        {name}
-      </a>
-    </li>
-  );
-};
+      onClick={(e) => setFilterTopicsBy(name)}
+    >
+      {name}
+    </a>
+  </li>
+);
 
 const TopicFilter = ({ setFilterTopicsBy, filterTopicsBy }) => {
-  const shownFilters = FILTERS.filter(filter => filter !== filterTopicsBy);
+  const shownFilters = FILTERS.filter((filter) => filter !== filterTopicsBy);
 
   return (
     <div className="dropdown relative">

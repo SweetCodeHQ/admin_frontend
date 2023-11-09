@@ -1,34 +1,37 @@
 module.exports = {
-  purge: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
+  purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
   theme: {
     fontFamily: {
-      display: ["Open Sans", "sans-serif"],
-      body: ["Open Sans", "sans-serif"],
+      display: ['Open Sans', 'sans-serif'],
+      body: ['Open Sans', 'sans-serif'],
     },
     extend: {
       screens: {
-        mf: "990px",
+        mf: '990px',
       },
       keyframes: {
-        "slide-in": {
-          "0%": {
-            "-webkit-transform": "translateX(120%)",
-            transform: "translateX(120%)",
+        'slide-in': {
+          '0%': {
+            '-webkit-transform': 'translateX(120%)',
+            transform: 'translateX(120%)',
           },
-          "100%": {
-            "-webkit-transform": "translateX(0%)",
-            transform: "translateX(0%)",
+          '100%': {
+            '-webkit-transform': 'translateX(0%)',
+            transform: 'translateX(0%)',
           },
         },
       },
       animation: {
-        "slide-in": "slide-in 0.5s ease-out",
+        'slide-in': 'slide-in 0.5s ease-out',
       },
     },
   },
   variants: {
     extend: {},
   },
-  content: ['./src/**/*.{html,js}', './node_modules/tw-elements/dist/js/**/*.js'],
-  plugins: [require("@tailwindcss/forms"), require('tw-elements/dist/plugin')],
+  content: [
+    './src/**/*.{html,js}',
+    './node_modules/tw-elements/dist/js/**/*.js',
+  ],
+  plugins: [require('@tailwindcss/forms'), require('tw-elements/dist/plugin')],
 };

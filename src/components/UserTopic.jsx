@@ -1,8 +1,8 @@
-import { useState, useContext } from "react";
-import { gql, useMutation, useQuery } from "@apollo/client";
-import { TopicCartIcon, UserTopicModal } from "../components";
-import { MdDeleteForever } from "react-icons/md";
-import { RiMailCheckFill } from "react-icons/ri";
+import { useState } from 'react';
+import { gql, useMutation, useQuery } from '@apollo/client';
+import { MdDeleteForever } from 'react-icons/md';
+import { RiMailCheckFill } from 'react-icons/ri';
+import { TopicCartIcon, UserTopicModal } from '.';
 
 const GET_TOPIC = gql`
   query topic($id: ID!) {
@@ -24,7 +24,7 @@ const GET_TOPIC = gql`
 `;
 
 const DESTROY_TOPIC = gql`
-  mutation($id: ID!) {
+  mutation ($id: ID!) {
     destroyTopic(input: { id: $id }) {
       id
     }
@@ -33,11 +33,12 @@ const DESTROY_TOPIC = gql`
 
 const UserTopic = ({ topic, refetch, id }) => {
   const [open, setOpen] = useState(false);
-  const handleModal = () => setOpen(prev => !prev);
+  const handleModal = () => setOpen((prev) => !prev);
 
   const [destroyTopicData, { loading, error }] = useMutation(DESTROY_TOPIC, {
+    context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
     onCompleted: refetch,
-    onError: error => console.log(error)
+    onError: (error) => console.log(error),
   });
 
   const destroyTopicMutation = () => {
@@ -47,8 +48,9 @@ const UserTopic = ({ topic, refetch, id }) => {
   };
 
   const { data: topicData, refetch: refetchTopic } = useQuery(GET_TOPIC, {
+    context: { headers: { authorization: `${process.env.QUERY_KEY}` } },
     variables: { id: topic.id },
-    onError: error => console.log(error)
+    onError: (error) => console.log(error),
   });
 
   const recentlySaved = () => {
@@ -64,9 +66,9 @@ const UserTopic = ({ topic, refetch, id }) => {
     <div className="flex items-center">
       <span
         className={`rounded-full bg-pink-400 h-2 w-2 text-xs mr-2 ${
-          recentlySaved() ? "" : "invisible"
+          recentlySaved() ? '' : 'invisible'
         }`}
-      ></span>
+      />
       {topic.submitted && (
         <div className="text-blue-500 mr-10 text-xl">
           <RiMailCheckFill />
@@ -75,8 +77,9 @@ const UserTopic = ({ topic, refetch, id }) => {
       <TopicCartIcon topic={topic} />
       <button
         type="button"
-        className={`text-blue-300 ml-2 text-2xl mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 ${topic.submitted &&
-          "hidden"}`}
+        className={`text-blue-300 ml-2 text-2xl mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 ${
+          topic.submitted && 'hidden'
+        }`}
         onClick={destroyTopicMutation}
       >
         <MdDeleteForever />
@@ -88,7 +91,11 @@ const UserTopic = ({ topic, refetch, id }) => {
         topic={topicData?.topic}
         refetchTopic={refetchTopic}
       />
-      <div className="text-white text-lg cursor-grab" data-id="saved-topic" onClick={handleModal}>
+      <div
+        className="text-white text-lg cursor-grab"
+        data-id="saved-topic"
+        onClick={handleModal}
+      >
         {topic.text}
       </div>
     </div>

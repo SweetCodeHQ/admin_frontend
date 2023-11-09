@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import { Input, Button } from "../components";
-import { INDUSTRIES } from "../constants/industries";
-import { gql, useMutation } from "@apollo/client";
+import { useState, useEffect } from 'react';
+import { gql, useMutation } from '@apollo/client';
+import { Input, Button } from '.';
+import { INDUSTRIES } from '../constants/industries';
 
 const CREATE_KEYWORD = gql`
   mutation CreateKeyword($word: String!) {
@@ -39,28 +39,25 @@ const UPDATE_CLICKED_GENERATE_COUNT = gql`
 `;
 
 export const IndustrySwitch = ({ toggleUseIndustry, setToggleUseIndustry }) => {
-  const enabledClass = "transform translate-x-5 bg-purple-500";
+  const enabledClass = 'transform translate-x-5 bg-purple-500';
 
   const flipStatus = () => {
-    setToggleUseIndustry(prev => !prev);
+    setToggleUseIndustry((prev) => !prev);
   };
 
   return (
-    <>
+    <div
+      className="md:w-10 md:h-4 w-10 h-3 flex items-center white-glassmorphism rounded-full p-1 cursor-pointer"
+      onClick={() => {
+        flipStatus();
+      }}
+    >
       <div
-        className="md:w-10 md:h-4 w-10 h-3 flex items-center white-glassmorphism rounded-full p-1 cursor-pointer"
-        onClick={() => {
-          flipStatus();
-        }}
-      >
-        <div
-          className={
-            "white-glassmorphism md:w-3 md:h-3 h-2 w-2 rounded-full shadow-md transform duration-300 ease-in-out" +
-            (toggleUseIndustry ? enabledClass : null)
-          }
-        ></div>
-      </div>
-    </>
+        className={`white-glassmorphism md:w-3 md:h-3 h-2 w-2 rounded-full shadow-md transform duration-300 ease-in-out${
+          toggleUseIndustry ? enabledClass : null
+        }`}
+      />
+    </div>
   );
 };
 
@@ -74,26 +71,27 @@ const KeywordInterface = ({
   getTopicSuggestions,
   setIsLoading,
   setInputKeywords,
-  moveKeyword
+  moveKeyword,
 }) => {
   const [toggleUseIndustry, setToggleUseIndustry] = useState(true);
 
   const [smartKeywords, setSmartKeywords] = useState([]);
 
   const userIndustryName = Object.keys(INDUSTRIES).find(
-    key => INDUSTRIES[key] === userIndustry
+    (key) => INDUSTRIES[key] === userIndustry
   );
 
   const handleChange = (e, name) => {
-    setFormData(prevState => ({ ...prevState, [name]: e.target.value }));
+    setFormData((prevState) => ({ ...prevState, [name]: e.target.value }));
   };
 
   const [keywordMutationData] = useMutation(CREATE_KEYWORD, {
-    onCompleted: data => console.log(data),
-    onError: error => console.log(error)
+    context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+    onCompleted: (data) => console.log(data),
+    onError: (error) => console.log(error),
   });
 
-  const createKeyword = async keyword => {
+  const createKeyword = async (keyword) => {
     const input = { word: keyword };
     const data = await keywordMutationData({ variables: input });
 
@@ -101,22 +99,24 @@ const KeywordInterface = ({
   };
 
   const [updateKeywordData] = useMutation(UPDATE_KEYWORD, {
-    onCompleted: data => console.log(data),
-    onError: error => console.log(error)
+    context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+    onCompleted: (data) => console.log(data),
+    onError: (error) => console.log(error),
   });
 
-  const updateKeyword = keyword => {
+  const updateKeyword = (keyword) => {
     const input = { word: keyword };
     updateKeywordData({ variables: input });
   };
 
   const [userKeywordMutationData] = useMutation(CREATE_USER_KEYWORD, {
-    onCompleted: data => console.log(data),
-    onError: error => console.log(error)
+    context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+    onCompleted: (data) => console.log(data),
+    onError: (error) => console.log(error),
   });
 
-  const createUserKeyword = word => {
-    const input = { userId: userId, word: word };
+  const createUserKeyword = (word) => {
+    const input = { userId, word };
     userKeywordMutationData({ variables: input });
   };
 
@@ -124,11 +124,11 @@ const KeywordInterface = ({
     getKeywordSuggestions();
   }, []);
 
-  const handleKeywordResponse = response => {
+  const handleKeywordResponse = (response) => {
     const keywords = response.data.attributes.text;
-    const extractedKeywords = keywords.split(",").splice(0, 5);
+    const extractedKeywords = keywords.split(',').splice(0, 5);
 
-    const formattedKeywords = extractedKeywords.map(keyword =>
+    const formattedKeywords = extractedKeywords.map((keyword) =>
       keyword.substring(0)
     );
 
@@ -139,17 +139,17 @@ const KeywordInterface = ({
     const url = `${process.env.AI_API_URL}/api/v1/keywords?`;
 
     const queryTerm =
-      toggleUseIndustry && userIndustryName ? userIndustryName : "technology";
+      toggleUseIndustry && userIndustryName ? userIndustryName : 'technology';
 
     const fullUrl = `${url}industry="${queryTerm}"`;
 
     fetch(fullUrl)
-      .then(response => response.json())
-      .then(response => handleKeywordResponse(response))
-      .then(error => console.log(error));
+      .then((response) => response.json())
+      .then((response) => handleKeywordResponse(response))
+      .then((error) => console.log(error));
   };
 
-  const keywordActions = async words => {
+  const keywordActions = async (words) => {
     for (const word of words) {
       if (word) {
         const keywordData = await createKeyword(word.toLowerCase().trim());
@@ -158,14 +158,14 @@ const KeywordInterface = ({
         createUserKeyword(word);
 
         updateKeyword(word.toLowerCase());
-        setKeywordIds(prev => [...prev, keywordId]);
+        setKeywordIds((prev) => [...prev, keywordId]);
       }
     }
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     if (!formData.word1 || !formData.word2 || !formData.word3)
-      return alert("Please provide at least three keywords.");
+      return alert('Please provide at least three keywords.');
 
     const words = Object.values(formData);
 
@@ -173,34 +173,35 @@ const KeywordInterface = ({
     setIsLoading(true);
     setInputKeywords(words);
     setKeywordIds([]);
-    setFormData({ word1: "", word2: "", word3: "", word4: "", word5: "" });
+    setFormData({ word1: '', word2: '', word3: '', word4: '', word5: '' });
 
     window.dataLayer.push({
-      event: "generate_topics",
+      event: 'generate_topics',
       keywords: [
         formData.word1,
         formData.word2,
         formData.word3,
         formData.word4,
-        formData.word5
-      ]
+        formData.word5,
+      ],
     });
     updateClickedGenerateCount(userId);
     keywordActions(words);
   };
 
-  const updateClickedGenerateCount = id => {
-    const input = { id: id };
+  const updateClickedGenerateCount = (id) => {
+    const input = { id };
     updateClickedGenerateMutationData({ variables: input });
   };
 
-  const [
-    updateClickedGenerateMutationData,
-    { loading: loginLoading, error: loginError }
-  ] = useMutation(UPDATE_CLICKED_GENERATE_COUNT, {
-    onCompleted: data => console.log(data),
-    onError: error => console.log(error)
-  });
+  const [updateClickedGenerateMutationData] = useMutation(
+    UPDATE_CLICKED_GENERATE_COUNT,
+    {
+      context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+      onCompleted: (data) => console.log(data),
+      onError: (error) => console.log(error),
+    }
+  );
 
   return (
     <div className="w-full flex flex-col justify-items-center">
@@ -263,7 +264,7 @@ const KeywordInterface = ({
         <div className="flex w-full my-3">
           <div className="text-white">
             <p>Use your industry segment:</p>
-            <p> ({userIndustryName ? userIndustryName : "your industry"})?</p>
+            <p> ({userIndustryName || 'your industry'})?</p>
           </div>
           <div className="self-center ml-10">
             <IndustrySwitch
@@ -274,7 +275,7 @@ const KeywordInterface = ({
         </div>
         <div className="w-full border-t border-gray-200" />
         <div className="flex w-full justify-around flex-wrap mt-3">
-          <Button text={"Generate"} handleClick={handleSubmit} />
+          <Button text="Generate" handleClick={handleSubmit} />
         </div>
       </div>
     </div>

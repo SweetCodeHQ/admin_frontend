@@ -1,9 +1,8 @@
-import { useContext, useState } from "react";
-import { Cart } from "../components";
-import { CartContext, UserContext } from "../context";
-import { EntityContextProvider } from "../context/EntityContext";
-
-import { BsCart4 } from "react-icons/bs";
+import { useContext, useState } from 'react';
+import { BsCart4 } from 'react-icons/bs';
+import { Cart } from '.';
+import { CartContext, UserContext } from '../context';
+import { EntityContextProvider } from '../context/EntityContext';
 
 const CartIcon = () => {
   const [toggleCart, setToggleCart] = useState(false);

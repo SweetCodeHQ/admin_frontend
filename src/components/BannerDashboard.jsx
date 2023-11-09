@@ -1,10 +1,10 @@
-import { useState, useRef, useEffect } from "react";
-import { gql, useQuery, useMutation } from "@apollo/client";
-import { Input, ExpandableTextArea } from "../components";
+import { useState, useEffect } from 'react';
+import { gql, useQuery, useMutation } from '@apollo/client';
 import {
   LinkIcon,
-  ChatBubbleOvalLeftEllipsisIcon
-} from "@heroicons/react/24/solid";
+  ChatBubbleOvalLeftEllipsisIcon,
+} from '@heroicons/react/24/solid';
+import { Input, ExpandableTextArea } from '.';
 
 const GET_BANNERS = gql`
   query Banners {
@@ -31,20 +31,20 @@ const Banner = ({ title, banner, refetch }) => {
   const [formData, setFormData] = useState({
     id: banner?.id,
     text: banner?.text,
-    link: banner?.link
+    link: banner?.link,
   });
   useEffect(() => {
     setFormData({
       id: banner?.id,
       text: banner?.text,
-      link: banner?.link
+      link: banner?.link,
     });
   }, [banner]);
 
   const [editEnabled, setEditEnabled] = useState(false);
 
   const handleChange = (e, name) => {
-    setFormData(prevState => ({ ...prevState, [name]: e.target.value }));
+    setFormData((prevState) => ({ ...prevState, [name]: e.target.value }));
   };
 
   const handleSave = () => {
@@ -52,10 +52,10 @@ const Banner = ({ title, banner, refetch }) => {
     if (formData.text === banner.text && formData.link === banner.link) return;
 
     updateBanner();
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       text: banner.text,
-      link: banner.link
+      link: banner.link,
     }));
   };
 
@@ -67,15 +67,16 @@ const Banner = ({ title, banner, refetch }) => {
   const [updateBannerData, { error: updateBannerError }] = useMutation(
     UPDATE_BANNER,
     {
+      context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
       onCompleted: refetch,
-      onError: error => console.log(error)
+      onError: (error) => console.log(error),
     }
   );
 
   return (
     <div
       className={`mr-10 mt-10 w-full ${
-        editEnabled ? null : "divide-y divide-gray-300"
+        editEnabled ? null : 'divide-y divide-gray-300'
       }`}
     >
       <div className="flex justify-between">
@@ -120,7 +121,7 @@ const Banner = ({ title, banner, refetch }) => {
             <h4 className="h-4 w-4 mr-4 py-1">
               <LinkIcon />
             </h4>
-            <p>{banner?.link ? banner?.link : "NONE"}</p>
+            <p>{banner?.link ? banner?.link : 'NONE'}</p>
           </div>
           <div className="flex">
             <div className="h-5 w-5 mr-3 py-1 shrink-0">
@@ -138,7 +139,8 @@ const Banner = ({ title, banner, refetch }) => {
 
 const BannerDashboard = () => {
   const { data: bannersData, refetch: refetchBanners } = useQuery(GET_BANNERS, {
-    onError: error => console.log(error)
+    context: { headers: { authorization: `${process.env.QUERY_KEY}` } },
+    onError: (error) => console.log(error),
   });
 
   return (

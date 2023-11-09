@@ -1,7 +1,7 @@
-import { Fragment, useState } from "react";
-import { Transition } from "@headlessui/react";
-import { InformationCircleIcon } from "@heroicons/react/24/outline";
-import { XMarkIcon } from "@heroicons/react/20/solid";
+import { Fragment, useState } from 'react';
+import { Transition } from '@headlessui/react';
+import { InformationCircleIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon } from '@heroicons/react/20/solid';
 
 const BlanketNotification = ({ displayTitle, displayText, link, mutation }) => {
   const [show, setShow] = useState(true);
@@ -60,7 +60,7 @@ const BlanketNotification = ({ displayTitle, displayText, link, mutation }) => {
                   </div>
                   <div
                     className={`ml-4 flex flex-shrink-0 ${
-                      mutation ? "invisible" : null
+                      mutation ? 'invisible' : null
                     }`}
                   >
                     <button

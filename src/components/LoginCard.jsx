@@ -1,15 +1,15 @@
-import { useState, useContext } from "react";
-import { useGoogleLogin } from "@react-oauth/google";
+import { useState, useContext } from 'react';
+import { useGoogleLogin } from '@react-oauth/google';
 
-import { GoogleLoginButton, Input } from "../components";
-import { UserContext } from "../context";
-import { EnvelopeIcon, EnvelopeOpenIcon } from "@heroicons/react/20/solid";
+import { EnvelopeIcon, EnvelopeOpenIcon } from '@heroicons/react/20/solid';
+import { GoogleLoginButton, Input } from '.';
+import { UserContext } from '../context';
 
 const Waitlist = ({ clickedEmail, setClickedEmail, handleClickJoin }) => {
-  const [waitlistForm, setWaitlistForm] = useState({ email: "" });
+  const [waitlistForm, setWaitlistForm] = useState({ email: '' });
 
   const handleChange = (e, name) => {
-    setWaitlistForm(prevState => ({ ...prevState, [name]: e.target.value }));
+    setWaitlistForm((prevState) => ({ ...prevState, [name]: e.target.value }));
   };
 
   return (
@@ -59,8 +59,8 @@ const Waitlist = ({ clickedEmail, setClickedEmail, handleClickJoin }) => {
 
 const LoginCard = ({ loginCallback }) => {
   const login = useGoogleLogin({
-    flow: "auth-code",
-    onSuccess: tokenResponse => loginCallback(tokenResponse)
+    flow: 'auth-code',
+    onSuccess: (tokenResponse) => loginCallback(tokenResponse),
   });
 
   const [clickedEmail, setClickedEmail] = useState(false);
@@ -70,13 +70,13 @@ const LoginCard = ({ loginCallback }) => {
 
   const { createUserMutation } = useContext(UserContext);
 
-  const handleClickJoin = async email => {
+  const handleClickJoin = async (email) => {
     try {
       await createUserMutation(email);
       setClickedJoin(true);
     } catch (e) {
       console.log(e);
-      alert("Sorry! There was an error. Please try again.");
+      alert('Sorry! There was an error. Please try again.');
     }
   };
 
@@ -93,16 +93,16 @@ const LoginCard = ({ loginCallback }) => {
           </div>
           <GoogleLoginButton
             loginCallback={loginCallback}
-            text={clickedSignup ? "signup_with" : "signin_with"}
+            text={clickedSignup ? 'signup_with' : 'signin_with'}
           />
           <div>
             <div className="mt-5 w-full flex justify-center">
               <div className="flex bg-[#3A1F5C] rounded-lg py-1 w-2/5">
                 <span
-                  onClick={() => setClickedSignup(prev => !prev)}
+                  onClick={() => setClickedSignup((prev) => !prev)}
                   className="bg-gradient-to-r pl-4 cursor-pointer from-[#ffc857] to-red-300 text-transparent underline-offset-4 decoration-red-300 bg-clip-text hover:underline mr-1"
                 >
-                  {clickedSignup ? "Sign in" : "Sign up"}
+                  {clickedSignup ? 'Sign in' : 'Sign up'}
                 </span>
                 <span className="text-white">instead?</span>
               </div>
@@ -116,11 +116,11 @@ const LoginCard = ({ loginCallback }) => {
               </div>
               <div className="relative flex justify-center text-sm font-medium leading-6">
                 <span
-                  className={`${"bg-[#3A1F5C]"} px-6 text-white rounded-lg`}
+                  className={`${'bg-[#3A1F5C]'} px-6 text-white rounded-lg`}
                 >
                   {clickedEmail
-                    ? "Join our waitlist!"
-                    : "Or join the waitlist with"}
+                    ? 'Join our waitlist!'
+                    : 'Or join the waitlist with'}
                 </span>
               </div>
             </div>

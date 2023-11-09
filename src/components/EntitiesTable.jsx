@@ -1,35 +1,33 @@
-import { useState, useContext } from "react";
-import { PaginationNav, Input, TableAddItemForm } from "../components";
-import { EntityContext } from "../context/EntityContext";
+import { useState, useContext } from 'react';
+import { PaginationNav, Input, TableAddItemForm } from '.';
+import { EntityContext } from '../context/EntityContext';
 
-const HEADERS = ["name", "url", "users", "topics", "units"];
+const HEADERS = ['name', 'url', 'users', 'topics', 'units'];
 
 const TableRow = ({ entity, editEntity, i }) => {
   const [clickedEdit, setClickedEdit] = useState(false);
 
-  const resetForm = () => {
-    return {
-      id: entity.node.id,
-      name: entity.node.name,
-      url: entity.node.url,
-      credits: entity.node.credits
-    };
-  };
+  const resetForm = () => ({
+    id: entity.node.id,
+    name: entity.node.name,
+    url: entity.node.url,
+    credits: entity.node.credits,
+  });
 
   const handleClick = () => {
     const resetData = resetForm();
     setEditEntityForm(resetData);
-    setClickedEdit(prev => !prev);
+    setClickedEdit((prev) => !prev);
   };
 
   const handleSubmit = async () => {
     let submissionData = { id: entity.node.id };
 
-    Object.keys(editEntityForm).forEach(formItem => {
+    Object.keys(editEntityForm).forEach((formItem) => {
       editEntityForm[formItem] !== entity.node[formItem]
         ? (submissionData = {
             ...submissionData,
-            [formItem]: editEntityForm[formItem]
+            [formItem]: editEntityForm[formItem],
           })
         : null;
     });
@@ -42,14 +40,14 @@ const TableRow = ({ entity, editEntity, i }) => {
   const [editEntityForm, setEditEntityForm] = useState(() => resetForm());
 
   const handleChange = (e, name) => {
-    name === "credits"
-      ? setEditEntityForm(prevState => ({
+    name === 'credits'
+      ? setEditEntityForm((prevState) => ({
           ...prevState,
-          [name]: +e.target.value
+          [name]: +e.target.value,
         }))
-      : setEditEntityForm(prevState => ({
+      : setEditEntityForm((prevState) => ({
           ...prevState,
-          [name]: e.target.value
+          [name]: e.target.value,
         }));
   };
 
@@ -64,11 +62,11 @@ const TableRow = ({ entity, editEntity, i }) => {
       >
         {clickedEdit ? (
           <Input
-            key={"name input"}
-            name={"name"}
+            key="name input"
+            name="name"
             handleChange={handleChange}
             defaultValue={entity.node.name}
-            customStyles={`w-full rounded-lg p-2 text-white bg-[#4E376A]/75 border-gray-500 border placeholder-gray-400 text-sm shadow-inner shadow-lg hover:border-violet-500`}
+            customStyles="w-full rounded-lg p-2 text-white bg-[#4E376A]/75 border-gray-500 border placeholder-gray-400 text-sm shadow-inner shadow-lg hover:border-violet-500"
           />
         ) : (
           entity.node.name
@@ -80,11 +78,11 @@ const TableRow = ({ entity, editEntity, i }) => {
       >
         {clickedEdit ? (
           <Input
-            key={"url input"}
-            name={"url"}
+            key="url input"
+            name="url"
             handleChange={handleChange}
             defaultValue={entity.node.url}
-            customStyles={`w-full rounded-lg p-2 text-white bg-[#4E376A]/75 border-gray-500 border placeholder-gray-400 text-sm shadow-inner shadow-lg hover:border-violet-500`}
+            customStyles="w-full rounded-lg p-2 text-white bg-[#4E376A]/75 border-gray-500 border placeholder-gray-400 text-sm shadow-inner shadow-lg hover:border-violet-500"
           />
         ) : (
           entity.node.url
@@ -108,17 +106,17 @@ const TableRow = ({ entity, editEntity, i }) => {
       >
         {clickedEdit ? (
           <Input
-            key={"credits input"}
-            name={"credits"}
+            key="credits input"
+            name="credits"
             handleChange={handleChange}
             defaultValue={entity.node.credits}
-            type={"number"}
-            customStyles={`w-3/4 rounded-lg text-white bg-[#4E376A]/75 border-gray-500 border placeholder-gray-400 text-sm shadow-inner shadow-lg hover:border-violet-500`}
+            type="number"
+            customStyles="w-3/4 rounded-lg text-white bg-[#4E376A]/75 border-gray-500 border placeholder-gray-400 text-sm shadow-inner shadow-lg hover:border-violet-500"
           />
         ) : entity.node.credits ? (
           entity.node.credits
         ) : (
-          "NEW"
+          'NEW'
         )}
       </td>
       <td className="relative whitespace-nowrap py-4 pr-4 text-right text-sm font-medium sm:pr-3">
@@ -126,7 +124,7 @@ const TableRow = ({ entity, editEntity, i }) => {
           onClick={clickedEdit ? handleSubmit : handleClick}
           className="text-sm font-bold text-indigo-500 hover:text-indigo-300"
         >
-          {clickedEdit ? "Save" : "Edit"}
+          {clickedEdit ? 'Save' : 'Edit'}
           <span className="sr-only">, Item Name</span>
         </button>
       </td>
@@ -139,36 +137,34 @@ const EntitiesTable = ({ entities, fetchMore, refetch, flipEntityPage }) => {
 
   const [clickedCreate, setClickedCreate] = useState(false);
 
-  const handleCreateEntity = async data => {
+  const handleCreateEntity = async (data) => {
     await sendEntity(data);
     refetch();
   };
 
-  const generateEmptyRow = step => {
-    return (
-      <tr key={`empty row ${step}`} className="bg-[#3A1F5C]">
-        {HEADERS.map((header, i) => (
-          <td
-            key={`${i}${header}`}
-            className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-3"
-          >
-            {null}
-          </td>
-        ))}
-        <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
-          <a
-            href="#"
-            className="text-sm font-bold text-indigo-500 hover:text-indigo-300 invisible"
-          >
-            Edit<span className="sr-only">, Item Name</span>
-          </a>
+  const generateEmptyRow = (step) => (
+    <tr key={`empty row ${step}`} className="bg-[#3A1F5C]">
+      {HEADERS.map((header, i) => (
+        <td
+          key={`${i}${header}`}
+          className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-3"
+        >
+          {null}
         </td>
-      </tr>
-    );
-  };
+      ))}
+      <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
+        <a
+          href="#"
+          className="text-sm font-bold text-indigo-500 hover:text-indigo-300 invisible"
+        >
+          Edit<span className="sr-only">, Item Name</span>
+        </a>
+      </td>
+    </tr>
+  );
 
   const generateEmptyRows = () => {
-    let rows = [];
+    const rows = [];
     const numOfEmptyRows = 10 - entities?.edges?.length;
 
     for (let step = 0; step < numOfEmptyRows; step++) {
@@ -190,7 +186,7 @@ const EntitiesTable = ({ entities, fetchMore, refetch, flipEntityPage }) => {
         <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
           {clickedCreate ? (
             <TableAddItemForm
-              form={{ name: "", url: "" }}
+              form={{ name: '', url: '' }}
               tableName="Entities"
               setClickedCreate={setClickedCreate}
               handleCreate={handleCreateEntity}
@@ -212,19 +208,17 @@ const EntitiesTable = ({ entities, fetchMore, refetch, flipEntityPage }) => {
             <table className="min-w-full divide-y divide-gray-300">
               <thead>
                 <tr>
-                  {HEADERS.map((header, i) => {
-                    return (
-                      <th
-                        key={header}
-                        scope="col"
-                        className={`py-3.5 pl-4 pr-3 text-sm font-semibold text-white ${
-                          i == 0 || i == 1 ? "text-left" : "text-center"
-                        } sm:pl-3`}
-                      >
-                        {header.toUpperCase()}
-                      </th>
-                    );
-                  })}
+                  {HEADERS.map((header, i) => (
+                    <th
+                      key={header}
+                      scope="col"
+                      className={`py-3.5 pl-4 pr-3 text-sm font-semibold text-white ${
+                        i == 0 || i == 1 ? 'text-left' : 'text-center'
+                      } sm:pl-3`}
+                    >
+                      {header.toUpperCase()}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody className="bg-white rounded-bl-full">

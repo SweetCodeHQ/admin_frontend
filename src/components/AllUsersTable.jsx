@@ -1,22 +1,19 @@
-import { useState } from "react";
-import { AdminSwitch, PaginationNav } from "../components";
+import { AdminSwitch, PaginationNav } from '.';
 
 const TableRow = ({ user }) => {
-  const formatDate = isoDate => {
+  const formatDate = (isoDate) => {
     const date = new Date(isoDate);
     const [day, month, year] = [
       date.getDate(),
       date.getMonth() + 1,
-      date.getFullYear()
+      date.getFullYear(),
     ];
     return `${month}/${day}/${year}`;
   };
 
-  const formatBoolean = boolean => {
-    return boolean ? "Yes" : "No";
-  };
+  const formatBoolean = (boolean) => (boolean ? 'Yes' : 'No');
 
-  const showAdminToggle = user.email.endsWith("fixate.io");
+  const showAdminToggle = user.email.endsWith('fixate.io');
 
   return (
     <tr className="even:bg-[#4E376A] bg-[#3A1F5C]/95 text-white">
@@ -52,7 +49,7 @@ const TableRow = ({ user }) => {
             key={`${user.email}admin`}
             userId={user.id}
             isOn={user.isAdmin}
-            forAdmin={true}
+            forAdmin
           />
         ) : null}
       </td>
@@ -62,38 +59,36 @@ const TableRow = ({ user }) => {
 
 const AllUsersTable = ({ flipPage, connection }) => {
   const headers = [
-    "id",
-    "email",
-    "topics",
-    "logins",
-    "generations",
-    "blocked",
-    "joined",
-    "admin"
+    'id',
+    'email',
+    'topics',
+    'logins',
+    'generations',
+    'blocked',
+    'joined',
+    'admin',
   ];
-  const tableItems = connection?.edges.map(edge => edge.node);
+  const tableItems = connection?.edges.map((edge) => edge.node);
   const totalItemCount = connection?.totalCount;
   const pageInfo = connection?.pageInfo;
 
-  const generateEmptyRow = step => {
-    return (
-      <tr key={step} className="bg-[#3A1F5C] text-white">
-        {headers.map((header, i) => (
-          <td
-            key={`${i}${header}`}
-            className="whitespace-nowrap py-7 pl-4 pr-3 text-sm font-medium sm:pl-3"
-          >
-            {null}
-          </td>
-        ))}
-      </tr>
-    );
-  };
+  const generateEmptyRow = (step) => (
+    <tr key={step} className="bg-[#3A1F5C] text-white">
+      {headers.map((header, i) => (
+        <td
+          key={`${i}${header}`}
+          className="whitespace-nowrap py-7 pl-4 pr-3 text-sm font-medium sm:pl-3"
+        >
+          {null}
+        </td>
+      ))}
+    </tr>
+  );
 
   const generateEmptyRows = () => {
     if (tableItems?.length === 10) return;
 
-    let rows = [];
+    const rows = [];
     const numOfEmptyRows = 10 - tableItems?.length;
 
     for (let step = 0; step < numOfEmptyRows; step++) {
@@ -119,17 +114,15 @@ const AllUsersTable = ({ flipPage, connection }) => {
             <table className="min-w-full divide-y divide-gray-300">
               <thead>
                 <tr>
-                  {headers.map((header, i) => {
-                    return (
-                      <th
-                        key={header}
-                        scope="col"
-                        className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-white sm:pl-3"
-                      >
-                        {header.toUpperCase()}
-                      </th>
-                    );
-                  })}
+                  {headers.map((header, i) => (
+                    <th
+                      key={header}
+                      scope="col"
+                      className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-white sm:pl-3"
+                    >
+                      {header.toUpperCase()}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody className="bg-white rounded-bl-full">

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 const PaginationNav = ({ totalItemCount, itemType, pageInfo, flipPage }) => {
   const [currentPageNumber, setCurrentPageNumber] = useState(1);
@@ -11,17 +11,17 @@ const PaginationNav = ({ totalItemCount, itemType, pageInfo, flipPage }) => {
 
   const handleFlipForward = () => {
     flipPage({
-      after: pageInfo.endCursor
+      after: pageInfo.endCursor,
     });
-    setCurrentPageNumber(prev => (prev += 1));
+    setCurrentPageNumber((prev) => (prev += 1));
   };
 
   const handleFlipBackward = () => {
     flipPage({
       last: 10,
-      before: pageInfo.startCursor
+      before: pageInfo.startCursor,
     });
-    setCurrentPageNumber(prev => (prev -= 1));
+    setCurrentPageNumber((prev) => (prev -= 1));
   };
 
   return (
@@ -31,11 +31,11 @@ const PaginationNav = ({ totalItemCount, itemType, pageInfo, flipPage }) => {
     >
       <div className="hidden sm:block">
         <p className="text-sm text-white">
-          Showing <span className="font-medium">Page {currentPageNumber}</span>{" "}
-          of{" "}
+          Showing <span className="font-medium">Page {currentPageNumber}</span>{' '}
+          of{' '}
           <span className="font-medium">
             {Math.ceil(totalItemCount / 10) || 1}
-          </span>{" "}
+          </span>{' '}
           <span className="font-medium">({totalItemCount}</span> {itemType})
         </p>
       </div>
@@ -43,7 +43,7 @@ const PaginationNav = ({ totalItemCount, itemType, pageInfo, flipPage }) => {
         <button
           onClick={handleFlipBackward}
           className={`relative inline-flex items-center mr-2 rounded-lg bg-white px-3 py-2 text-sm font-bold text-[#3A1F5C] ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0 transition delay-50 ease-in-out hover:scale-105 ${
-            pageInfo?.hasPreviousPage ? null : "invisible"
+            pageInfo?.hasPreviousPage ? null : 'invisible'
           }`}
         >
           Back
@@ -53,7 +53,7 @@ const PaginationNav = ({ totalItemCount, itemType, pageInfo, flipPage }) => {
           <button
             onClick={handleFlipForward}
             className={`relative inline-flex items-center rounded-lg bg-white px-3 py-2 text-sm font-bold text-[#3A1F5C] ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0 transition delay-50 ease-in-out hover:scale-105 ${
-              pageInfo?.hasNextPage ? null : "invisible"
+              pageInfo?.hasNextPage ? null : 'invisible'
             }`}
           >
             Next

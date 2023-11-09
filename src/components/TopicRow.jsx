@@ -1,8 +1,7 @@
-import { useState } from "react";
-import { gql, useQuery, useMutation } from "@apollo/client";
-
-import { BsFillBookmarkPlusFill } from "react-icons/bs";
-import { MdBookmarkAdd } from "react-icons/md";
+import { useState, useContext } from 'react';
+import { gql, useMutation } from '@apollo/client';
+import { BsFillBookmarkPlusFill } from 'react-icons/bs';
+import { UserContext } from '../context';
 
 const CREATE_TOPIC = gql`
   mutation CreateTopic($userId: ID!, $text: String!) {
@@ -21,39 +20,42 @@ const CREATE_TOPIC_KEYWORD = gql`
   }
 `;
 
-const TopicRow = ({ topic, userId, i, refetch, keywordIds }) => {
+const TopicRow = ({ topic, i, refetch, keywordIds }) => {
   const [hasBeenSaved, setHasBeenSaved] = useState(false);
 
+  const { megaphoneUserInfo } = useContext(UserContext);
+
   const [createTopicKeywordData] = useMutation(CREATE_TOPIC_KEYWORD, {
-    onCompleted: data => console.log(data),
-    onError: error => console.log(error)
+    context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+    onCompleted: (data) => console.log(data),
+    onError: (error) => console.log(error),
   });
 
   const createTopicKeyword = (keywordId, topicId) => {
-    const input = { topicId: topicId, keywordId: keywordId };
+    const input = { topicId, keywordId };
     createTopicKeywordData({ variables: input });
   };
 
   const formatTopic = () => {
-    if (topic.charAt(0) === "-") {
+    if (topic.charAt(0) === '-') {
       const temp = topic.substring(1);
 
       return `${temp}`;
-    } else {
-      const temp = topic.substring(3);
-      return temp;
     }
+    const temp = topic.substring(3);
+    return temp;
   };
 
   const formattedTopic = formatTopic();
 
   const [topicCreationData, { loading, error }] = useMutation(CREATE_TOPIC, {
-    onCompleted: data => console.log(data),
-    onError: error => console.log(error)
+    context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+    onCompleted: (data) => console.log(data),
+    onError: (error) => console.log(error),
   });
 
-  const createTopicMutation = async text => {
-    const input = { userId: userId, text: text };
+  const createTopicMutation = async (text) => {
+    const input = { userId: megaphoneUserInfo.id, text };
 
     const newTopic = await topicCreationData({ variables: input });
     return newTopic;
@@ -72,7 +74,7 @@ const TopicRow = ({ topic, userId, i, refetch, keywordIds }) => {
     refetch();
     const topicId = newTopic?.data.createTopic.id;
 
-    window.dataLayer.push({'event': 'save_topic', 'topic': newTopic})
+    window.dataLayer.push({ event: 'save_topic', topic: newTopic });
 
     for (const id of keywordIds) {
       createTopicKeyword(id, topicId);

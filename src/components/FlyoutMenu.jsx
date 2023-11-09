@@ -1,16 +1,16 @@
-import { Fragment } from "react";
-import { Popover, Transition } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { Fragment } from 'react';
+import { Popover, Transition } from '@headlessui/react';
+import { ChevronDownIcon } from '@heroicons/react/20/solid';
 
 const FlyoutMenu = ({ menuState, handleState, options, menuName }) => {
-  const handleClick = i => {
+  const handleClick = (i) => {
     handleState(i);
   };
 
   return (
     <Popover className="relative">
       <Popover.Button className="inline-flex items-center gap-x-1 text-sm font-semibold leading-6 text-white">
-        <span>{menuState || "SELECT TYPE"}</span>
+        <span>{menuState || 'SELECT TYPE'}</span>
         <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
       </Popover.Button>
 
@@ -37,7 +37,7 @@ const FlyoutMenu = ({ menuState, handleState, options, menuName }) => {
                   <div className="flex justify-between">
                     <h4 className="mr-3">{option.name}</h4>
                     <h4>{`${option.credits} ${
-                      option.credits === 1 ? "unit" : "units"
+                      option.credits === 1 ? 'unit' : 'units'
                     }`}</h4>
                   </div>
                 </div>
