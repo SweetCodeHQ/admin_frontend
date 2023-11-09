@@ -1,10 +1,6 @@
-import { useContext } from "react";
-import { EntityContext, EntityContextProvider } from "../context/EntityContext";
-import {
-  EntityDashboard,
-  AdminUserDashboard,
-  BannerDashboard
-} from "../components";
+import { useContext } from 'react';
+import { EntityContext, EntityContextProvider } from '../context/EntityContext';
+import { EntityDashboard, AdminUserDashboard, BannerDashboard } from '.';
 
 const AdminDashboards = () => {
   const formData = useContext(EntityContext);
