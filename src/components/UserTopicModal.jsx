@@ -1,22 +1,14 @@
-import { Fragment, useRef, useState, useEffect } from "react";
-import { Dialog, Transition } from "@headlessui/react";
+import { Fragment, useRef, useState, useEffect } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
 import {
   DocumentTextIcon,
   DocumentCheckIcon,
   PencilSquareIcon,
-  ArrowUturnLeftIcon,
-  XMarkIcon
-} from "@heroicons/react/24/solid";
-import { RiMailCheckFill } from "react-icons/ri";
-import {
-  Input,
-  Button,
-  Abstract,
-  TopicCartIcon,
-  Tooltip,
-  BasicAlert
-} from "../components";
-import { gql, useMutation, useQuery } from "@apollo/client";
+  XMarkIcon,
+} from '@heroicons/react/24/solid';
+import { RiMailCheckFill } from 'react-icons/ri';
+import { gql, useMutation } from '@apollo/client';
+import { Input, Abstract, TopicCartIcon, Tooltip, BasicAlert } from '.';
 
 const UPDATE_TOPIC = gql`
   mutation UpdateTopicText($id: ID!, $text: String!) {
@@ -40,8 +32,8 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
   const [editModeEnabled, setEditModeEnabled] = useState(false);
 
   const [modalFormData, setModalFormData] = useState({
-    topicText: "",
-    abstractText: ""
+    topicText: '',
+    abstractText: '',
   });
 
   const [showAlert, setShowAlert] = useState(false);
@@ -51,14 +43,15 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
   const abstractTextRef = useRef(null);
   useEffect(() => {
     if (abstractTextRef && abstractTextRef.current) {
-      abstractTextRef.current.style.height = "auto";
-      abstractTextRef.current.style.height = `${abstractTextRef.current
-        .scrollHeight + 2}px`;
+      abstractTextRef.current.style.height = 'auto';
+      abstractTextRef.current.style.height = `${
+        abstractTextRef.current.scrollHeight + 2
+      }px`;
     }
   }, [abstractTextRef, modalFormData, editModeEnabled]);
 
   const handleChange = (e, name) => {
-    setModalFormData(prevState => ({ ...prevState, [name]: e.target.value }));
+    setModalFormData((prevState) => ({ ...prevState, [name]: e.target.value }));
   };
 
   const handleCloseModal = () => {
@@ -67,20 +60,20 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
     refetchTopic();
   };
 
-  const handleSave = event => {
+  const handleSave = (event) => {
     setEditModeEnabled(false);
     handleSubmitTopic();
     handleSubmitAbstract();
   };
 
   const handleSubmitTopic = () => {
-    if (modalFormData.topicText === "") return;
+    if (modalFormData.topicText === '') return;
 
     editTopic(topic.id, modalFormData.topicText);
   };
 
   const handleSubmitAbstract = () => {
-    if (!topic.abstract || modalFormData.abstractText === "") return;
+    if (!topic.abstract || modalFormData.abstractText === '') return;
 
     editAbstract(topic.abstract.id, modalFormData.abstractText);
   };
@@ -92,11 +85,15 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
   };
 
   const [topicUpdateData] = useMutation(UPDATE_TOPIC, {
+    context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
     ignoreResults: true,
-    fetchPolicy: "no-cache",
-    onError: error => console.log(error),
-    onCompleted: data =>
-      setModalFormData(prev => ({ ...prev, topicText: data.updateTopic.text }))
+    fetchPolicy: 'no-cache',
+    onError: (error) => console.log(error),
+    onCompleted: (data) =>
+      setModalFormData((prev) => ({
+        ...prev,
+        topicText: data.updateTopic.text,
+      })),
   });
 
   const editAbstract = (abstractId, newAbstractText) => {
@@ -106,14 +103,15 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
   };
 
   const [abstractUpdateData] = useMutation(UPDATE_ABSTRACT, {
+    context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
     ignoreResults: true,
-    fetchPolicy: "no-cache",
-    onError: error => console.log(error),
-    onCompleted: data =>
-      setModalFormData(prev => ({
+    fetchPolicy: 'no-cache',
+    onError: (error) => console.log(error),
+    onCompleted: (data) =>
+      setModalFormData((prev) => ({
         ...prev,
-        abstractText: data.updateAbstract.text
-      }))
+        abstractText: data.updateAbstract.text,
+      })),
   });
 
   const displayedTopic = modalFormData.topicText
@@ -157,7 +155,7 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-[#3A1F5C] px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 w-full max-w-lg sm:p-6">
                 <div>
-                  {/*The icons reflect the current status. When you add statuses, update the icon possibilities. Submitted, writing, etc. If it's submitted, you shouldn't be able to edit it.*/}
+                  {/* The icons reflect the current status. When you add statuses, update the icon possibilities. Submitted, writing, etc. If it's submitted, you shouldn't be able to edit it. */}
                   {topic?.submitted ? (
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white">
                       <DocumentCheckIcon
@@ -191,9 +189,7 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
                           name="topicText"
                           type="text"
                           defaultValue={displayedTopic}
-                          customStyles={
-                            "w-full rounded-lg outline-none text-white bg-[#4E376A]/75 placeholder-gray-400 border-violet-500 text-sm shadow-inner shadow-lg"
-                          }
+                          customStyles="w-full rounded-lg outline-none text-white bg-[#4E376A]/75 placeholder-gray-400 border-violet-500 text-sm shadow-inner shadow-lg"
                         />
                       ) : (
                         displayedTopic
@@ -206,10 +202,8 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
                         name="abstractText"
                         type="text"
                         defaultValue={displayedAbstract}
-                        onChange={e => handleChange(e, "abstractText")}
-                        className={
-                          "w-full rounded-lg outline-none text-white bg-[#4E376A]/75 placeholder-gray-400 border-violet-500 text-sm shadow-inner shadow-lg max-h-[350px] resize-none min-h-[100px] mb-11"
-                        }
+                        onChange={(e) => handleChange(e, 'abstractText')}
+                        className="w-full rounded-lg outline-none text-white bg-[#4E376A]/75 placeholder-gray-400 border-violet-500 text-sm shadow-inner shadow-lg max-h-[350px] resize-none min-h-[100px] mb-11"
                       />
                     ) : (
                       <Abstract
@@ -234,18 +228,18 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
                     </button>
                   ) : (
                     <button
-                      onClick={e => setEditModeEnabled(true)}
+                      onClick={(e) => setEditModeEnabled(true)}
                       data-id="edit-abstract"
                       disabled={topic?.submitted}
                       className={`mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4E376A] ${
                         topic?.submitted
-                          ? "cursor-not-allowed"
-                          : "transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                          ? 'cursor-not-allowed'
+                          : 'transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
                       }`}
                     >
                       <PencilSquareIcon
                         className={`h-6 w-6 ${
-                          topic?.submitted ? "text-gray-300" : "text-blue-300"
+                          topic?.submitted ? 'text-gray-300' : 'text-blue-300'
                         }`}
                         aria-hidden="true"
                       />
