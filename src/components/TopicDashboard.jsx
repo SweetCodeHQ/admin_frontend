@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   BsFillArrowLeftCircleFill,
-  BsFillArrowRightCircleFill
-} from "react-icons/bs";
-import { gql, useQuery, useMutation } from "@apollo/client";
+  BsFillArrowRightCircleFill,
+} from 'react-icons/bs';
+import { gql, useQuery } from '@apollo/client';
 
 import {
   Button,
@@ -12,10 +12,10 @@ import {
   UserTopic,
   TopicInputForm,
   TopicFilter,
-  KeywordInterface
-} from "../components";
+  KeywordInterface,
+} from '.';
 
-import { filterBySubmitted, filterByNotSubmitted } from "../constants/filters";
+import { filterBySubmitted, filterByNotSubmitted } from '../constants/filters';
 
 const GET_USER_TOPICS = gql`
   query User($email: String!) {
@@ -34,11 +34,11 @@ const GET_USER_TOPICS = gql`
 
 const TopicDashboard = ({ megaphoneUserInfo }) => {
   const [formData, setFormData] = useState({
-    word1: "",
-    word2: "",
-    word3: "",
-    word4: "",
-    word5: ""
+    word1: '',
+    word2: '',
+    word3: '',
+    word4: '',
+    word5: '',
   });
 
   const [toggleUserTopicModal, setToggleUserTopicModal] = useState(false);
@@ -60,9 +60,7 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
 
   const numOfPages = topicPages.length;
 
-  const backArrowVisible = () => {
-    return currentPage !== 0;
-  };
+  const backArrowVisible = () => currentPage !== 0;
 
   const forwardArrowVisible = () => {
     if (numOfPages === 1) return false;
@@ -71,14 +69,16 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
 
   const [userTopicsConnection, setUserTopicsConnection] = useState([]);
 
-  const [filterTopicsBy, setFilterTopicsBy] = useState("ALL");
+  const [filterTopicsBy, setFilterTopicsBy] = useState('ALL');
 
   const filterTopics = () => {
-    if (filterTopicsBy === "ALL") {
+    if (filterTopicsBy === 'ALL') {
       return userTopics;
-    } else if (filterTopicsBy === "SUBMITTED") {
+    }
+    if (filterTopicsBy === 'SUBMITTED') {
       return filterBySubmitted(userTopics);
-    } else if (filterTopicsBy === "NOT SUBMITTED") {
+    }
+    if (filterTopicsBy === 'NOT SUBMITTED') {
       return filterByNotSubmitted(userTopics);
     }
   };
@@ -93,47 +93,45 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
     paginateTopics(filteredTopics);
   };
 
-  const paginateTopics = topics => {
+  const paginateTopics = (topics) => {
     if (topics.length > 10) {
-      let topicsArr = [...topics];
-      let pages = [];
+      const topicsArr = [...topics];
+      const pages = [];
       while (topicsArr.length > 0) {
-        let page = topicsArr.splice(0, 10);
+        const page = topicsArr.splice(0, 10);
         pages.push(page);
       }
-      setTopicPages(prev => pages);
+      setTopicPages((prev) => pages);
     } else {
-      setTopicPages(prev => [topics]);
+      setTopicPages((prev) => [topics]);
     }
   };
 
-  const flipTopicPageForward = direction => {
-    if (direction) return setCurrentPage(prev => (prev += 1));
-    if (!direction) return setCurrentPage(prev => (prev -= 1));
+  const flipTopicPageForward = (direction) => {
+    if (direction) return setCurrentPage((prev) => (prev += 1));
+    if (!direction) return setCurrentPage((prev) => (prev -= 1));
   };
 
   const { data: userTopicsData, refetch: refetchUserTopics } = useQuery(
     GET_USER_TOPICS,
     {
+      context: { headers: { authorization: `${process.env.QUERY_KEY}` } },
       variables: { email: megaphoneUserInfo?.email },
-      onError: error => console.log(error),
-      onCompleted: data => setUserTopics(data.user.topics)
+      onError: (error) => console.log(error),
+      onCompleted: (data) => setUserTopics(data.user.topics),
     }
   );
 
-  const updateQuery = (prev, { fetchMoreResult }) => {
-    return fetchMoreResult.userTopicsConnection.edges.length
-      ? fetchMoreResult
-      : prev;
-  };
+  const updateQuery = (prev, { fetchMoreResult }) =>
+    fetchMoreResult.userTopicsConnection.edges.length ? fetchMoreResult : prev;
 
-  const handleTopicResponse = response => {
+  const handleTopicResponse = (response) => {
     {
-      /*Add response in case of dashes and no numbers or bullets*/
+      /* Add response in case of dashes and no numbers or bullets */
     }
     const topics = response.data.attributes.text;
 
-    const formattedTopics = topics.split("\n").splice(0, 5);
+    const formattedTopics = topics.split('\n').splice(0, 5);
 
     setIsLoading(false);
     setFreshTopics(formattedTopics);
@@ -145,42 +143,42 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
     const fullUrl = `${url}keywords="${formData.word1} ${formData.word2} ${formData.word3} ${formData.word4} ${formData.word5}"`;
 
     fetch(fullUrl)
-      .then(response => response.json())
-      .then(response => handleTopicResponse(response))
-      .then(error => console.log(error));
+      .then((response) => response.json())
+      .then((response) => handleTopicResponse(response))
+      .then((error) => console.log(error));
   };
 
   const moveKeyword = (word, i) => {
     let newForm;
-    if (formData.word1 === "") {
+    if (formData.word1 === '') {
       newForm = {
         ...formData,
-        word1: word
+        word1: word,
       };
-    } else if (formData.word2 === "") {
+    } else if (formData.word2 === '') {
       newForm = {
         ...formData,
-        word2: word
+        word2: word,
       };
-    } else if (formData.word3 === "") {
+    } else if (formData.word3 === '') {
       newForm = {
         ...formData,
-        word3: word
+        word3: word,
       };
-    } else if (formData.word4 === "") {
+    } else if (formData.word4 === '') {
       newForm = {
         ...formData,
-        word4: word
+        word4: word,
       };
-    } else if (formData.word5 === "") {
+    } else if (formData.word5 === '') {
       newForm = {
         ...formData,
-        word5: word
+        word5: word,
       };
     } else {
       newForm = {
         ...formData,
-        word5: word
+        word5: word,
       };
     }
 
@@ -247,14 +245,12 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
                     <ul className="flex w-full justify-around bg-[#3A1F5C] border-2 p-3 rounded-xl">
                       {inputKeywords.map(
                         (keyword, i) =>
-                          keyword != "" && (
+                          keyword != '' && (
                             <Button
                               key={`inspiration ${i}`}
                               text={keyword.toUpperCase()}
                               handleClick={() => moveKeyword(keyword)}
-                              customStyles={
-                                "text-[#2D104F] font-bold bg-white rounded-full text-center text-sm pr-3 pl-3 pt-1 pb-1 cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
-                              }
+                              customStyles="text-[#2D104F] font-bold bg-white rounded-full text-center text-sm pr-3 pl-3 pt-1 pb-1 cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
                             />
                           )
                       )}
@@ -301,7 +297,7 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
                         <BsFillArrowLeftCircleFill />
                       </p>
                     ) : (
-                      <p></p>
+                      <p />
                     )}
                   </div>
                   <div className="text-blue-300 pb-8">
@@ -321,7 +317,7 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
                         <BsFillArrowRightCircleFill />
                       </p>
                     ) : (
-                      <p></p>
+                      <p />
                     )}
                   </div>
                 </div>

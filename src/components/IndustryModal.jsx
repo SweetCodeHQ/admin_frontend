@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { gql, useMutation } from "@apollo/client";
-import { INDUSTRIES } from "../constants/industries";
+import { useState } from 'react';
+import { gql, useMutation } from '@apollo/client';
+import { INDUSTRIES } from '../constants/industries';
 
 const UPDATE_INDUSTRY = gql`
   mutation updateIndustry($id: ID!, $industry: Int!) {
@@ -12,32 +12,31 @@ const UPDATE_INDUSTRY = gql`
   }
 `;
 
-const Industry = ({ data, setSelectedIndustry }) => {
-  return (
-    <li>
-      <a
-        className={`
+const Industry = ({ data, setSelectedIndustry }) => (
+  <li>
+    <a
+      className={`
           dropdown-item text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-gray-300 hover:bg-gray-700 hover:text-white focus:text-white focus:bg-gray-700
         `}
-        onClick={e => setSelectedIndustry(data)}
-      >
-        {data[0]}
-      </a>
-    </li>
-  );
-};
+      onClick={(e) => setSelectedIndustry(data)}
+    >
+      {data[0]}
+    </a>
+  </li>
+);
 
 const IndustryModal = ({ megaphoneUserId }) => {
   const [selectedIndustry, setSelectedIndustry] = useState(null);
 
-  const updateIndustry = industryCode => {
+  const updateIndustry = (industryCode) => {
     const input = { id: megaphoneUserId, industry: selectedIndustry[1] };
     updateIndustryMutation({ variables: input });
   };
 
   const [updateIndustryMutation, { error }] = useMutation(UPDATE_INDUSTRY, {
-    onCompleted: data => console.log(data),
-    onError: error => console.log(error)
+    context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+    onCompleted: (data) => console.log(data),
+    onError: (error) => console.log(error),
   });
 
   return (
@@ -55,7 +54,7 @@ const IndustryModal = ({ megaphoneUserId }) => {
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              {selectedIndustry ? selectedIndustry[0] : "Segment"}
+              {selectedIndustry ? selectedIndustry[0] : 'Segment'}
               <svg
                 aria-hidden="true"
                 focusable="false"
@@ -69,7 +68,7 @@ const IndustryModal = ({ megaphoneUserId }) => {
                 <path
                   fill="currentColor"
                   d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                ></path>
+                />
               </svg>
             </button>
             <ul

@@ -1,6 +1,6 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery } from '@apollo/client';
 
-import { Button, Loader } from "../components";
+import { Button, Loader } from '.';
 
 const GET_BANNERS = gql`
   query Banners {
@@ -14,9 +14,14 @@ const GET_BANNERS = gql`
 `;
 
 const PrivacyPolicy = ({ setClickedPrivacyPolicy }) => {
-  const { data: bannersData, loading, errors } = useQuery(GET_BANNERS, {
-    onError: error => console.log(error),
-    fetchPolicy: "network-only"
+  const {
+    data: bannersData,
+    loading,
+    errors,
+  } = useQuery(GET_BANNERS, {
+    context: { headers: { authorization: `${process.env.QUERY_KEY}` } },
+    onError: (error) => console.log(error),
+    fetchPolicy: 'network-only',
   });
 
   const handleClosePrivacyPolicy = () => {
