@@ -1,6 +1,5 @@
-import { useState } from "react";
-import logo from "../../images/logo.png";
-import { Button, Welcome, PrivacyPolicy } from "../components";
+import { useState } from 'react';
+import { Button, Welcome, PrivacyPolicy } from '.';
 
 const Footer = () => {
   const today = new Date();
@@ -9,9 +8,9 @@ const Footer = () => {
   const [clickedAbout, setClickedAbout] = useState(false);
 
   const [clickedPrivacyPolicy, setClickedPrivacyPolicy] = useState(() => {
-    const slug = window.location.href.split("/").slice(-1)[0];
+    const slug = window.location.href.split('/').slice(-1)[0];
 
-    const privacySlug = slug.toLowerCase() === "privacy" ? true : false;
+    const privacySlug = slug.toLowerCase() === 'privacy';
     return privacySlug;
   });
 
@@ -28,11 +27,11 @@ const Footer = () => {
         </div>
       ) : null}
       <div className="w-full flex sm:flex-row flex-col justify-between items-center my-4">
-        <div className="flex flex-0.5 justify-center items-center"></div>
+        <div className="flex flex-0.5 justify-center items-center" />
         <div className="flex flex-1 justify-evenly items-center flex-wrap sm:mt-0 mt-5 w-full">
           <Button
-            handleClick={() => setClickedAbout(prev => !prev)}
-            text={clickedAbout ? "Close" : "About"}
+            handleClick={() => setClickedAbout((prev) => !prev)}
+            text={clickedAbout ? 'Close' : 'About'}
           />
         </div>
       </div>
@@ -51,7 +50,7 @@ const Footer = () => {
         </p>
         <button
           className="text-white text-small text-center underline underline-offset-2 hover:no-underline"
-          onClick={() => setClickedPrivacyPolicy(prev => !prev)}
+          onClick={() => setClickedPrivacyPolicy((prev) => !prev)}
         >
           Privacy Policy
         </button>

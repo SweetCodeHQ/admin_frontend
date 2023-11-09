@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect } from 'react';
 
 const ExpandableTextArea = ({
   handleChange,
@@ -6,12 +6,12 @@ const ExpandableTextArea = ({
   name,
   defaultValue,
   textBoxOpener,
-  formData
+  formData,
 }) => {
   const textRef = useRef(null);
   useEffect(() => {
     if (textRef && textRef.current) {
-      textRef.current.style.height = "auto";
+      textRef.current.style.height = 'auto';
       textRef.current.style.height = `${textRef.current.scrollHeight + 2}px`;
     }
   }, [textRef, formData, textBoxOpener]);
@@ -23,8 +23,8 @@ const ExpandableTextArea = ({
       name={name}
       type="text"
       defaultValue={defaultValue}
-      onChange={e => handleChange(e, name)}
-      className={`mt-1 w-full rounded-lg outline-none text-white bg-[#4E376A]/75 placeholder-gray-400 hover:border-violet-500 text-sm shadow-inner shadow-lg resize-none max-h-[250px]`}
+      onChange={(e) => handleChange(e, name)}
+      className="mt-1 w-full rounded-lg outline-none text-white bg-[#4E376A]/75 placeholder-gray-400 hover:border-violet-500 text-sm  shadow-lg resize-none max-h-[250px]"
     />
   );
 };

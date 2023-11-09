@@ -1,3 +1,4 @@
 {
-  "extends": ["wesbos"]
+  "extends": ["wesbos"],
+  "react/prop-types": false 
 }

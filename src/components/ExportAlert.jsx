@@ -1,17 +1,17 @@
-import { Fragment, useState } from "react";
-import { Transition } from "@headlessui/react";
-import { Loader } from "../components";
-import { XMarkIcon } from "@heroicons/react/20/solid";
-import { CheckCircleIcon } from "@heroicons/react/24/outline";
+import { Fragment, useState } from 'react';
+import { Transition } from '@headlessui/react';
+import { XMarkIcon } from '@heroicons/react/20/solid';
+import { CheckCircleIcon } from '@heroicons/react/24/outline';
+import { Loader } from '.';
 
 const ExportAlert = ({
   showExportAlert,
   setShowExportAlert,
   docId,
-  isLoading
+  isLoading,
 }) => {
-  const openInNewTab = url => {
-    window.open(url, "_blank", "noopener,noreferrer");
+  const openInNewTab = (url) => {
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   const handleClick = () => {

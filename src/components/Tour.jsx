@@ -1,10 +1,10 @@
-import { Fragment, useRef, useState } from "react";
-import { Dialog, Transition } from "@headlessui/react";
-import { gql, useMutation } from "@apollo/client";
-import { PrivacyPolicy } from "../components";
-import { ChevronRightIcon, ChevronLeftIcon } from "@heroicons/react/24/solid";
-import tourBackground from "../assets/tourBackground.png";
-import curioLogo from "../assets/curioLogo2.png";
+import { Fragment, useRef, useState } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
+import { gql, useMutation } from '@apollo/client';
+import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/24/solid';
+import { PrivacyPolicy } from '.';
+import tourBackground from '../assets/tourBackground.png';
+import curioLogo from '../assets/curioLogo2.png';
 
 const UPDATE_ONBOARDED = gql`
   mutation UpdateOnboarded($id: ID!) {
@@ -15,46 +15,40 @@ const UPDATE_ONBOARDED = gql`
   }
 `;
 
-const TourBullet = ({ phase, bulletNumber, setPhase }) => {
-  return (
-    <div
-      onClick={() => setPhase(bulletNumber)}
-      className={`h-4 w-4 ${phase === bulletNumber &&
-        "border-2 border-white"} ${phase < bulletNumber &&
-        "bg-white"} ${phase === bulletNumber && "bg-indigo-500"} ${phase >
-        bulletNumber && "bg-[#ffc857]"}
+const TourBullet = ({ phase, bulletNumber, setPhase }) => (
+  <div
+    onClick={() => setPhase(bulletNumber)}
+    className={`h-4 w-4 ${phase === bulletNumber && 'border-2 border-white'} ${
+      phase < bulletNumber && 'bg-white'
+    } ${phase === bulletNumber && 'bg-indigo-500'} ${
+      phase > bulletNumber && 'bg-[#ffc857]'
+    }
     } rounded-full cursor-pointer hover:bg-indigo-300`}
-    />
-  );
-};
+  />
+);
 
 const Tour = ({ userId, openTour, setOpenTour }) => {
   const COPY = [
     {
-      title: "What is Curio?",
-      body:
-        "Intelligent Content Creation starts here. Curio uses the latest in AI to help you write faster by curating inspired topics."
+      title: 'What is Curio?',
+      body: 'Intelligent Content Creation starts here. Curio uses the latest in AI to help you write faster by curating inspired topics.',
     },
     {
-      title: "How Does Curio Work?",
-      body:
-        "You input keywords. AI + Curio's digital experts suggest topics. You choose which ones you want to edit and save."
+      title: 'How Does Curio Work?',
+      body: "You input keywords. AI + Curio's digital experts suggest topics. You choose which ones you want to edit and save.",
     },
     {
-      title: "Why Curio?",
-      body:
-        "Because Curio adds industry expertise, accelerates inspiration, breaks through writer's block, and saves you time."
+      title: 'Why Curio?',
+      body: "Because Curio adds industry expertise, accelerates inspiration, breaks through writer's block, and saves you time.",
     },
     {
-      title: "What Then?",
-      body:
-        "You export your final topics or send them to the industry experts at Fixate IO who will wrap it up."
+      title: 'What Then?',
+      body: 'You export your final topics or send them to the industry experts at Fixate IO who will wrap it up.',
     },
     {
-      title: "Privacy",
-      body:
-        "We take your privacy very seriously. Please read our privacy policy linked below to see exactly what we do with your data."
-    }
+      title: 'Privacy',
+      body: 'We take your privacy very seriously. Please read our privacy policy linked below to see exactly what we do with your data.',
+    },
   ];
 
   const [phase, setPhase] = useState(0);
@@ -62,14 +56,15 @@ const Tour = ({ userId, openTour, setOpenTour }) => {
 
   const cancelButtonRef = useRef(null);
 
-  const updateOnboarded = id => {
-    const input = { id: id };
+  const updateOnboarded = (id) => {
+    const input = { id };
     updateOnboardedData({ variables: input });
   };
 
   const [updateOnboardedData] = useMutation(UPDATE_ONBOARDED, {
-    onCompleted: data => console.log(data),
-    onError: error => console.log(error)
+    context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+    onCompleted: (data) => console.log(data),
+    onError: (error) => console.log(error),
   });
 
   const handleEndTour = () => {
@@ -77,13 +72,11 @@ const Tour = ({ userId, openTour, setOpenTour }) => {
     setOpenTour(false);
   };
 
-  const handleClick = forward => {
-    forward ? setPhase(prev => prev + 1) : setPhase(prev => prev - 1);
+  const handleClick = (forward) => {
+    forward ? setPhase((prev) => prev + 1) : setPhase((prev) => prev - 1);
   };
 
-  const determineCopy = () => {
-    return COPY[phase];
-  };
+  const determineCopy = () => COPY[phase];
 
   const displayedCopy = determineCopy();
 
@@ -158,7 +151,7 @@ const Tour = ({ userId, openTour, setOpenTour }) => {
                 </div>
                 <div
                   className={`flex ${
-                    phase === 4 ? "mt-3" : "mt-10"
+                    phase === 4 ? 'mt-3' : 'mt-10'
                   } sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3`}
                 >
                   {phase === COPY.length - 1 ? (
@@ -182,7 +175,7 @@ const Tour = ({ userId, openTour, setOpenTour }) => {
                   <button
                     type="button"
                     className={`inline-flex w-1/6 px-1 mr-5 justify-self-end bg-[#2D104F] rounded-full cursor-pointer border-2 text-white transition delay-50 ease-in-out hover:scale-110 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${
-                      phase === 0 ? "hidden" : null
+                      phase === 0 ? 'hidden' : null
                     }`}
                     onClick={() => handleClick(false)}
                     ref={cancelButtonRef}
@@ -191,16 +184,14 @@ const Tour = ({ userId, openTour, setOpenTour }) => {
                   </button>
                 </div>
                 <div className="flex justify-around items-center mt-5">
-                  {COPY.map((title, i) => {
-                    return (
-                      <TourBullet
-                        key={i}
-                        phase={phase}
-                        setPhase={setPhase}
-                        bulletNumber={i}
-                      />
-                    );
-                  })}
+                  {COPY.map((title, i) => (
+                    <TourBullet
+                      key={i}
+                      phase={phase}
+                      setPhase={setPhase}
+                      bulletNumber={i}
+                    />
+                  ))}
                 </div>
               </Dialog.Panel>
             </Transition.Child>
