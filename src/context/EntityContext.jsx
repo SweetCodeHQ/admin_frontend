@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { gql, useMutation } from "@apollo/client";
+import React, { useState } from 'react';
+import { gql, useMutation } from '@apollo/client';
 
 const CREATE_ENTITY = gql`
   mutation createEntity($name: String, $url: String!) {
@@ -40,36 +40,36 @@ const EDIT_ENTITY = gql`
 export const EntityContext = React.createContext();
 
 export const EntityContextProvider = ({ children }) => {
-  const [formData, setFormData] = useState({ name: "", url: "" });
+  const [formData, setFormData] = useState({ name: '', url: '' });
 
   const [entities, setEntities] = useState([]);
 
   const handleChange = (e, name) => {
-    setFormData(prevState => ({ ...prevState, [name]: e.target.value }));
+    setFormData((prevState) => ({ ...prevState, [name]: e.target.value }));
   };
 
-  const sendEntity = async formData => {
+  const sendEntity = async (formData) => {
     const input = formData;
     const promise = await entityMutationData({ variables: input });
     return promise;
   };
 
-  const editEntity = updateInfo => {
+  const editEntity = (updateInfo) => {
     const input = updateInfo;
     entityUpdateData({ variables: input });
   };
 
   const [entityMutationData, { loading, error }] = useMutation(CREATE_ENTITY, {
-    onCompleted: data => setEntities(data.entities),
-    onError: error => console.log(error)
+    context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+    onCompleted: (data) => setEntities(data.entities),
+    onError: (error) => console.log(error),
   });
 
-  const [
-    entityUpdateData,
-    { loading: updateLoading, error: updateError }
-  ] = useMutation(EDIT_ENTITY, {
-    onError: error => console.log(error)
-  });
+  const [entityUpdateData, { loading: updateLoading, error: updateError }] =
+    useMutation(EDIT_ENTITY, {
+      context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+      onError: (error) => console.log(error),
+    });
 
   return (
     <EntityContext.Provider
@@ -80,7 +80,7 @@ export const EntityContextProvider = ({ children }) => {
         sendEntity,
         editEntity,
         entities,
-        setEntities
+        setEntities,
       }}
     >
       {children}
