@@ -1,19 +1,17 @@
-import React, { useContext, useEffect, useState } from "react";
-import { UserContext, EntityContext } from "../context";
+import React, { useContext, useEffect, useState } from 'react';
+import { gql, useQuery, useMutation } from '@apollo/client';
+import { UserContext, EntityContext } from '../context';
 
 import {
   TopicDashboard,
   Welcome,
   IndustryModal,
-  GoogleLoginButton,
   AdminDashboards,
-  Tour
-} from "../components";
+  Tour,
+} from '.';
 
-import { gql, useQuery, useMutation } from "@apollo/client";
-
-import loggedInBackground from "../assets/WelcomeBG.png";
-import landingBackground from "../assets/climbing.png";
+import loggedInBackground from '../assets/WelcomeBG.png';
+import landingBackground from '../assets/climbing.png';
 
 const GET_USER_PROFILE = gql`
   query userByEmail($email: String!) {
@@ -70,12 +68,8 @@ const UPDATE_LOGIN_COUNT = gql`
 `;
 
 const Dashboard = () => {
-  const {
-    handleSignOut,
-    userCallback,
-    setMegaphoneUserInfo,
-    handleSignupAlertEmail
-  } = useContext(UserContext);
+  const { userCallback, setMegaphoneUserInfo, handleSignupAlertEmail } =
+    useContext(UserContext);
 
   const { sendEntity } = useContext(EntityContext);
 
@@ -88,9 +82,10 @@ const Dashboard = () => {
   const { data: megaphoneUserData, refetch: refetchUser } = useQuery(
     GET_USER_PROFILE,
     {
+      context: { headers: { authorization: `${process.env.QUERY_KEY}` } },
       variables: { email },
-      onCompleted: data => setMegaphoneUserInfo(data.user),
-      onError: error => console.log(error)
+      onCompleted: (data) => setMegaphoneUserInfo(data.user),
+      onError: (error) => console.log(error),
     }
   );
 
@@ -102,49 +97,51 @@ const Dashboard = () => {
   }, [megaphoneUserData]);
 
   const { data: entityData, refetch: refetchEntity } = useQuery(GET_ENTITY, {
+    context: { headers: { authorization: `${process.env.QUERY_KEY}` } },
     variables: { url: userHd },
-    onError: error => console.log(error),
-    onCompleted: data => console.log(data),
-    fetchPolicy: "network-only"
+    onError: (error) => console.log(error),
+    onCompleted: (data) => console.log(data),
+    fetchPolicy: 'network-only',
   });
 
-  const updateUserLoginCount = id => {
-    const input = { id: id };
+  const updateUserLoginCount = (id) => {
+    const input = { id };
     updateLoginCountMutationData({ variables: input });
   };
   {
-    /*Pull this back into the userContext*/
+    /* Pull this back into the userContext */
   }
   const [
     updateLoginCountMutationData,
-    { loading: loginLoading, error: loginError }
+    { loading: loginLoading, error: loginError },
   ] = useMutation(UPDATE_LOGIN_COUNT, {
-    onCompleted: data => console.log(data),
-    onError: error => console.log(error)
+    context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+    onCompleted: (data) => console.log(data),
+    onError: (error) => console.log(error),
   });
 
-  const loginCallback = async response => {
+  const loginCallback = async (response) => {
     const currentUser = await userCallback(response);
     userEntityCallback(currentUser);
     moveToTop();
   };
 
   const moveToTop = () => {
-    const bar = document.getElementById("titleCard");
+    const bar = document.getElementById('titleCard');
     bar.scrollIntoView(false);
   };
 
-  const megaphoneUserRefetch = async mail => {
+  const megaphoneUserRefetch = async (mail) => {
     const user = refetchUser({ email: mail });
     return user;
   };
 
-  const handleEntityCreation = async url => {
-    const promise = await sendEntity({ url: url });
+  const handleEntityCreation = async (url) => {
+    const promise = await sendEntity({ url });
     return promise;
   };
 
-  const userEntityCallback = async currentUser => {
+  const userEntityCallback = async (currentUser) => {
     const userData = await megaphoneUserRefetch(currentUser.email);
 
     if (userData?.data?.user?.loginCount === 0)
@@ -153,7 +150,7 @@ const Dashboard = () => {
     updateUserLoginCount(userData?.data?.user?.id);
 
     const megaphoneEntityResponse = await refetchEntity({
-      url: currentUser.hd
+      url: currentUser.hd,
     });
 
     let entityId;
@@ -172,13 +169,14 @@ const Dashboard = () => {
   const [userEntityMutationData, { loading, error }] = useMutation(
     CREATE_USER_ENTITY,
     {
-      onError: error => console.log(error),
-      onCompleted: data => console.log(data)
+      context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+      onError: (error) => console.log(error),
+      onCompleted: (data) => console.log(data),
     }
   );
 
   const createUserEntityMutation = (megaphoneUserId, entityId) => {
-    const input = { userId: megaphoneUserId, entityId: entityId };
+    const input = { userId: megaphoneUserId, entityId };
 
     userEntityMutationData({ variables: input });
   };
@@ -196,21 +194,17 @@ const Dashboard = () => {
   return (
     <div
       className={`flex w-full justify-center items-center ${
-        googleUser.googleUser ? "bg-cover" : null
+        googleUser.googleUser ? 'bg-cover' : null
       }`}
       style={background}
     >
       <div
         className={`${
-          googleUser.googleUser ? "md:p-20" : null
+          googleUser.googleUser ? 'md:p-20' : null
         } flex items-start justify-between py-20`}
       >
         <div className="flex flex-1 justify-start flex-col">
-          {!googleUser.googleUser && (
-            <>
-              <Welcome loginCallback={loginCallback} />
-            </>
-          )}
+          {!googleUser.googleUser && <Welcome loginCallback={loginCallback} />}
           {googleUser?.googleUser && (
             <h1
               className="text-3xl sm:text-5xl text-white text-gradient font-bold pt-7"

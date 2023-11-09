@@ -1,7 +1,7 @@
-import { useContext } from "react";
-import { gql, useQuery, useMutation } from "@apollo/client";
-import { EntitiesTable } from "../components";
-import { EntityContext } from "../context/EntityContext";
+import { useContext } from 'react';
+import { gql, useQuery } from '@apollo/client';
+import { EntitiesTable } from '.';
+import { EntityContext } from '../context/EntityContext';
 
 const GET_PAGINATED_ENTITIES = gql`
   query EntitiesConnection($after: String, $before: String, $last: Int) {
@@ -29,37 +29,34 @@ const GET_PAGINATED_ENTITIES = gql`
 `;
 
 const EntityDashboard = () => {
-  const { sendEntity, editEntity, entities, setEntities } = useContext(
-    EntityContext
-  );
+  const { sendEntity, editEntity, entities, setEntities } =
+    useContext(EntityContext);
 
   const { data, refetch, fetchMore } = useQuery(GET_PAGINATED_ENTITIES, {
-    onError: error => console.log(error),
-    onCompleted: data => setEntities(data.entitiesConnection),
-    fetchPolicy: "network-only"
+    context: { headers: { authorization: `${process.env.EAGLE_KEY}` } },
+    onError: (error) => console.log(error),
+    onCompleted: (data) => setEntities(data.entitiesConnection),
+    fetchPolicy: 'network-only',
   });
 
   const entityForm = {
-    name: "",
-    url: "",
-    credits: null
+    name: '',
+    url: '',
+    credits: null,
   };
 
-  const handleCreateEntity = async data => {
+  const handleCreateEntity = async (data) => {
     await sendEntity(data);
     refetch();
   };
 
-  const updateQuery = (prev, { fetchMoreResult }) => {
-    return fetchMoreResult.entitiesConnection.edges.length
-      ? fetchMoreResult
-      : prev;
-  };
+  const updateQuery = (prev, { fetchMoreResult }) =>
+    fetchMoreResult.entitiesConnection.edges.length ? fetchMoreResult : prev;
 
-  const flipEntityPage = params => {
+  const flipEntityPage = (params) => {
     fetchMore({
       variables: params,
-      updateQuery
+      updateQuery,
     });
   };
 
