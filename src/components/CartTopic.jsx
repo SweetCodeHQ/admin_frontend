@@ -1,7 +1,7 @@
-import { useState, useContext } from "react";
-import { CartTopicContentType } from "../components";
-import { CartContext } from "../context";
-import { MdDeleteForever } from "react-icons/md";
+import { useContext } from 'react';
+import { MdDeleteForever } from 'react-icons/md';
+import { CartTopicContentType } from '.';
+import { CartContext } from '../context';
 
 const CartTopic = ({ i, topic }) => {
   const { handleRemoveFromCart } = useContext(CartContext);
@@ -17,7 +17,7 @@ const CartTopic = ({ i, topic }) => {
         <MdDeleteForever
           fontSize={20}
           className="text-white font-bold mr-10 flex-none cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
-          onClick={e => handleRemoveFromCart(i)}
+          onClick={(e) => handleRemoveFromCart(i)}
         />
         <p className="mr-5 w-4/5">{topic.text}</p>
       </div>
