@@ -68,6 +68,7 @@ const Tour = ({ userId, openTour, setOpenTour }) => {
   });
 
   const handleEndTour = () => {
+    window.dataLayer.push({'event': 'tour_complete'});
     updateOnboarded(userId);
     setOpenTour(false);
   };

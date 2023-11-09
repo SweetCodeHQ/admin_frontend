@@ -43,9 +43,11 @@ export const UserContextProvider = ({ children }) => {
     onError: (error) => console.log(error),
   });
 
-  const userCallback = async (response) => {
-    console.log('logged in');
-    const userObject = jwt_decode(response.credential);
+  const userCallback = async response => {
+    console.log("logged in");
+    window.dataLayer.push({'event':'login', 'method': 'Google'})
+    var userObject = jwt_decode(response.credential);
+
     if (userObject.hd) {
       setGoogleUser(userObject);
       await createUserMutation(userObject.email);

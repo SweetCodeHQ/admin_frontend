@@ -107,7 +107,8 @@ const Cart = ({ setToggleCart }) => {
   // credits should be subtracted with each topic in case something goes wrong.
   const handleSubmitTopics = () => {
     if (verifyTypeSelectedForAllTopics()) {
-      cartTopics.forEach((topic) => processTopic(topic));
+      window.dataLayer.push({'event': "send_topics_to_F8"})
+      cartTopics.forEach(topic => processTopic(topic));
       handleUpdateCredits();
       handleClearCart();
       setToggleCart(false);
@@ -117,6 +118,7 @@ const Cart = ({ setToggleCart }) => {
   };
 
   const handleRequestCredits = () => {
+    window.dataLayer.push({'event': "request_credits"})
     editEntity({
       id: megaphoneUserInfo.entities[0]?.id,
       requestInProgress: true,
