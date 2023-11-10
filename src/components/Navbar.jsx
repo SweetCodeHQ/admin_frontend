@@ -1,14 +1,14 @@
-import { useState, useContext } from "react";
-import { gql, useQuery, useMutation } from "@apollo/client";
-import { UserContext } from "../context/";
+import { useState, useContext } from 'react';
+import { gql, useQuery, useMutation } from '@apollo/client';
+import { UserContext } from '../context';
 
 import {
   Button,
   CartIcon,
   BlanketNotification,
   BasicAlert,
-  InboxIcon
-} from "../components";
+  InboxIcon,
+} from '.';
 
 const GET_BANNERS = gql`
   query Banners {
@@ -43,14 +43,13 @@ const UPDATE_USER_BANNER_DATE = gql`
 `;
 
 const TITLES = [
-  "News from the Fixate Desk",
-  "We've updated our privacy statement."
+  'News from the Fixate Desk',
+  "We've updated our privacy statement.",
 ];
 
 const Navbar = () => {
-  const { handleSignOut, googleUser, megaphoneUserInfo } = useContext(
-    UserContext
-  );
+  const { handleSignOut, googleUser, megaphoneUserInfo } =
+    useContext(UserContext);
 
   const [showBasicAlert, setShowBasicAlert] = useState(false);
 
@@ -62,34 +61,35 @@ const Navbar = () => {
   const updateUserBannerDate = (id, userAttribute) => {
     const currentDate = new Date(Date.now()).toISOString();
 
-    const input = { id: id, [userAttribute]: currentDate };
+    const input = { id, [userAttribute]: currentDate };
     updateUserBannerData({ variables: input });
   };
 
-  const handleDateUpdate = userAttribute => {
+  const handleDateUpdate = (userAttribute) => {
     updateUserBannerDate(megaphoneUserInfo.id, userAttribute);
   };
 
   const [updateUserBannerData, { error: userBannerError }] = useMutation(
     UPDATE_USER_BANNER_DATE,
     {
-      onCompleted: data => console.log(data),
-      onError: error => console.log(error)
+      context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+      onCompleted: (data) => console.log(data),
+      onError: (error) => console.log(error),
     }
   );
 
   const showBanners = () => {
     if (!bannersData) return;
-    const banners = bannersData.banners.map((banner, i) => {
-      return showBanner(banner, i);
-    });
+    const banners = bannersData.banners.map((banner, i) =>
+      showBanner(banner, i)
+    );
     return banners;
   };
 
   const showBanner = (banner, i) => {
-    const attributesArray = ["sawBannerOn", "acceptedPrivacyOn"];
+    const attributesArray = ['sawBannerOn', 'acceptedPrivacyOn'];
 
-    let bannerSeen = megaphoneUserInfo
+    const bannerSeen = megaphoneUserInfo
       ? banner?.updatedAt < megaphoneUserInfo[attributesArray[banner.id - 1]]
       : null;
 
@@ -106,13 +106,14 @@ const Navbar = () => {
   };
 
   const { data: bannersData } = useQuery(GET_BANNERS, {
-    onError: error => console.log(error),
-    fetchPolicy: "network-only"
+    context: { headers: { authorization: `${process.env.QUERY_KEY}` } },
+    onError: (error) => console.log(error),
+    fetchPolicy: 'network-only',
   });
 
   const showLogin = () => {
-    const card = document.getElementById("loginCard");
-    card.scrollIntoView({ behavior: "smooth" });
+    const card = document.getElementById('loginCard');
+    card.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -125,14 +126,14 @@ const Navbar = () => {
         />
         {googleUser ? (
           <>
-            <Button text={"Sign Out"} handleClick={logUserOut} />
+            <Button text="Sign Out" handleClick={logUserOut} />
             {showBanners()}
-            <InboxIcon />
+            {/* <InboxIcon /> */}
             <CartIcon />
           </>
         ) : (
           <>
-            <div></div>
+            <div />
             <Button text="Sign In" handleClick={showLogin} />
           </>
         )}
