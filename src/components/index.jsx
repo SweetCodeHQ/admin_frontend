@@ -35,6 +35,7 @@ export { default as UserTopicModal } from './UserTopicModal';
 export { default as Abstract } from './Abstract';
 export { default as NoAbstract } from './NoAbstract';
 export { default as TopicCartIcon } from './TopicCartIcon';
+export {default as ClipboardButton } from './ClipboardButton'
 
 export { default as TopicInputForm } from './TopicInputForm';
 

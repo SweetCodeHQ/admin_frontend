@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { gql, useMutation } from '@apollo/client';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
-import { NoAbstract, ExportButton, Tooltip } from '.';
+import { NoAbstract, ExportButton, ClipboardButton, Tooltip } from '.';
 
 const CREATE_ABSTRACT = gql`
   mutation CreateAbstract($topicId: ID!, $text: String!) {
@@ -117,8 +117,8 @@ const Abstract = ({
           ))}
         </ul>
       </div>
-      <div className="grid grid-flow-row-dense grid-cols-4 gap-3">
-        <div />
+      <div className="grid grid-flow-row-dense grid-cols-3 gap-3">
+        
         <ExportButton
           editModeEnabled={editModeEnabled}
           displayedTopic={displayedTopic}
@@ -152,9 +152,10 @@ const Abstract = ({
             />
           </Tooltip>
         </button>
-        <div />
-      </div>
-    </>
+        <ClipboardButton editModeEnabled={editModeEnabled} displayedTopic={displayedTopic} displayedAbstract={displayedAbstract} keywords={topic.keywords} 
+        />
+    </div>
+  </>
   );
 };
 
