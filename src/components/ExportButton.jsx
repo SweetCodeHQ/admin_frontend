@@ -1,6 +1,5 @@
 import { useState, useContext } from 'react';
-import { useGoogleLogin } from '@react-oauth/google';
-import { DocumentArrowUpIcon } from '@heroicons/react/24/solid';
+import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
 import { ExportAlert, Tooltip } from '.';
 import { UserContext } from '../context';
 
@@ -10,7 +9,7 @@ const ExportButton = ({
   displayedAbstract,
   keywords,
 }) => {
-  const { gToken, setGToken } = useContext(UserContext);
+  const { setGToken } = useContext(UserContext);
 
   const [isLoading, setIsLoading] = useState(false);
   const [showExportAlert, setShowExportAlert] = useState(false);
@@ -271,19 +270,16 @@ const ExportButton = ({
         docId={docId}
         isLoading={isLoading}
       />
-      <button
-        onClick={handleClick}
-        className={`mt-2 mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4E376A]/75 transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${
-          editModeEnabled ? 'invisible' : null
-        }`}
-      >
+      <div className={`mt-3 mx-auto flex ${editModeEnabled ? 'invisible' : null}`}>
         <Tooltip text="Export to Google Docs">
-          <DocumentArrowUpIcon
-            className="h-6 w-6 editModeEnabled ? text-blue-300"
-            aria-hidden="true"
+          <GoogleLogin 
+            type="icon" 
+            shape="circle"
+            theme="filled_blue"
+            onSuccess={handleClick}
           />
         </Tooltip>
-      </button>
+      </div>
     </>
   );
 };
