@@ -6,7 +6,7 @@ const TopicCartIcon = ({ topic }) => {
   const { handleAddToCart, cartTopics, handleRemoveFromCart } =
     useContext(CartContext);
 
-  const cartIds = cartTopics?.map((topic) => topic.id);
+  const cartIds = cartTopics?.map((item) => item.id);
 
   return (
     <>

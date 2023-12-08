@@ -1,12 +1,11 @@
 import { LoginCard, Button } from '.';
+import logoTagline from '../assets/curioLogoTagline.png'
 
 const Welcome = ({ loginCallback, setClickedAbout }) => (
   <>
     <div className="flex flex-col h-full">
       <div className="flex flex-col items-center mb-5">
-        <h1 className="text-5xl sm:text-5xl text-white text-center font-semibold py-3">
-          Intelligent <br /> Content Curation
-        </h1>
+        <img src={logoTagline} className="md:w-[500px] w-[400px]" />
         <p className="mt-5 text-white font-light text-center text-2xl">
           Helping technical product marketers craft compelling content faster.
         </p>

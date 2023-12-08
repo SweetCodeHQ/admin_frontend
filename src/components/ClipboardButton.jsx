@@ -15,7 +15,7 @@ const ClipboardButton = ({editModeEnabled, displayedTopic, displayedAbstract, ke
   const handleCopyToClipboard = () => {
     const displayKeywords = keywords.map((word) => word.word.toUpperCase())
     
-    navigator.clipboard.writeText(`Topic: ${displayedTopic}\nAbstract: ${displayedAbstract ? displayedAbstract : 'None generated'}\nKeywords used: ${displayKeywords}`)
+    navigator.clipboard.writeText(`Topic: ${displayedTopic}\nAbstract: ${displayedAbstract ? displayedAbstract : 'None generated'}\nKeywords used: ${displayKeywords}\nCurio by Fixate.io`)
     setClicked(true)
   }
   return (

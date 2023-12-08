@@ -27,7 +27,7 @@ const TableAddItemForm = ({
 
   return (
     <div className="w-full flex justify-end transition">
-      <div className="p-2 border border-2 rounded-lg w-3/5">
+      <div className="p-2 border-2 rounded-lg w-3/5">
         <h1 className="text-white">Add New {tableName}</h1>
         {keys.map((key) => (
           <Input

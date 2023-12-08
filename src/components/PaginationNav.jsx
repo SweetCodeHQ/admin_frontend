@@ -3,8 +3,6 @@ import { useState, useEffect } from 'react';
 const PaginationNav = ({ totalItemCount, itemType, pageInfo, flipPage }) => {
   const [currentPageNumber, setCurrentPageNumber] = useState(1);
 
-  const [total, setTotal] = useState(() => totalItemCount);
-
   useEffect(() => {
     setCurrentPageNumber(1);
   }, [totalItemCount]);

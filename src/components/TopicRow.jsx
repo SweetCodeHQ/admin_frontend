@@ -1,40 +1,16 @@
-import { useState, useContext } from 'react';
-import { gql, useMutation } from '@apollo/client';
+import { useState } from 'react';
+import { useMutation } from '@apollo/client';
+import { CREATE_TOPIC, CREATE_TOPIC_KEYWORD } from '../graphql/mutations';
 import { BsFillBookmarkPlusFill } from 'react-icons/bs';
-import { UserContext } from '../context';
+import { callMutation } from '../utils/callMutation'
 
-const CREATE_TOPIC = gql`
-  mutation CreateTopic($userId: ID!, $text: String!) {
-    createTopic(input: { userId: $userId, text: $text }) {
-      id
-      text
-    }
-  }
-`;
-
-const CREATE_TOPIC_KEYWORD = gql`
-  mutation CreateTopicKeyword($topicId: ID!, $keywordId: ID!) {
-    createTopicKeyword(input: { topicId: $topicId, keywordId: $keywordId }) {
-      id
-    }
-  }
-`;
-
-const TopicRow = ({ topic, i, refetch, keywordIds }) => {
+const TopicRow = ({ topic, refetch, userId, keywordIds }) => {
   const [hasBeenSaved, setHasBeenSaved] = useState(false);
-
-  const { megaphoneUserInfo } = useContext(UserContext);
 
   const [createTopicKeywordData] = useMutation(CREATE_TOPIC_KEYWORD, {
     context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
-    onCompleted: (data) => console.log(data),
     onError: (error) => console.log(error),
   });
-
-  const createTopicKeyword = (keywordId, topicId) => {
-    const input = { topicId, keywordId };
-    createTopicKeywordData({ variables: input });
-  };
 
   const formatTopic = () => {
     if (topic.charAt(0) === '-') {
@@ -49,21 +25,13 @@ const TopicRow = ({ topic, i, refetch, keywordIds }) => {
   const formattedTopic = formatTopic();
 
   const [topicCreationData, { loading, error }] = useMutation(CREATE_TOPIC, {
-    context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
-    onCompleted: (data) => console.log(data),
+    context: { headers: { authorization: `${process.env.MUTATION_KEY}`, user: userId } },
     onError: (error) => console.log(error),
   });
 
-  const createTopicMutation = async (text) => {
-    const input = { userId: megaphoneUserInfo.id, text };
-
-    const newTopic = await topicCreationData({ variables: input });
-    return newTopic;
-  };
-
   const handleSaveTopic = async () => {
-    const stringified = JSON.stringify(formattedTopic);
-    const newTopic = await createTopicMutation(stringified.slice(1, -1));
+    const text = JSON.stringify(formattedTopic).slice(1, -1);
+    const newTopic = await callMutation({ text }, topicCreationData)
     setHasBeenSaved(true);
 
     return newTopic;
@@ -77,7 +45,7 @@ const TopicRow = ({ topic, i, refetch, keywordIds }) => {
     window.dataLayer.push({ event: 'save_topic', topic: newTopic });
 
     for (const id of keywordIds) {
-      createTopicKeyword(id, topicId);
+      callMutation({ keywordId: id, topicId }, createTopicKeywordData);
     }
   };
 

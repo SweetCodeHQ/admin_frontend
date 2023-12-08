@@ -132,7 +132,7 @@ const TableRow = ({ entity, editEntity, i }) => {
   );
 };
 
-const EntitiesTable = ({ entities, fetchMore, refetch, flipEntityPage }) => {
+const EntitiesTable = ({ entities, refetch, flipEntityPage }) => {
   const { sendEntity, editEntity } = useContext(EntityContext);
 
   const [clickedCreate, setClickedCreate] = useState(false);

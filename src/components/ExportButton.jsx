@@ -48,7 +48,7 @@ const ExportButton = ({
 
   const exportGoogleDoc = async (token) => {
     const promise = await handleCreateGoogleDoc(token);
-    await handleAddTextToDoc(promise, token);
+    handleAddTextToDoc(promise, token);
   };
 
   const handleCreateGoogleDoc = async (token) => {
@@ -76,7 +76,7 @@ const ExportButton = ({
   };
 
   const handleAddTextToDoc = (documentId, token) => {
-    const abstractText = displayedAbstract || 'Abstract not yet generated';
+    const exportedAbstract = displayedAbstract || 'No abstract generated.'
 
     const url = `https://docs.googleapis.com/v1/documents/${documentId}:batchUpdate`;
     const fetch_options = {
@@ -173,7 +173,7 @@ const ExportButton = ({
           },
           {
             insertText: {
-              text: `${displayedAbstract || 'No abstract generated.'}\n\n`,
+              text: `${exportedAbstract}\n\n`,
               location: {
                 index: 1,
               },
@@ -187,7 +187,7 @@ const ExportButton = ({
               fields: 'bold',
               range: {
                 startIndex: 1,
-                endIndex: displayedAbstract?.length + 1 || 2,
+                endIndex: exportedAbstract.length + 1 || 2,
               },
             },
           },
@@ -256,10 +256,6 @@ const ExportButton = ({
     };
 
     fetch(url, fetch_options)
-      .then((response) => response.json())
-      .then((response) => {
-        console.log(response);
-      });
   };
 
   return (

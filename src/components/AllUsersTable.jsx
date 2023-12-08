@@ -11,8 +11,6 @@ const TableRow = ({ user }) => {
     return `${month}/${day}/${year}`;
   };
 
-  const formatBoolean = (boolean) => (boolean ? 'Yes' : 'No');
-
   const showAdminToggle = user.email.endsWith('fixate.io');
 
   return (

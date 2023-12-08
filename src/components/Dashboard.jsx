@@ -1,234 +1,97 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { gql, useQuery, useMutation } from '@apollo/client';
-import { UserContext, EntityContext } from '../context';
+import { UserContext } from '../context';
+import { callMutation } from '../utils/callMutation';
 
 import {
   TopicDashboard,
   Welcome,
   IndustryModal,
   AdminDashboards,
-  Tour,
+  Tour
 } from '.';
 
 import loggedInBackground from '../assets/WelcomeBG.png';
 import landingBackground from '../assets/climbing.png';
-
-const GET_USER_PROFILE = gql`
-  query userByEmail($email: String!) {
-    user(email: $email) {
-      id
-      email
-      isAdmin
-      loginCount
-      clickedGenerateCount
-      topicCount
-      industry
-      onboarded
-      acceptedEulaOn
-      acceptedCookiesOn
-      acceptedPrivacyOn
-      sawBannerOn
-      entities {
-        id
-        name
-        url
-        credits
-        requestInProgress
-      }
-    }
-  }
-`;
-
-const CREATE_USER_ENTITY = gql`
-  mutation CreateUserEntity($userId: ID!, $entityId: ID!) {
-    createUserEntity(input: { userId: $userId, entityId: $entityId }) {
-      id
-    }
-  }
-`;
-
-const GET_ENTITY = gql`
-  query entityByUrl($url: String!) {
-    entity(url: $url) {
-      id
-      url
-      credits
-      requestInProgress
-    }
-  }
-`;
-
-const UPDATE_LOGIN_COUNT = gql`
-  mutation UpdateLoginCount($id: ID!) {
-    updateUser(input: { id: $id, loginCount: 1 }) {
-      id
-      loginCount
-    }
-  }
-`;
+import curioLogoTagline from '../assets/curioLogoTagline.png'
 
 const Dashboard = () => {
-  const { userCallback, setMegaphoneUserInfo, handleSignupAlertEmail } =
-    useContext(UserContext);
-
-  const { sendEntity } = useContext(EntityContext);
-
-  const [toggleIndustryModal, setToggleIndustryModal] = useState(false);
-
+  const { userCallback, handleSignupAlertEmail, updateLoginCount, megaphoneUserInfo } =
+  useContext(UserContext);
   const googleUser = useContext(UserContext);
-  const email = googleUser?.googleUser?.email;
-  const userHd = googleUser?.googleUser?.hd;
-
-  const { data: megaphoneUserData, refetch: refetchUser } = useQuery(
-    GET_USER_PROFILE,
-    {
-      context: { headers: { authorization: `${process.env.QUERY_KEY}` } },
-      variables: { email },
-      onCompleted: (data) => setMegaphoneUserInfo(data.user),
-      onError: (error) => console.log(error),
-    }
-  );
-
+  
   const [openTour, setOpenTour] = useState(false);
 
+  const gUser = googleUser?.googleUser
+  const mUser = megaphoneUserInfo
+
   useEffect(() => {
-    if (megaphoneUserData && !megaphoneUserData?.user?.onboarded)
-      setOpenTour(true);
-  }, [megaphoneUserData]);
-
-  const { data: entityData, refetch: refetchEntity } = useQuery(GET_ENTITY, {
-    context: { headers: { authorization: `${process.env.QUERY_KEY}` } },
-    variables: { url: userHd },
-    onError: (error) => console.log(error),
-    onCompleted: (data) => console.log(data),
-    fetchPolicy: 'network-only',
-  });
-
-  const updateUserLoginCount = (id) => {
-    const input = { id };
-    updateLoginCountMutationData({ variables: input });
-  };
-  {
-    /* Pull this back into the userContext */
-  }
-  const [
-    updateLoginCountMutationData,
-    { loading: loginLoading, error: loginError },
-  ] = useMutation(UPDATE_LOGIN_COUNT, {
-    context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
-    onCompleted: (data) => console.log(data),
-    onError: (error) => console.log(error),
-  });
+    if (mUser && !mUser?.onboarded) setOpenTour(true);
+    if (mUser?.onboarded) moveToTop();
+  }, [megaphoneUserInfo]);
 
   const loginCallback = async (response) => {
     const currentUser = await userCallback(response);
-    userEntityCallback(currentUser);
-    moveToTop();
+
+    if (currentUser.loginCount === 0) handleSignupAlertEmail(currentUser.id);
+
+    callMutation({ id: currentUser.id }, updateLoginCount);
   };
 
   const moveToTop = () => {
     const bar = document.getElementById('titleCard');
-    bar.scrollIntoView(false);
+    bar?.scrollIntoView(false);
   };
 
-  const megaphoneUserRefetch = async (mail) => {
-    const user = refetchUser({ email: mail });
-    return user;
-  };
-
-  const handleEntityCreation = async (url) => {
-    const promise = await sendEntity({ url });
-    return promise;
-  };
-
-  const userEntityCallback = async (currentUser) => {
-    const userData = await megaphoneUserRefetch(currentUser.email);
-
-    if (userData?.data?.user?.loginCount === 0)
-      handleSignupAlertEmail(userData?.data?.user?.id);
-    setMegaphoneUserInfo(userData?.data?.user);
-    updateUserLoginCount(userData?.data?.user?.id);
-
-    const megaphoneEntityResponse = await refetchEntity({
-      url: currentUser.hd,
-    });
-
-    let entityId;
-
-    if (megaphoneEntityResponse.data.entity) {
-      entityId = megaphoneEntityResponse.data.entity.id;
-    } else {
-      const promise = await handleEntityCreation(currentUser.hd);
-      entityId = promise.data.createEntity.id;
-    }
-
-    if (!userData.data.user.entities[0])
-      createUserEntityMutation(userData.data.user.id, entityId);
-  };
-
-  const [userEntityMutationData, { loading, error }] = useMutation(
-    CREATE_USER_ENTITY,
-    {
-      context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
-      onError: (error) => console.log(error),
-      onCompleted: (data) => console.log(data),
-    }
-  );
-
-  const createUserEntityMutation = (megaphoneUserId, entityId) => {
-    const input = { userId: megaphoneUserId, entityId };
-
-    userEntityMutationData({ variables: input });
-  };
-
-  const background = googleUser?.googleUser
+  const background = mUser
     ? { backgroundImage: `url(${loggedInBackground})` }
     : { backgroundImage: `url(${landingBackground})` };
 
   const userIsLoggedInAndIsAdmin =
-    googleUser?.googleUser && megaphoneUserData?.user?.isAdmin;
+    mUser && mUser?.isAdmin;
 
   const userIsLoggedInAndIsNotAdmin =
-    googleUser?.googleUser && !megaphoneUserData?.user?.isAdmin;
+    mUser && !mUser?.isAdmin;
 
   return (
     <div
       className={`flex w-full justify-center items-center ${
-        googleUser.googleUser ? 'bg-cover' : null
+        mUser ? 'bg-cover' : null
       }`}
       style={background}
     >
       <div
         className={`${
-          googleUser.googleUser ? 'md:p-20' : null
+          mUser ? 'md:p-20' : null
         } flex items-start justify-between py-20`}
       >
         <div className="flex flex-1 justify-start flex-col">
-          {!googleUser.googleUser && <Welcome loginCallback={loginCallback} />}
-          {googleUser?.googleUser && (
-            <h1
-              className="text-3xl sm:text-5xl text-white text-gradient font-bold pt-7"
-              id="titleCard"
-            >
-              Welcome back, <br />
-              {googleUser?.googleUser?.given_name}!
-            </h1>
+          {!mUser && <Welcome loginCallback={loginCallback} />}
+          {mUser && (
+            <>
+              <img src={curioLogoTagline} className="w-[350px] mb-5 self-center mt-5 md:hidden" />
+              <h1
+                className="text-3xl sm:text-5xl text-white text-gradient font-bold pt-7 ml-5"
+                id="titleCard"
+              >
+                Welcome back, <br />
+                {gUser?.given_name}!
+              </h1>
+            </>
           )}
-          {megaphoneUserData?.user?.industry === 0 &&
-          megaphoneUserData?.user?.onboarded ? (
+          {mUser?.industry === 0 &&
+          mUser?.onboarded ? (
             <IndustryModal
-              setToggleIndustryModal={setToggleIndustryModal}
-              megaphoneUserId={megaphoneUserData?.user.id}
+              userId={mUser?.id}
             />
           ) : null}
           <Tour
-            userId={megaphoneUserData?.user?.id}
+            userId={mUser?.id}
             openTour={openTour}
             setOpenTour={setOpenTour}
           />
-          {userIsLoggedInAndIsAdmin && <AdminDashboards />}
+          {userIsLoggedInAndIsAdmin && <AdminDashboards userId={mUser.id} /> }
           {userIsLoggedInAndIsNotAdmin && (
-            <TopicDashboard megaphoneUserInfo={megaphoneUserData?.user} />
+            <TopicDashboard userId={mUser.id} userIndustry={mUser.industry} />
           )}
         </div>
       </div>

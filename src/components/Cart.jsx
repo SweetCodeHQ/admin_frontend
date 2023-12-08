@@ -1,32 +1,18 @@
 import { useState, useContext } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
+import { SUBMIT_TOPIC } from '../graphql/mutations';
+import { callMutation } from '../utils/callMutation';
 import { UserContext, CartContext, EntityContext } from '../context';
 
 import { LaunchCartModalButton, Button, CartTopic, BasicAlert } from '.';
 import { CONTENT_TYPES } from '../constants/contentTypes';
 
-const UPDATE_TOPIC = gql`
-  mutation UpdateSubmitted($id: ID!, $submitted: Boolean) {
-    updateTopic(input: { id: $id, submitted: $submitted }) {
-      id
-      submitted
-      text
-      contentType
-      abstract {
-        id
-        text
-      }
-    }
-  }
-`;
-
 const CartButton = ({
   handleSubmitTopics,
   handleRequestCredits,
   megaphoneUserInfo,
-  calculateCreditsNeeded,
-  verifySelections,
+  calculateCreditsNeeded
 }) => (
   // can be moved into its own component
   <>
@@ -60,16 +46,9 @@ const Cart = ({ setToggleCart }) => {
 
   const [showAlert, setShowAlert] = useState(false);
 
-  const updateSubmitted = async (id) => {
-    let promise;
-    const input = { submitted: true, id };
-    promise = await topicUpdateSubmit({ variables: input });
-    return promise;
-  };
-
   const [topicUpdateSubmit, { loading: updateLoading, error: updateError }] =
-    useMutation(UPDATE_TOPIC, {
-      context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+    useMutation(SUBMIT_TOPIC, {
+      context: { headers: { authorization: `${process.env.MUTATION_KEY}`, user: megaphoneUserInfo?.id } },
       onError: (error) => console.log(error),
       onCompleted: (data) => console.log(data),
     });
@@ -85,7 +64,7 @@ const Cart = ({ setToggleCart }) => {
   };
 
   const processTopic = async (topic) => {
-    const topicInfo = await updateSubmitted(topic.id);
+    callMutation({ submitted: true, id: topic.id}, topicUpdateSubmit)
 
     handleTopicAlertEmail(topic.id);
   };

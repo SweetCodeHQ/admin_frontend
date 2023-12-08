@@ -1,26 +1,19 @@
 import { useContext } from 'react';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
+import { UPDATE_TOPIC_TYPE } from '../graphql/mutations';
 import { FlyoutMenu } from '.';
-import { CartContext } from '../context';
+import { CartContext, UserContext } from '../context';
 import { CONTENT_TYPES } from '../constants/contentTypes';
-
-const UPDATE_TOPIC_TYPE = gql`
-  mutation UpdateType($id: ID!, $contentType: Int!) {
-    updateTopic(input: { id: $id, contentType: $contentType }) {
-      id
-      text
-      contentType
-    }
-  }
-`;
+import { callMutation } from '../utils/callMutation';
 
 const CartTopicContentType = ({ topicId, contentType, topicIndex }) => {
   const { updateCartTopic } = useContext(CartContext);
+  const { megaphoneUserInfo } = useContext(UserContext)
 
   const handleChangeContentType = async (typeIndex) => {
     const type = typeIndex + 1;
     try {
-      const promise = await updateTopicType(topicId, type);
+      await callMutation({ id: topicId, contentType: type }, updateTopicType)
       updateCartTopic(topicIndex, type);
     } catch (error) {
       console.log(error);
@@ -28,16 +21,9 @@ const CartTopicContentType = ({ topicId, contentType, topicIndex }) => {
     }
   };
 
-  const updateTopicType = async (id, type) => {
-    let promise;
-    const input = { contentType: type, id };
-    promise = await topicUpdateTypeData({ variables: input });
-    return promise;
-  };
-
-  const [topicUpdateTypeData, { loading: updateLoading, error: updateError }] =
+  const [updateTopicType, { loading: updateLoading, error: updateError }] =
     useMutation(UPDATE_TOPIC_TYPE, {
-      context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+      context: { headers: { authorization: `${process.env.MUTATION_KEY}`, user: megaphoneUserInfo?.id } },
       onError: (error) => console.log(error),
       onCompleted: (data) => console.log(data),
     });

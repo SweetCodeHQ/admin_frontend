@@ -1,5 +1,7 @@
 import { useState, useContext } from 'react';
-import { gql, useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
+import { GET_BANNERS } from '../graphql/queries';
+import { UPDATE_USER_BANNER_DATE } from '../graphql/mutations'
 import { UserContext } from '../context';
 
 import {
@@ -9,38 +11,6 @@ import {
   BasicAlert,
   InboxIcon,
 } from '.';
-
-const GET_BANNERS = gql`
-  query Banners {
-    banners {
-      id
-      purpose
-      text
-      link
-      updatedAt
-    }
-  }
-`;
-
-const UPDATE_USER_BANNER_DATE = gql`
-  mutation UpdateUserBannerDate(
-    $id: ID!
-    $sawBannerOn: ISO8601DateTime
-    $acceptedPrivacyOn: ISO8601DateTime
-  ) {
-    updateUser(
-      input: {
-        id: $id
-        sawBannerOn: $sawBannerOn
-        acceptedPrivacyOn: $acceptedPrivacyOn
-      }
-    ) {
-      id
-      sawBannerOn
-      acceptedPrivacyOn
-    }
-  }
-`;
 
 const TITLES = [
   'News from the Fixate Desk',
@@ -72,7 +42,7 @@ const Navbar = () => {
   const [updateUserBannerData, { error: userBannerError }] = useMutation(
     UPDATE_USER_BANNER_DATE,
     {
-      context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+      context: { headers: { authorization: `${process.env.MUTATION_KEY}`, user: megaphoneUserInfo?.id } },
       onCompleted: (data) => console.log(data),
       onError: (error) => console.log(error),
     }
@@ -106,7 +76,7 @@ const Navbar = () => {
   };
 
   const { data: bannersData } = useQuery(GET_BANNERS, {
-    context: { headers: { authorization: `${process.env.QUERY_KEY}` } },
+    context: { headers: { authorization: `${process.env.QUERY_KEY}`, user: megaphoneUserInfo?.id } },
     onError: (error) => console.log(error),
     fetchPolicy: 'network-only',
   });
@@ -129,7 +99,7 @@ const Navbar = () => {
             <Button text="Sign Out" handleClick={logUserOut} />
             {showBanners()}
             {/* <InboxIcon /> */}
-            <CartIcon />
+            <CartIcon isAdmin={megaphoneUserInfo?.isAdmin} />
           </>
         ) : (
           <>

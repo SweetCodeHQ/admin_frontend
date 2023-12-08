@@ -1,24 +1,9 @@
 import { useState } from 'react';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
+import { callMutation } from '../utils/callMutation';
+import { CREATE_ABSTRACT, DESTROY_ABSTRACT } from '../graphql/mutations'
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import { NoAbstract, ExportButton, ClipboardButton, Tooltip } from '.';
-
-const CREATE_ABSTRACT = gql`
-  mutation CreateAbstract($topicId: ID!, $text: String!) {
-    createAbstract(input: { topicId: $topicId, text: $text }) {
-      id
-      text
-    }
-  }
-`;
-
-const DESTROY_ABSTRACT = gql`
-  mutation DestroyAbstract($id: ID!) {
-    destroyAbstract(input: { id: $id }) {
-      id
-    }
-  }
-`;
 
 const Abstract = ({
   topic,
@@ -26,10 +11,11 @@ const Abstract = ({
   editModeEnabled,
   displayedAbstract,
   displayedTopic,
+  userId
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const generateAbstract = async () => {
+  const generateInstract = async () => {
     let instract;
 
     const handleResponse = (response) => {
@@ -48,53 +34,37 @@ const Abstract = ({
     return instract;
   };
 
-  const [abstractCreationData, { error: abstractError }] = useMutation(
+  const [createAbstract, { error: abstractError }] = useMutation(
     CREATE_ABSTRACT,
     {
-      context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+      context: { headers: { authorization: `${process.env.MUTATION_KEY}`, user: userId } },
       onCompleted: (data) => console.log(data),
       onError: (error) => console.log(error),
     }
   );
 
-  const [abstractDestroyData, { error: abstractDestroyError }] = useMutation(
+  const [destroyAbstract, { error: abstractDestroyError }] = useMutation(
     DESTROY_ABSTRACT,
     {
-      context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+      context: { headers: { authorization: `${process.env.MUTATION_KEY}`, user: userId } },
       onError: (error) => console.log(error),
       onCompleted: (data) => console.log(data),
     }
   );
 
-  const createAbstract = async (text) => {
-    const input = { topicId: topic.id, text };
-
-    await abstractCreationData({ variables: input });
-  };
-
-  const destroyAbstract = async () => {
-    const input = { id: topic.abstract.id };
-
-    const destruction = await abstractDestroyData({ variables: input });
-  };
-
-  const handleCreateAbstract = async () => {
+  const handleAbstract = async () => {
     setIsLoading(true);
-    await processNewAbstract();
-    setIsLoading(false);
-  };
+    if(topic.abstract) await callMutation( {id: topic.abstract?.id}, destroyAbstract)
 
-  const handleRecreateAbstract = async () => {
-    setIsLoading(true);
-    await destroyAbstract();
     await processNewAbstract();
     setIsLoading(false);
   };
 
   const processNewAbstract = async () => {
-    const abstract = await generateAbstract();
+    const instract = await generateInstract();
 
-    const newInstract = await createAbstract(abstract);
+    await callMutation({topicId: topic.id, text: instract }, createAbstract)
+
     await refetchTopic();
   };
 
@@ -105,7 +75,7 @@ const Abstract = ({
           <p className="text-sm text-white text-justify">{displayedAbstract}</p>
         ) : (
           <NoAbstract
-            handleCreateAbstract={handleCreateAbstract}
+            handleAbstract={handleAbstract}
             isLoading={isLoading}
           />
         )}
@@ -128,7 +98,7 @@ const Abstract = ({
         <button
           type="submit"
           label="aria-hidden"
-          onClick={handleRecreateAbstract}
+          onClick={handleAbstract}
           data-id="regenerate-abstract"
           disabled={topic?.submitted || isLoading}
           className={`mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4E376A]/75 ${

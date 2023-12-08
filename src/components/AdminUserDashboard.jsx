@@ -1,41 +1,15 @@
-import { gql, useQuery, useMutation } from '@apollo/client';
+import { useQuery } from '@apollo/client';
+import { GET_PAGINATED_USERS } from '../graphql/queries';
 import { AllUsersTable } from '.';
 
-const GET_PAGINATED_USERS = gql`
-  query UsersConnection($after: String, $before: String, $last: Int) {
-    usersConnection(after: $after, before: $before, last: $last) {
-      totalCount
-      pageInfo {
-        endCursor
-        startCursor
-        hasPreviousPage
-        hasNextPage
-      }
-      edges {
-        cursor
-        node {
-          id
-          email
-          isBlocked
-          topicCount
-          loginCount
-          clickedGenerateCount
-          createdAt
-          isAdmin
-        }
-      }
-    }
-  }
-`;
-
-const AdminUserDashboard = () => {
+const AdminUserDashboard = ({ userId }) => {
   const {
     data: allUsersData,
     error: allUsersError,
     refetch: allUsersRefetch,
     fetchMore,
   } = useQuery(GET_PAGINATED_USERS, {
-    context: { headers: { authorization: `${process.env.EAGLE_KEY}` } },
+    context: { headers: { authorization: `${process.env.EAGLE_KEY}`, user: userId } },
     onError: (error) => console.log(error),
   });
 
