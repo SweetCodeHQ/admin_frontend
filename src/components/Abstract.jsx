@@ -3,14 +3,19 @@ import { useMutation } from '@apollo/client';
 import { callMutation } from '../utils/callMutation';
 import { CREATE_ABSTRACT, DESTROY_ABSTRACT } from '../graphql/mutations'
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
-import { NoAbstract, ExportButton, ClipboardButton, Tooltip } from '.';
+import {
+  PencilSquareIcon
+} from '@heroicons/react/24/solid';
+import { NoAbstract, Tooltip, TopicCartIcon } from '.';
 
 const Abstract = ({
   topic,
   refetchTopic,
   editModeEnabled,
+  setEditModeEnabled,
   displayedAbstract,
   displayedTopic,
+  handleSave,
   userId
 }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -88,13 +93,6 @@ const Abstract = ({
         </ul>
       </div>
       <div className="grid grid-flow-row-dense grid-cols-3 gap-3">
-        
-        <ExportButton
-          editModeEnabled={editModeEnabled}
-          displayedTopic={displayedTopic}
-          displayedAbstract={displayedAbstract}
-          keywords={topic?.keywords?.map((keyword) => keyword.word)}
-        />
         <button
           type="submit"
           label="aria-hidden"
@@ -102,10 +100,10 @@ const Abstract = ({
           data-id="regenerate-abstract"
           disabled={topic?.submitted || isLoading}
           className={`mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4E376A]/75 ${
-            topic?.submitted || !topic?.abstract || editModeEnabled
+            topic?.submitted || !topic?.abstract
               ? 'cursor-not-allowed'
               : 'transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-          } ${isLoading ? 'cursor-progress' : null} mt-2`}
+          } ${isLoading ? 'cursor-progress' : null} ${editModeEnabled ? 'invisible' : null}`}
         >
           <Tooltip
             text={
@@ -122,10 +120,38 @@ const Abstract = ({
             />
           </Tooltip>
         </button>
-        <ClipboardButton editModeEnabled={editModeEnabled} displayedTopic={displayedTopic} displayedAbstract={displayedAbstract} keywords={topic.keywords} 
-        />
-    </div>
-  </>
+        {editModeEnabled ? (
+          <button
+            onClick={handleSave}
+            data-id="save-abstract"
+            className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4E376A] transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 text-blue-300"
+          >
+            Save
+          </button>
+        ) : (
+          <button
+            onClick={() => setEditModeEnabled(true)}
+            data-id="edit-abstract"
+            disabled={topic?.submitted}
+            className={`mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4E376A] ${
+              topic?.submitted
+                ? 'cursor-not-allowed'
+                : 'transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+            }`}
+          >
+            <PencilSquareIcon
+              className={`h-6 w-6 ${
+                topic?.submitted ? 'text-gray-300' : 'text-blue-300'
+              }`}
+              aria-hidden="true"
+            />
+          </button>
+        )}
+        <div className={`mx-auto flex h-12 w-12 justify-center items-center rounded-full transition delay-50 ease-in-out cursor-pointer hover:scale-105 hover:-translate-y-1 bg-[#4E376A]/75 ${editModeEnabled ? 'invisible' : null}`}>
+            <TopicCartIcon topic={topic} />
+        </div> 
+      </div>
+    </>
   );
 };
 

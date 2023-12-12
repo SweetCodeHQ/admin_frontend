@@ -1,14 +1,12 @@
 import { Fragment, useRef, useState, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import {
-  PencilSquareIcon,
   XMarkIcon
 } from '@heroicons/react/24/solid';
-import { RiMailCheckFill } from 'react-icons/ri';
 import curioCircleLogo from '../assets/curioCircleLogo.png'
 import { useMutation } from '@apollo/client';
 import { UPDATE_TOPIC_TEXT, UPDATE_ABSTRACT } from '../graphql/mutations';
-import { Input, Abstract, TopicCartIcon, Tooltip, BasicAlert } from '.';
+import { Input, Abstract, BasicAlert, ExportButton, ClipboardButton } from '.';
 import { callMutation } from '../utils/callMutation';
 
 const UserTopicModal = ({ open, setOpen, topic, refetchTopic, userId }) => {
@@ -171,6 +169,8 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic, userId }) => {
                         topic={topic}
                         refetchTopic={refetchTopic}
                         editModeEnabled={editModeEnabled}
+                        setEditModeEnabled={setEditModeEnabled}
+                        handleSave={handleSave}
                         displayedAbstract={displayedAbstract}
                         displayedTopic={displayedTopic}
                         userId={userId}
@@ -179,44 +179,14 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic, userId }) => {
                   </div>
                 </div>
                 <div className="mt-6 grid grid-flow-row-dense grid-cols-3 gap-3">
-                  {editModeEnabled ? (
-                    <button
-                      onClick={handleSave}
-                      data-id="save-abstract"
-                      className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4E376A] transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 text-blue-300"
-                    >
-                      Save
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => setEditModeEnabled(true)}
-                      data-id="edit-abstract"
-                      disabled={topic?.submitted}
-                      className={`mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4E376A] ${
-                        topic?.submitted
-                          ? 'cursor-not-allowed'
-                          : 'transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-                      }`}
-                    >
-                      <PencilSquareIcon
-                        className={`h-6 w-6 ${
-                          topic?.submitted ? 'text-gray-300' : 'text-blue-300'
-                        }`}
-                        aria-hidden="true"
-                      />
-                    </button>
-                  )}
-                  <div className="mx-auto flex h-12 w-12 justify-center items-center rounded-full transition delay-50 ease-in-out cursor-pointer hover:scale-105 hover:-translate-y-1 bg-[#4E376A]/75">
-                    {topic?.submitted ? (
-                      <div className="text-blue-500 text-2xl">
-                        <Tooltip text="Already Submitted">
-                          <RiMailCheckFill />
-                        </Tooltip>
-                      </div>
-                    ) : (
-                      <TopicCartIcon topic={topic} />
-                    )}
-                  </div>
+                <ExportButton
+                  editModeEnabled={editModeEnabled}
+                  displayedTopic={displayedTopic}
+                  displayedAbstract={displayedAbstract}
+                  keywords={topic?.keywords?.map((keyword) => keyword.word)}
+                />
+                  <ClipboardButton editModeEnabled={editModeEnabled} displayedTopic={displayedTopic} displayedAbstract={displayedAbstract} keywords={topic?.keywords} 
+                  />
                   {editModeEnabled ? (
                     <button
                       onClick={() => setEditModeEnabled(false)}

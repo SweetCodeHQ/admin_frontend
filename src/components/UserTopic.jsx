@@ -3,7 +3,6 @@ import { useMutation, useQuery } from '@apollo/client';
 import { GET_TOPIC } from '../graphql/queries';
 import { DESTROY_TOPIC } from '../graphql/mutations';
 import { MdDeleteForever } from 'react-icons/md';
-import { RiMailCheckFill } from 'react-icons/ri';
 import { TopicCartIcon, UserTopicModal } from '.';
 import { callMutation } from '../utils/callMutation';
 
@@ -39,12 +38,9 @@ const UserTopic = ({ topicId, createdAt, submitted, topicText, refetch, userId }
           recentlySaved() ? '' : 'invisible'
         }`}
       />
-      {submitted && (
-        <div className="text-blue-500 mr-10 text-xl">
-          <RiMailCheckFill />
-        </div>
-      )}
-      <TopicCartIcon topic={topicData?.topic} />
+      <div className={`${topicData?.topic.submitted ? 'mr-10' : null}`}>
+        <TopicCartIcon topic={topicData?.topic} />
+      </div>
       <button
         type="button"
         className={`text-blue-300 ml-2 text-2xl mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 ${

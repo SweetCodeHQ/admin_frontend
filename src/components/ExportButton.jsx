@@ -266,7 +266,7 @@ const ExportButton = ({
         docId={docId}
         isLoading={isLoading}
       />
-      <div className={`mt-3 mx-auto flex ${editModeEnabled ? 'invisible' : null}`}>
+      <div className={`mt-1 mx-auto flex ${editModeEnabled ? 'invisible' : null}`}>
         <Tooltip text="Export to Google Docs">
           <GoogleLogin 
             type="icon" 
