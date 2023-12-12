@@ -35,7 +35,7 @@ export const EntityContextProvider = ({ children }) => {
   const [entityUpdateData, { loading: updateLoading, error: updateError }] =
     useMutation(EDIT_ENTITY, {
       context: { headers: { authorization: `${process.env.EAGLE_KEY}`, user: megaphoneUserInfo?.id } },
-      onError: (error) => console.log(error),
+      onError: (error) => console.log(error)
     });
 
   return (
