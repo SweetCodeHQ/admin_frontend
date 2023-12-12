@@ -3,7 +3,8 @@ import {
   BsFillArrowLeftCircleFill,
   BsFillArrowRightCircleFill,
 } from 'react-icons/bs';
-import { gql, useQuery } from '@apollo/client';
+import curioLogoTagline from '../assets/curioLogoTagline.png'
+import { useQuery } from '@apollo/client';
 
 import {
   Button,
@@ -16,23 +17,10 @@ import {
 } from '.';
 
 import { filterBySubmitted, filterByNotSubmitted } from '../constants/filters';
+import { GET_USER_TOPICS } from '../graphql/queries'
 
-const GET_USER_TOPICS = gql`
-  query User($email: String!) {
-    user(email: $email) {
-      id
-      topics {
-        id
-        text
-        submitted
-        contentType
-        createdAt
-      }
-    }
-  }
-`;
 
-const TopicDashboard = ({ megaphoneUserInfo }) => {
+const TopicDashboard = ({ userId, userIndustry }) => {
   const [formData, setFormData] = useState({
     word1: '',
     word2: '',
@@ -40,8 +28,6 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
     word4: '',
     word5: '',
   });
-
-  const [toggleUserTopicModal, setToggleUserTopicModal] = useState(false);
 
   const [inputKeywords, setInputKeywords] = useState(null);
 
@@ -66,8 +52,6 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
     if (numOfPages === 1) return false;
     return currentPage + 1 !== numOfPages;
   };
-
-  const [userTopicsConnection, setUserTopicsConnection] = useState([]);
 
   const [filterTopicsBy, setFilterTopicsBy] = useState('ALL');
 
@@ -112,23 +96,16 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
     if (!direction) return setCurrentPage((prev) => (prev -= 1));
   };
 
-  const { data: userTopicsData, refetch: refetchUserTopics } = useQuery(
+  const { data: userTopicsData, refetch: refetchUserTopics, error: topicsError } = useQuery(
     GET_USER_TOPICS,
     {
-      context: { headers: { authorization: `${process.env.QUERY_KEY}` } },
-      variables: { email: megaphoneUserInfo?.email },
+      context: { headers: { authorization: `${process.env.QUERY_KEY}`, user: userId } },
       onError: (error) => console.log(error),
       onCompleted: (data) => setUserTopics(data.user.topics),
     }
   );
 
-  const updateQuery = (prev, { fetchMoreResult }) =>
-    fetchMoreResult.userTopicsConnection.edges.length ? fetchMoreResult : prev;
-
   const handleTopicResponse = (response) => {
-    {
-      /* Add response in case of dashes and no numbers or bullets */
-    }
     const topics = response.data.attributes.text;
 
     const formattedTopics = topics.split('\n').splice(0, 5);
@@ -187,7 +164,7 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
 
   return (
     <>
-      <p className="text-left mt-5 text-white font-semibold text-lg md:w-9/12 w-11/12 text-base">
+      <p className="text-left mt-5 ml-5 text-white font-semibold text-lg md:w-9/12 w-11/12">
         Use this portal to get topic suggestions and abstracts using the latest in
         artificial intelligence.
       </p>
@@ -197,8 +174,8 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
             <KeywordInterface
               formData={formData}
               setFormData={setFormData}
-              userIndustry={megaphoneUserInfo?.industry}
-              userId={megaphoneUserInfo?.id}
+              userIndustry={userIndustry}
+              userId={userId}
               keywordIds={keywordIds}
               setKeywordIds={setKeywordIds}
               getTopicSuggestions={getTopicSuggestions}
@@ -206,12 +183,13 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
               setInputKeywords={setInputKeywords}
               moveKeyword={moveKeyword}
             />
-            <div className="w-full flex flex-col justify-around">
+            <div className="w-full flex flex-col">
+              <img src={curioLogoTagline} className="w-[300px] self-center hidden md:block -translate-y-10" />
               <div className="flex flex-col w-full">
                 <h3 className="text-white text-3xl font-bold text-center my-2 w-full">
                   Generated Topics
                 </h3>
-                <div className="bg-[#3A1F5C] rounded-xl mt-2 w-4/5 md:w-full">
+                <div className="bg-[#3A1F5C] rounded-xl mt-2 w-4/5 md:w-full self-center">
                   {isLoading ? (
                     <Loader />
                   ) : (
@@ -221,8 +199,7 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
                           <TopicRow
                             topic={topic}
                             key={i}
-                            userId={megaphoneUserInfo.id}
-                            i={i}
+                            userId={userId}
                             refetch={refetchUserTopics}
                             keywordIds={keywordIds}
                           />
@@ -273,17 +250,19 @@ const TopicDashboard = ({ megaphoneUserInfo }) => {
               </div>
               <div className="bg-[#3A1F5C] rounded-xl mt-2 min-w-fit">
                 <TopicInputForm
-                  userId={megaphoneUserInfo?.id}
+                  userId={userId}
                   refetch={refetchUserTopics}
                 />
                 <div className="p-5 flex flex-col items-left space-y-2 pl-5 md:min-h-[400px] h-full">
                   {topicPages[currentPage]?.map((topic, i) => (
                     <UserTopic
-                      id={i}
+                      userId={userId}
                       key={topic.id}
-                      topic={topic}
+                      topicId={topic.id}
+                      createdAt={topic.createdAt}
+                      submitted={topic.submitted}
+                      topicText={topic.text}
                       refetch={refetchUserTopics}
-                      keywordIds={keywordIds}
                     />
                   ))}
                 </div>

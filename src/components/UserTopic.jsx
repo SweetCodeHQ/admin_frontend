@@ -1,65 +1,34 @@
 import { useState } from 'react';
-import { gql, useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
+import { GET_TOPIC } from '../graphql/queries';
+import { DESTROY_TOPIC } from '../graphql/mutations';
 import { MdDeleteForever } from 'react-icons/md';
-import { RiMailCheckFill } from 'react-icons/ri';
 import { TopicCartIcon, UserTopicModal } from '.';
+import { callMutation } from '../utils/callMutation';
 
-const GET_TOPIC = gql`
-  query topic($id: ID!) {
-    topic(id: $id) {
-      id
-      text
-      submitted
-      contentType
-      createdAt
-      abstract {
-        id
-        text
-      }
-      keywords {
-        word
-      }
-    }
-  }
-`;
-
-const DESTROY_TOPIC = gql`
-  mutation ($id: ID!) {
-    destroyTopic(input: { id: $id }) {
-      id
-    }
-  }
-`;
-
-const UserTopic = ({ topic, refetch, id }) => {
+const UserTopic = ({ topicId, createdAt, submitted, topicText, refetch, userId }) => {
   const [open, setOpen] = useState(false);
   const handleModal = () => setOpen((prev) => !prev);
 
   const [destroyTopicData, { loading, error }] = useMutation(DESTROY_TOPIC, {
-    context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+    context: { headers: { authorization: `${process.env.MUTATION_KEY}`, user: userId } },
     onCompleted: refetch,
     onError: (error) => console.log(error),
   });
 
-  const destroyTopicMutation = () => {
-    const input = { id: topic.id };
-
-    destroyTopicData({ variables: input });
-  };
-
-  const { data: topicData, refetch: refetchTopic } = useQuery(GET_TOPIC, {
-    context: { headers: { authorization: `${process.env.QUERY_KEY}` } },
-    variables: { id: topic.id },
+  const { data: topicData, refetch: refetchTopic, error: topicError } = useQuery(GET_TOPIC, {
+    context: { headers: { authorization: `${process.env.QUERY_KEY}`, user: userId } },
+    variables: { id: topicId },
     onError: (error) => console.log(error),
   });
 
   const recentlySaved = () => {
-    const createdAt = new Date(topic?.createdAt);
+    const createdDate = createdAt ? new Date(createdAt) : null
     const thresholdTime = new Date(Date.now());
 
     thresholdTime.setMinutes(thresholdTime.getMinutes() - 5);
 
-    return createdAt > thresholdTime;
+    return createdDate > thresholdTime;
   };
 
   return (
@@ -69,34 +38,32 @@ const UserTopic = ({ topic, refetch, id }) => {
           recentlySaved() ? '' : 'invisible'
         }`}
       />
-      {topic.submitted && (
-        <div className="text-blue-500 mr-10 text-xl">
-          <RiMailCheckFill />
-        </div>
-      )}
-      <TopicCartIcon topic={topic} />
+      <div className={`${topicData?.topic.submitted ? 'mr-10' : null}`}>
+        <TopicCartIcon topic={topicData?.topic} />
+      </div>
       <button
         type="button"
         className={`text-blue-300 ml-2 text-2xl mr-3 rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 ${
-          topic.submitted && 'hidden'
+          submitted && 'hidden'
         }`}
-        onClick={destroyTopicMutation}
+        onClick={() => callMutation({id: topicId}, destroyTopicData)}
       >
         <MdDeleteForever />
       </button>
       <UserTopicModal
-        key={id}
+        key={topicId}
+        userId={userId}
         open={open}
         setOpen={setOpen}
         topic={topicData?.topic}
         refetchTopic={refetchTopic}
       />
       <div
-        className="text-white text-lg cursor-grab"
+        className={`text-white text-lg cursor-grab ${submitted ? "ml-2" : null}`}
         data-id="saved-topic"
         onClick={handleModal}
       >
-        {topic.text}
+        {topicText}
       </div>
     </div>
   );

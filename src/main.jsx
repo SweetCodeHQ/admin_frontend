@@ -23,7 +23,7 @@ const authLink = new ApolloLink((operation, forward) => {
       ...operation.getContext().headers,
     },
   });
-
+  // console.log(`${operation.operationName}: ${operation.getContext().headers.authorization}`)
   return forward(operation);
 });
 

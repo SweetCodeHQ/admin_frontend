@@ -1,34 +1,15 @@
 import { Fragment, useRef, useState, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import {
-  DocumentTextIcon,
-  DocumentCheckIcon,
-  PencilSquareIcon,
-  XMarkIcon,
+  XMarkIcon
 } from '@heroicons/react/24/solid';
-import { RiMailCheckFill } from 'react-icons/ri';
-import { gql, useMutation } from '@apollo/client';
-import { Input, Abstract, TopicCartIcon, Tooltip, BasicAlert } from '.';
+import curioCircleLogo from '../assets/curioCircleLogo.png'
+import { useMutation } from '@apollo/client';
+import { UPDATE_TOPIC_TEXT, UPDATE_ABSTRACT } from '../graphql/mutations';
+import { Input, Abstract, BasicAlert, ExportButton, ClipboardButton } from '.';
+import { callMutation } from '../utils/callMutation';
 
-const UPDATE_TOPIC = gql`
-  mutation UpdateTopicText($id: ID!, $text: String!) {
-    updateTopic(input: { id: $id, text: $text }) {
-      id
-      text
-    }
-  }
-`;
-
-const UPDATE_ABSTRACT = gql`
-  mutation UpdateAbstract($id: ID!, $text: String!) {
-    updateAbstract(input: { id: $id, text: $text }) {
-      id
-      text
-    }
-  }
-`;
-
-const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
+const UserTopicModal = ({ open, setOpen, topic, refetchTopic, userId }) => {
   const [editModeEnabled, setEditModeEnabled] = useState(false);
 
   const [modalFormData, setModalFormData] = useState({
@@ -58,9 +39,13 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
     setEditModeEnabled(false);
     setOpen(false);
     refetchTopic();
+    setModalFormData({
+      topicText: '',
+      abstractText: '',
+    })
   };
 
-  const handleSave = (event) => {
+  const handleSave = () => {
     setEditModeEnabled(false);
     handleSubmitTopic();
     handleSubmitAbstract();
@@ -68,24 +53,16 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
 
   const handleSubmitTopic = () => {
     if (modalFormData.topicText === '') return;
-
-    editTopic(topic.id, modalFormData.topicText);
+    callMutation({ id: topic.id, text: modalFormData.topicText}, topicUpdateData)
   };
 
   const handleSubmitAbstract = () => {
     if (!topic.abstract || modalFormData.abstractText === '') return;
-
-    editAbstract(topic.abstract.id, modalFormData.abstractText);
+    callMutation({id: topic.abstract.id, text: modalFormData.abstractText}, abstractUpdateData)
   };
 
-  const editTopic = (topicId, newTopicText) => {
-    const input = { id: topicId, text: newTopicText };
-
-    topicUpdateData({ variables: input });
-  };
-
-  const [topicUpdateData] = useMutation(UPDATE_TOPIC, {
-    context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+  const [topicUpdateData] = useMutation(UPDATE_TOPIC_TEXT, {
+    context: { headers: { authorization: `${process.env.MUTATION_KEY}`, user: userId } },
     ignoreResults: true,
     fetchPolicy: 'no-cache',
     onError: (error) => console.log(error),
@@ -96,14 +73,8 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
       })),
   });
 
-  const editAbstract = (abstractId, newAbstractText) => {
-    const input = { id: abstractId, text: newAbstractText };
-
-    abstractUpdateData({ variables: input });
-  };
-
   const [abstractUpdateData] = useMutation(UPDATE_ABSTRACT, {
-    context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+    context: { headers: { authorization: `${process.env.MUTATION_KEY}`, user: userId } },
     ignoreResults: true,
     fetchPolicy: 'no-cache',
     onError: (error) => console.log(error),
@@ -155,22 +126,9 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-[#3A1F5C] px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 w-full max-w-lg sm:p-6">
                 <div>
-                  {/* The icons reflect the current status. When you add statuses, update the icon possibilities. Submitted, writing, etc. If it's submitted, you shouldn't be able to edit it. */}
-                  {topic?.submitted ? (
-                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white">
-                      <DocumentCheckIcon
-                        className="h-6 w-6 text-[#3A1F5C]"
-                        aria-hidden="true"
-                      />
-                    </div>
-                  ) : (
-                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white">
-                      <DocumentTextIcon
-                        className="h-6 w-6 text-[#3A1F5C]"
-                        aria-hidden="true"
-                      />
-                    </div>
-                  )}
+                  <div className="mx-auto flex h-20 w-20  bg-white">
+                    <img src={curioCircleLogo} />
+                  </div>
                   <div className="mt-3 text-center sm:mt-5">
                     <BasicAlert
                       showBasicAlert={showAlert}
@@ -189,7 +147,7 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
                           name="topicText"
                           type="text"
                           defaultValue={displayedTopic}
-                          customStyles="w-full rounded-lg outline-none text-white bg-[#4E376A]/75 placeholder-gray-400 border-violet-500 text-sm shadow-inner shadow-lg"
+                          customStyles="w-full rounded-lg outline-none text-white bg-[#4E376A]/75 placeholder-gray-400 hover:border-violet-500 text-sm shadow-inner shadow-lg"
                         />
                       ) : (
                         displayedTopic
@@ -203,7 +161,7 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
                         type="text"
                         defaultValue={displayedAbstract}
                         onChange={(e) => handleChange(e, 'abstractText')}
-                        className="w-full rounded-lg outline-none text-white bg-[#4E376A]/75 placeholder-gray-400 border-violet-500 text-sm shadow-inner shadow-lg max-h-[350px] resize-none min-h-[100px] mb-11"
+                        className="w-full rounded-lg outline-none text-white bg-[#4E376A]/75 placeholder-gray-400 hover:border-violet-500 text-sm shadow-lg max-h-[350px] resize-none min-h-[100px] mb-11"
                       />
                     ) : (
                       <Abstract
@@ -211,51 +169,24 @@ const UserTopicModal = ({ open, setOpen, topic, refetchTopic }) => {
                         topic={topic}
                         refetchTopic={refetchTopic}
                         editModeEnabled={editModeEnabled}
+                        setEditModeEnabled={setEditModeEnabled}
+                        handleSave={handleSave}
                         displayedAbstract={displayedAbstract}
                         displayedTopic={displayedTopic}
+                        userId={userId}
                       />
                     )}
                   </div>
                 </div>
                 <div className="mt-6 grid grid-flow-row-dense grid-cols-3 gap-3">
-                  {editModeEnabled ? (
-                    <button
-                      onClick={handleSave}
-                      data-id="save-abstract"
-                      className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4E376A] transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 text-blue-300"
-                    >
-                      Save
-                    </button>
-                  ) : (
-                    <button
-                      onClick={(e) => setEditModeEnabled(true)}
-                      data-id="edit-abstract"
-                      disabled={topic?.submitted}
-                      className={`mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#4E376A] ${
-                        topic?.submitted
-                          ? 'cursor-not-allowed'
-                          : 'transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-                      }`}
-                    >
-                      <PencilSquareIcon
-                        className={`h-6 w-6 ${
-                          topic?.submitted ? 'text-gray-300' : 'text-blue-300'
-                        }`}
-                        aria-hidden="true"
-                      />
-                    </button>
-                  )}
-                  <div className="mx-auto flex h-12 w-12 justify-center items-center rounded-full transition delay-50 ease-in-out cursor-pointer hover:scale-105 hover:-translate-y-1 bg-[#4E376A]/75 block">
-                    {topic?.submitted ? (
-                      <div className="text-blue-500 text-2xl">
-                        <Tooltip text="Already Submitted">
-                          <RiMailCheckFill />
-                        </Tooltip>
-                      </div>
-                    ) : (
-                      <TopicCartIcon topic={topic} />
-                    )}
-                  </div>
+                <ExportButton
+                  editModeEnabled={editModeEnabled}
+                  displayedTopic={displayedTopic}
+                  displayedAbstract={displayedAbstract}
+                  keywords={topic?.keywords?.map((keyword) => keyword.word)}
+                />
+                  <ClipboardButton editModeEnabled={editModeEnabled} displayedTopic={displayedTopic} displayedAbstract={displayedAbstract} keywords={topic?.keywords} 
+                  />
                   {editModeEnabled ? (
                     <button
                       onClick={() => setEditModeEnabled(false)}

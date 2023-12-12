@@ -1,47 +1,14 @@
-import React, { useState } from 'react';
-import { gql, useMutation } from '@apollo/client';
-
-const CREATE_ENTITY = gql`
-  mutation createEntity($name: String, $url: String!) {
-    createEntity(input: { name: $name, url: $url }) {
-      id
-      name
-      url
-    }
-  }
-`;
-
-const EDIT_ENTITY = gql`
-  mutation EditEntity(
-    $id: ID!
-    $name: String
-    $url: String
-    $credits: Float
-    $requestInProgress: Boolean
-  ) {
-    updateEntity(
-      input: {
-        id: $id
-        name: $name
-        url: $url
-        credits: $credits
-        requestInProgress: $requestInProgress
-      }
-    ) {
-      id
-      name
-      url
-      credits
-      requestInProgress
-    }
-  }
-`;
+import React, { useState, useContext } from 'react';
+import { useMutation } from '@apollo/client';
+import { UserContext } from '.';
+import { CREATE_ENTITY, EDIT_ENTITY } from '../graphql/mutations'
 
 export const EntityContext = React.createContext();
 
 export const EntityContextProvider = ({ children }) => {
   const [formData, setFormData] = useState({ name: '', url: '' });
-
+  const { megaphoneUserInfo } = useContext(UserContext)
+  
   const [entities, setEntities] = useState([]);
 
   const handleChange = (e, name) => {
@@ -60,15 +27,15 @@ export const EntityContextProvider = ({ children }) => {
   };
 
   const [entityMutationData, { loading, error }] = useMutation(CREATE_ENTITY, {
-    context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+    context: { headers: { authorization: `${process.env.EAGLE_KEY}`, user: megaphoneUserInfo?.id } },
     onCompleted: (data) => setEntities(data.entities),
     onError: (error) => console.log(error),
   });
-
+//in alert email, need to use the header userId and not pass it in the query params
   const [entityUpdateData, { loading: updateLoading, error: updateError }] =
     useMutation(EDIT_ENTITY, {
-      context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
-      onError: (error) => console.log(error),
+      context: { headers: { authorization: `${process.env.EAGLE_KEY}`, user: megaphoneUserInfo?.id } },
+      onError: (error) => console.log(error)
     });
 
   return (

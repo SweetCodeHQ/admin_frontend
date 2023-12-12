@@ -1,5 +1,8 @@
 import { useState, useContext } from 'react';
-import { gql, useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
+import { GET_BANNERS } from '../graphql/queries';
+import { BsInbox } from 'react-icons/bs';
+import { UPDATE_USER_BANNER_DATE } from '../graphql/mutations'
 import { UserContext } from '../context';
 
 import {
@@ -8,39 +11,8 @@ import {
   BlanketNotification,
   BasicAlert,
   InboxIcon,
+  Tooltip
 } from '.';
-
-const GET_BANNERS = gql`
-  query Banners {
-    banners {
-      id
-      purpose
-      text
-      link
-      updatedAt
-    }
-  }
-`;
-
-const UPDATE_USER_BANNER_DATE = gql`
-  mutation UpdateUserBannerDate(
-    $id: ID!
-    $sawBannerOn: ISO8601DateTime
-    $acceptedPrivacyOn: ISO8601DateTime
-  ) {
-    updateUser(
-      input: {
-        id: $id
-        sawBannerOn: $sawBannerOn
-        acceptedPrivacyOn: $acceptedPrivacyOn
-      }
-    ) {
-      id
-      sawBannerOn
-      acceptedPrivacyOn
-    }
-  }
-`;
 
 const TITLES = [
   'News from the Fixate Desk',
@@ -72,7 +44,7 @@ const Navbar = () => {
   const [updateUserBannerData, { error: userBannerError }] = useMutation(
     UPDATE_USER_BANNER_DATE,
     {
-      context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+      context: { headers: { authorization: `${process.env.MUTATION_KEY}`, user: megaphoneUserInfo?.id } },
       onCompleted: (data) => console.log(data),
       onError: (error) => console.log(error),
     }
@@ -106,7 +78,7 @@ const Navbar = () => {
   };
 
   const { data: bannersData } = useQuery(GET_BANNERS, {
-    context: { headers: { authorization: `${process.env.QUERY_KEY}` } },
+    context: { headers: { authorization: `${process.env.QUERY_KEY}`, user: megaphoneUserInfo?.id } },
     onError: (error) => console.log(error),
     fetchPolicy: 'network-only',
   });
@@ -128,8 +100,15 @@ const Navbar = () => {
           <>
             <Button text="Sign Out" handleClick={logUserOut} />
             {showBanners()}
+            <div className="group relative flex">
+              <BsInbox className="text-4xl cursor-pointer text-gray-500"/>
+              <span className="absolute inset-0 scale-0 transition-all rounded bg-gray-800 p-2 text-xs text-white group-hover:scale-100 text-center w-[250px] h-[50px]">
+                <p>CurioStream: Create while you're away!</p>
+                <p>Coming Soon!</p>
+              </span>
+            </div>
             {/* <InboxIcon /> */}
-            <CartIcon />
+            <CartIcon isAdmin={megaphoneUserInfo?.isAdmin} />
           </>
         ) : (
           <>

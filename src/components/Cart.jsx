@@ -1,37 +1,24 @@
 import { useState, useContext } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
+import { SUBMIT_TOPIC } from '../graphql/mutations';
+import { GET_ENTITY } from '../graphql/queries'
+import { callMutation } from '../utils/callMutation';
+import curioLogoTagline from '../assets/curioLogoTagline.png'
 import { UserContext, CartContext, EntityContext } from '../context';
 
 import { LaunchCartModalButton, Button, CartTopic, BasicAlert } from '.';
 import { CONTENT_TYPES } from '../constants/contentTypes';
 
-const UPDATE_TOPIC = gql`
-  mutation UpdateSubmitted($id: ID!, $submitted: Boolean) {
-    updateTopic(input: { id: $id, submitted: $submitted }) {
-      id
-      submitted
-      text
-      contentType
-      abstract {
-        id
-        text
-      }
-    }
-  }
-`;
-
 const CartButton = ({
   handleSubmitTopics,
   handleRequestCredits,
-  megaphoneUserInfo,
-  calculateCreditsNeeded,
-  verifySelections,
+  credits,
+  calculateCreditsNeeded
 }) => (
   // can be moved into its own component
   <>
-    {!megaphoneUserInfo.entities[0]?.credits ||
-    megaphoneUserInfo.entities[0]?.credits < calculateCreditsNeeded() ? (
+    {!credits || credits < calculateCreditsNeeded() ? (
       <LaunchCartModalButton
         initialButtonText="Request Units"
         headerText="Request more Units?"
@@ -50,6 +37,7 @@ const CartButton = ({
     )}
   </>
 );
+
 const Cart = ({ setToggleCart }) => {
   const { handleTopicAlertEmail, handleClearCart, cartTopics } =
     useContext(CartContext);
@@ -60,19 +48,21 @@ const Cart = ({ setToggleCart }) => {
 
   const [showAlert, setShowAlert] = useState(false);
 
-  const updateSubmitted = async (id) => {
-    let promise;
-    const input = { submitted: true, id };
-    promise = await topicUpdateSubmit({ variables: input });
-    return promise;
-  };
-
-  const [topicUpdateSubmit, { loading: updateLoading, error: updateError }] =
-    useMutation(UPDATE_TOPIC, {
-      context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+  const [topicUpdateSubmit, { loading: updateLoading, error: updateError }] = 
+    useMutation(SUBMIT_TOPIC, {
+      context: { headers: { authorization: `${process.env.MUTATION_KEY}`, user: megaphoneUserInfo?.id } },
       onError: (error) => console.log(error),
       onCompleted: (data) => console.log(data),
     });
+
+  const { data: entityData, refetch: refetchEntity, error: entityError } = useQuery(
+    GET_ENTITY,
+    {
+      context: { headers: { authorization: `${process.env.QUERY_KEY}`, user: megaphoneUserInfo?.id } },
+      variables: { url: megaphoneUserInfo?.entities[0].url},
+      onError: (error) => console.log(error)
+    }
+  );
 
   const calculateCreditsNeeded = () => {
     let creditsCounter = 0;
@@ -85,20 +75,21 @@ const Cart = ({ setToggleCart }) => {
   };
 
   const processTopic = async (topic) => {
-    const topicInfo = await updateSubmitted(topic.id);
+    callMutation({ submitted: true, id: topic.id}, topicUpdateSubmit)
 
     handleTopicAlertEmail(topic.id);
   };
 
-  const handleUpdateCredits = () => {
+  const handleUpdateCredits = async () => {
     const currentCredits = megaphoneUserInfo.entities[0].credits;
     const spentCredits = calculateCreditsNeeded();
     const remainingCredits = currentCredits - spentCredits;
 
-    editEntity({
-      id: megaphoneUserInfo.entities[0].id,
+    await editEntity({
+      id: entityData?.entity.id,
       credits: remainingCredits,
     });
+    refetchEntity()
   };
 
   const verifyTypeSelectedForAllTopics = () =>
@@ -120,7 +111,7 @@ const Cart = ({ setToggleCart }) => {
   const handleRequestCredits = () => {
     window.dataLayer.push({'event': "request_credits"})
     editEntity({
-      id: megaphoneUserInfo.entities[0]?.id,
+      id: entityData?.entity.id,
       requestInProgress: true,
     });
     handleCreditRequestAlertEmail();
@@ -135,9 +126,9 @@ const Cart = ({ setToggleCart }) => {
   };
 
   const setEntityName = () =>
-    megaphoneUserInfo.entities[0]?.name
-      ? megaphoneUserInfo.entities[0]?.name
-      : megaphoneUserInfo.entities[0]?.url;
+    entityData?.entity.name
+      ? entityData?.entity.name
+      : entityData?.entity.url;
 
   return (
     <ul className="z-9 overflow-y-auto overflow-x-clip fixed top-0 -right-2 p-3 w-[100vw] sm:w-[55vh] md:w-[55vw] lg:w-[40vw] h-screen shadow-2xl list-none flex flex-col justify-start items-end rounded-md blue-glassmorphism text-white animate-slide-in">
@@ -148,15 +139,18 @@ const Cart = ({ setToggleCart }) => {
           text="Request submitted. We'll be in touch soon."
         />
         <div />
-        <div>
-          <h1 className="w-full text-center font-extrabold text-3xl">
-            Your Cart
-          </h1>
-          {cartTopics.length === 0 && (
-            <p className="text-[#2D104F] bg-white pr-5 pl-5 p-2 mt-5 font-bold self-center">
-              Your cart is empty!
-            </p>
-          )}
+        <div className="w-full">
+          <img src={curioLogoTagline} className="w-[150px]" />
+          <div className="flex flex-col">
+            <h1 className="text-center font-extrabold text-3xl mt-5">
+              Your Cart
+            </h1>
+            {cartTopics.length === 0 && (
+              <p className="text-[#2D104F] bg-white pr-5 pl-5 p-2 mt-5 font-bold self-center">
+                Your cart is empty!
+              </p>
+            )}
+          </div>
         </div>
         <AiOutlineClose
           fontSize={28}
@@ -181,7 +175,7 @@ const Cart = ({ setToggleCart }) => {
             <div className="self-start">
               <p className="font-bold">
                 Total Units Available:{' '}
-                {megaphoneUserInfo.entities[0]?.credits || 0} Units
+                {entityData?.entity.credits || 0} Units
               </p>
               <p className="mt-5">Account: {setEntityName()}</p>
             </div>
@@ -198,7 +192,7 @@ const Cart = ({ setToggleCart }) => {
               handleClick={handleClearCart}
               customStyles="text-[#2D104F] bg-white pr-5 pl-5 p-2 mt-2 font-bold rounded-full cursor-pointer transition delay-50 ease-in-out hover:-translate-y-1 hover:scale-105"
             />
-            {megaphoneUserInfo.entities[0]?.requestInProgress ? (
+            {entityData?.entity.requestInProgress ? (
               <div className="bg-[#2D104F] py-3 px-4 rounded-md cursor-not-allowed font-bold text-white">
                 Units Requested
               </div>
@@ -207,7 +201,7 @@ const Cart = ({ setToggleCart }) => {
                 verifySelections={verifyTypeSelectedForAllTopics}
                 handleSubmitTopics={handleSubmitTopics}
                 handleRequestCredits={handleRequestCredits}
-                megaphoneUserInfo={megaphoneUserInfo}
+                credits={entityData?.entity.credits}
                 calculateCreditsNeeded={calculateCreditsNeeded}
               />
             )}

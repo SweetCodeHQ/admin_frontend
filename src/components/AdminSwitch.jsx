@@ -1,19 +1,11 @@
-import { useState, useEffect } from 'react';
-import { gql, useMutation } from '@apollo/client';
-
-const UPDATE_ADMIN_STATUS = gql`
-  mutation updateUser($id: ID!, $isAdmin: Boolean, $isBlocked: Boolean) {
-    updateUser(input: { id: $id, isAdmin: $isAdmin, isBlocked: $isBlocked }) {
-      id
-      email
-      isAdmin
-      isBlocked
-    }
-  }
-`;
+import { useState, useEffect, useContext } from 'react';
+import { useMutation } from '@apollo/client';
+import { UPDATE_ADMIN_STATUS } from '../graphql/mutations';
+import { UserContext } from '../context';
 
 export const AdminSwitch = ({ isOn, userId, forAdmin }) => {
   const [isEnabled, setIsEnabled] = useState(true);
+  const { megaphoneUserInfo } = useContext(UserContext);
 
   const enabledClass = 'transform translate-x-5 bg-purple-500';
 
@@ -24,11 +16,10 @@ export const AdminSwitch = ({ isOn, userId, forAdmin }) => {
     userUpdateData({ variables: input });
   };
 
-  const [userUpdateData, { loading, mutationError }] = useMutation(
+  const [userUpdateData] = useMutation(
     UPDATE_ADMIN_STATUS,
     {
-      context: { headers: { authorization: `${process.env.EAGLE_KEY}` } },
-      onCompleted: (data) => console.log(data),
+      context: { headers: { authorization: `${process.env.EAGLE_KEY}`, user: megaphoneUserInfo?.id } },
       onError: (error) => console.log(error),
     }
   );

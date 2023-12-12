@@ -1,19 +1,11 @@
 import { Fragment, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
+import { UPDATE_ONBOARDED } from '../graphql/mutations'
 import { ChevronRightIcon, ChevronLeftIcon } from '@heroicons/react/24/solid';
 import { PrivacyPolicy } from '.';
 import tourBackground from '../assets/tourBackground.png';
 import curioLogo from '../assets/curioLogo2.png';
-
-const UPDATE_ONBOARDED = gql`
-  mutation UpdateOnboarded($id: ID!) {
-    updateUser(input: { id: $id, onboarded: true }) {
-      id
-      onboarded
-    }
-  }
-`;
 
 const TourBullet = ({ phase, bulletNumber, setPhase }) => (
   <div
@@ -56,20 +48,15 @@ const Tour = ({ userId, openTour, setOpenTour }) => {
 
   const cancelButtonRef = useRef(null);
 
-  const updateOnboarded = (id) => {
-    const input = { id };
-    updateOnboardedData({ variables: input });
-  };
-
   const [updateOnboardedData] = useMutation(UPDATE_ONBOARDED, {
-    context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+    context: { headers: { authorization: `${process.env.MUTATION_KEY}`, user: userId } },
     onCompleted: (data) => console.log(data),
     onError: (error) => console.log(error),
   });
 
   const handleEndTour = () => {
     window.dataLayer.push({'event': 'tour_complete'});
-    updateOnboarded(userId);
+    updateOnboardedData();
     setOpenTour(false);
   };
 
@@ -175,7 +162,7 @@ const Tour = ({ userId, openTour, setOpenTour }) => {
 
                   <button
                     type="button"
-                    className={`inline-flex w-1/6 px-1 mr-5 justify-self-end bg-[#2D104F] rounded-full cursor-pointer border-2 text-white transition delay-50 ease-in-out hover:scale-110 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${
+                    className={`inline-flex w-1/6 px-1 mr-5 justify-self-end bg-[#2D104F] rounded-full cursor-pointer border-2 text-white transition delay-50 ease-in-out hover:scale-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${
                       phase === 0 ? 'hidden' : null
                     }`}
                     onClick={() => handleClick(false)}

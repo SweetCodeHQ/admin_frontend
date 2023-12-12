@@ -1,17 +1,6 @@
-import { gql, useQuery } from '@apollo/client';
-
+import { useQuery } from '@apollo/client';
+import { GET_BANNERS } from '../graphql/queries';
 import { Button, Loader } from '.';
-
-const GET_BANNERS = gql`
-  query Banners {
-    banners {
-      purpose
-      text
-      link
-      updatedAt
-    }
-  }
-`;
 
 const PrivacyPolicy = ({ setClickedPrivacyPolicy }) => {
   const {

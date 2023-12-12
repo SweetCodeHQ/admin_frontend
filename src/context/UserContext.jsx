@@ -1,17 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
+import { callMutation } from '../utils/callMutation';
+import { CREATE_USER, UPDATE_LOGIN_COUNT } from '../graphql/mutations'
 import jwt_decode from 'jwt-decode';
-
-const CREATE_USER = gql`
-  mutation createUser($email: String!) {
-    createUser(input: { email: $email }) {
-      id
-      email
-      isAdmin
-      loginCount
-    }
-  }
-`;
 
 export const UserContext = React.createContext();
 
@@ -31,16 +22,17 @@ export const UserContextProvider = ({ children }) => {
     return initialValue || null;
   });
 
-  const createUserMutation = async (email) => {
-    const input = { email };
-    const data = await userMutationData({ variables: input });
-    return data;
-  };
-
-  const [userMutationData, { loading, error }] = useMutation(CREATE_USER, {
+  const [createUser] = useMutation(CREATE_USER, {
     context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
-    onCompleted: (data) => console.log(data),
+    onCompleted: (data) => setMegaphoneUserInfo(data.createUser),
     onError: (error) => console.log(error),
+  });
+
+  const [
+    updateLoginCount
+  ] = useMutation(UPDATE_LOGIN_COUNT, {
+    context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+    onError: (error) => console.log(error)
   });
 
   const userCallback = async response => {
@@ -50,14 +42,11 @@ export const UserContextProvider = ({ children }) => {
 
     if (userObject.hd) {
       setGoogleUser(userObject);
-      await createUserMutation(userObject.email);
-      return userObject;
+      const userResponse = await callMutation({ email: userObject.email }, createUser)
+
+      return userResponse.data.createUser;
     }
     return alert('Please try your corporate G-Suite account.');
-
-    {
-      /* Need to reset this to userObject.user. Then, I need to change every mention of user.user  the dashboard. */
-    }
   };
 
   const handleSignupAlertEmail = (userId) => {
@@ -90,9 +79,9 @@ export const UserContextProvider = ({ children }) => {
         megaphoneUserInfo,
         setMegaphoneUserInfo,
         handleSignupAlertEmail,
-        createUserMutation,
         gToken,
         setGToken,
+        updateLoginCount
       }}
     >
       {children}

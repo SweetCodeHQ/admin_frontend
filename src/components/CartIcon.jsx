@@ -1,18 +1,17 @@
 import { useContext, useState } from 'react';
 import { BsCart4 } from 'react-icons/bs';
 import { Cart } from '.';
-import { CartContext, UserContext } from '../context';
+import { CartContext } from '../context';
 import { EntityContextProvider } from '../context/EntityContext';
 
-const CartIcon = () => {
+const CartIcon = ({ isAdmin }) => {
   const [toggleCart, setToggleCart] = useState(false);
 
   const { cartTopics } = useContext(CartContext);
-  const { megaphoneUserInfo } = useContext(UserContext);
 
   return (
     <>
-      {!megaphoneUserInfo?.isAdmin && (
+      {!isAdmin && (
         <>
           <div className="flex">
             <BsCart4

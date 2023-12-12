@@ -1,38 +1,21 @@
 import { useState, useEffect } from 'react';
-import { gql, useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
+import { callMutation } from '../utils/callMutation';
+import { GET_BANNERS } from '../graphql/queries';
+import { UPDATE_BANNER } from '../graphql/mutations';
 import {
   LinkIcon,
   ChatBubbleOvalLeftEllipsisIcon,
 } from '@heroicons/react/24/solid';
 import { Input, ExpandableTextArea } from '.';
 
-const GET_BANNERS = gql`
-  query Banners {
-    banners {
-      id
-      purpose
-      text
-      link
-    }
-  }
-`;
-
-const UPDATE_BANNER = gql`
-  mutation UpdateBanner($id: ID!, $link: String, $text: String) {
-    updateBanner(input: { id: $id, link: $link, text: $text }) {
-      id
-      text
-      link
-    }
-  }
-`;
-
-const Banner = ({ title, banner, refetch }) => {
+const Banner = ({ title, banner, refetch, userId }) => {
   const [formData, setFormData] = useState({
     id: banner?.id,
     text: banner?.text,
     link: banner?.link,
   });
+
   useEffect(() => {
     setFormData({
       id: banner?.id,
@@ -50,8 +33,8 @@ const Banner = ({ title, banner, refetch }) => {
   const handleSave = () => {
     setEditEnabled(false);
     if (formData.text === banner.text && formData.link === banner.link) return;
-
-    updateBanner();
+    
+    callMutation(formData, updateBanner)
     setFormData((prev) => ({
       ...prev,
       text: banner.text,
@@ -59,15 +42,10 @@ const Banner = ({ title, banner, refetch }) => {
     }));
   };
 
-  const updateBanner = () => {
-    const input = formData;
-    updateBannerData({ variables: input });
-  };
-
-  const [updateBannerData, { error: updateBannerError }] = useMutation(
+  const [updateBanner, { error: updateBannerError }] = useMutation(
     UPDATE_BANNER,
     {
-      context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+      context: { headers: { authorization: `${process.env.EAGLE_KEY}`, user: userId } },
       onCompleted: refetch,
       onError: (error) => console.log(error),
     }
@@ -137,7 +115,7 @@ const Banner = ({ title, banner, refetch }) => {
   );
 };
 
-const BannerDashboard = () => {
+const BannerDashboard = ({userId}) => {
   const { data: bannersData, refetch: refetchBanners } = useQuery(GET_BANNERS, {
     context: { headers: { authorization: `${process.env.QUERY_KEY}` } },
     onError: (error) => console.log(error),
@@ -156,12 +134,14 @@ const BannerDashboard = () => {
       <div className="mt-5">
         <Banner
           key="displayBanner"
+          userId={userId}
           name="displayBanner"
           title="Display Banner"
           banner={bannersData?.banners[0]}
           refetch={refetchBanners}
         />
         <Banner
+          userId={userId}
           key="privacyStatement"
           name="privacyStatement"
           title="Privacy Statement"

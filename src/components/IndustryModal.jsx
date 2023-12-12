@@ -1,16 +1,7 @@
 import { useState } from 'react';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
+import { UPDATE_INDUSTRY } from '../graphql/mutations';
 import { INDUSTRIES } from '../constants/industries';
-
-const UPDATE_INDUSTRY = gql`
-  mutation updateIndustry($id: ID!, $industry: Int!) {
-    updateUser(input: { id: $id, industry: $industry }) {
-      id
-      email
-      industry
-    }
-  }
-`;
 
 const Industry = ({ data, setSelectedIndustry }) => (
   <li>
@@ -18,23 +9,23 @@ const Industry = ({ data, setSelectedIndustry }) => (
       className={`
           dropdown-item text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-gray-300 hover:bg-gray-700 hover:text-white focus:text-white focus:bg-gray-700
         `}
-      onClick={(e) => setSelectedIndustry(data)}
+      onClick={() => setSelectedIndustry(data)}
     >
       {data[0]}
     </a>
   </li>
 );
 
-const IndustryModal = ({ megaphoneUserId }) => {
+const IndustryModal = ({ userId }) => {
   const [selectedIndustry, setSelectedIndustry] = useState(null);
 
-  const updateIndustry = (industryCode) => {
-    const input = { id: megaphoneUserId, industry: selectedIndustry[1] };
+  const updateIndustry = () => {
+    const input = { industry: selectedIndustry[1] };
     updateIndustryMutation({ variables: input });
   };
 
   const [updateIndustryMutation, { error }] = useMutation(UPDATE_INDUSTRY, {
-    context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+    context: { headers: { authorization: `${process.env.MUTATION_KEY}`, user: userId } },
     onCompleted: (data) => console.log(data),
     onError: (error) => console.log(error),
   });
@@ -48,7 +39,7 @@ const IndustryModal = ({ megaphoneUserId }) => {
         <div>
           <div className="dropdown relative">
             <button
-              className="dropdown-toggle inline-block px-6 py-2.5 bg-[#2D104F] text-white font-medium text-lg leading-tight uppercase rounded shadow-md hover:bg-white hover:text-[#2D104F] hover:shadow-lg focus:bg-white focus:text-[#2D104F] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-white active:shadow-lg active:text-[#2D104F] transition duration-150 ease-in-out flex items-center whitespace-nowrap"
+              className="dropdown-toggle px-6 py-2.5 bg-[#2D104F] text-white font-medium text-lg leading-tight uppercase rounded shadow-md hover:bg-white hover:text-[#2D104F] hover:shadow-lg focus:bg-white focus:text-[#2D104F] focus:shadow-lg focus:outline-none focus:ring-0 active:bg-white active:shadow-lg active:text-[#2D104F] transition duration-150 ease-in-out flex items-center whitespace-nowrap"
               type="button"
               id="dropdownMenuButton2"
               data-bs-toggle="dropdown"
@@ -72,7 +63,7 @@ const IndustryModal = ({ megaphoneUserId }) => {
               </svg>
             </button>
             <ul
-              className="dropdown-menu min-w-max absolute hidden bg-white text-base z-50 float-left py-2 list-none text-left rounded-lg shadow-lg mt-1 hidden m-0 bg-clip-padding border-none bg-gray-800"
+              className="dropdown-menu min-w-max absolute hidden text-base z-50 float-left py-2 list-none text-left rounded-lg shadow-lg mt-1 m-0 bg-clip-padding border-none bg-gray-800"
               aria-labelledby="dropdownMenuButton2"
             >
               {Object.entries(INDUSTRIES).map((industry, i) => (

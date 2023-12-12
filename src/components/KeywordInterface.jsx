@@ -1,42 +1,9 @@
 import { useState, useEffect } from 'react';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
+import { CREATE_KEYWORD, UPDATE_KEYWORD, CREATE_USER_KEYWORD, UPDATE_CLICKED_GENERATE_COUNT } from '../graphql/mutations'
 import { Input, Button } from '.';
 import { INDUSTRIES } from '../constants/industries';
-
-const CREATE_KEYWORD = gql`
-  mutation CreateKeyword($word: String!) {
-    createKeyword(input: { word: $word }) {
-      id
-      word
-    }
-  }
-`;
-
-const UPDATE_KEYWORD = gql`
-  mutation UpdateKeyword($word: String!) {
-    updateKeyword(input: { word: $word }) {
-      id
-      word
-    }
-  }
-`;
-
-const CREATE_USER_KEYWORD = gql`
-  mutation CreateUserKeyword($userId: ID!, $word: String!) {
-    createUserKeyword(input: { userId: $userId, word: $word }) {
-      id
-    }
-  }
-`;
-
-const UPDATE_CLICKED_GENERATE_COUNT = gql`
-  mutation UpdateClickedGenerateCount($id: ID!) {
-    updateUser(input: { id: $id, clickedGenerateCount: 1 }) {
-      id
-      clickedGenerateCount
-    }
-  }
-`;
+import { callMutation } from '../utils/callMutation.js'
 
 export const IndustrySwitch = ({ toggleUseIndustry, setToggleUseIndustry }) => {
   const enabledClass = 'transform translate-x-5 bg-purple-500';
@@ -66,12 +33,11 @@ const KeywordInterface = ({
   userId,
   formData,
   setFormData,
-  keywordIds,
   setKeywordIds,
   getTopicSuggestions,
   setIsLoading,
   setInputKeywords,
-  moveKeyword,
+  moveKeyword
 }) => {
   const [toggleUseIndustry, setToggleUseIndustry] = useState(true);
 
@@ -85,40 +51,23 @@ const KeywordInterface = ({
     setFormData((prevState) => ({ ...prevState, [name]: e.target.value }));
   };
 
-  const [keywordMutationData] = useMutation(CREATE_KEYWORD, {
+  const [createKeyword] = useMutation(CREATE_KEYWORD, {
     context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
     onCompleted: (data) => console.log(data),
     onError: (error) => console.log(error),
   });
 
-  const createKeyword = async (keyword) => {
-    const input = { word: keyword };
-    const data = await keywordMutationData({ variables: input });
-
-    return data;
-  };
-
-  const [updateKeywordData] = useMutation(UPDATE_KEYWORD, {
+  const [updateKeyword] = useMutation(UPDATE_KEYWORD, {
     context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
     onCompleted: (data) => console.log(data),
     onError: (error) => console.log(error),
   });
 
-  const updateKeyword = (keyword) => {
-    const input = { word: keyword };
-    updateKeywordData({ variables: input });
-  };
-
-  const [userKeywordMutationData] = useMutation(CREATE_USER_KEYWORD, {
-    context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+  const [createUserKeyword] = useMutation(CREATE_USER_KEYWORD, {
+    context: { headers: { authorization: `${process.env.MUTATION_KEY}`, user: userId } },
     onCompleted: (data) => console.log(data),
     onError: (error) => console.log(error),
   });
-
-  const createUserKeyword = (word) => {
-    const input = { userId, word };
-    userKeywordMutationData({ variables: input });
-  };
 
   useEffect(() => {
     getKeywordSuggestions();
@@ -128,8 +77,12 @@ const KeywordInterface = ({
     const keywords = response.data.attributes.text;
     const extractedKeywords = keywords.split(',').splice(0, 5);
 
-    const formattedKeywords = extractedKeywords.map((keyword) =>
-      keyword.substring(0)
+    const formattedKeywords = extractedKeywords.map((keyword) => {
+      if(keyword.charAt(keyword.length - 1) == ".")
+        return keyword.substring(0, keyword.length - 1)
+      else 
+        return keyword.substring(0)
+    }
     );
 
     setSmartKeywords(formattedKeywords);
@@ -152,12 +105,13 @@ const KeywordInterface = ({
   const keywordActions = async (words) => {
     for (const word of words) {
       if (word) {
-        const keywordData = await createKeyword(word.toLowerCase().trim());
+        const formattedWord = word.toLowerCase().trim()
+        const keywordData = await callMutation({ word: formattedWord }, createKeyword)
 
         const keywordId = keywordData.data.createKeyword.id;
-        createUserKeyword(word);
-
-        updateKeyword(word.toLowerCase());
+        console.log(keywordId)
+        callMutation({ keywordId }, createUserKeyword)
+        callMutation({ word: formattedWord }, updateKeyword )
         setKeywordIds((prev) => [...prev, keywordId]);
       }
     }
@@ -185,19 +139,14 @@ const KeywordInterface = ({
         formData.word5,
       ],
     });
-    updateClickedGenerateCount(userId);
+    updateClickedGenerateMutationData();
     keywordActions(words);
-  };
-
-  const updateClickedGenerateCount = (id) => {
-    const input = { id };
-    updateClickedGenerateMutationData({ variables: input });
   };
 
   const [updateClickedGenerateMutationData] = useMutation(
     UPDATE_CLICKED_GENERATE_COUNT,
     {
-      context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+      context: { headers: { authorization: `${process.env.MUTATION_KEY}`, user: userId } },
       onCompleted: (data) => console.log(data),
       onError: (error) => console.log(error),
     }

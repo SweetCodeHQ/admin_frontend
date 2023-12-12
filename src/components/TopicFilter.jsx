@@ -1,13 +1,13 @@
 import { BiFilter } from 'react-icons/bi';
 import { FILTERS } from '../constants/filters';
 
-const Filter = ({ name, setFilterTopicsBy, filterTopicsBy }) => (
+const Filter = ({ name, setFilterTopicsBy }) => (
   <li>
     <a
       className={`
           dropdown-item text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-gray-300 hover:bg-gray-700 hover:text-white focus:text-white focus:bg-gray-700
         `}
-      onClick={(e) => setFilterTopicsBy(name)}
+      onClick={() => setFilterTopicsBy(name)}
     >
       {name}
     </a>
@@ -29,7 +29,7 @@ const TopicFilter = ({ setFilterTopicsBy, filterTopicsBy }) => {
         <BiFilter />
       </button>
       <ul
-        className="dropdown-menu min-w-max absolute hidden bg-white text-base z-50 float-left py-2 list-none text-left rounded-lg shadow-lg mt-1 hidden m-0 bg-clip-padding border-none bg-gray-800"
+        className="dropdown-menu min-w-max absolutetext-base z-50 float-left py-2 list-none text-left rounded-lg shadow-lg mt-1 hidden m-0 bg-clip-padding border-none bg-gray-800"
         aria-labelledby="dropdownMenuButton3"
       >
         {shownFilters.map((name, i) => (

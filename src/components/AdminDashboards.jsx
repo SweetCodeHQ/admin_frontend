@@ -1,8 +1,9 @@
 import { useContext } from 'react';
-import { EntityContext, EntityContextProvider } from '../context/EntityContext';
+import { EntityContext } from '../context'
+import { EntityContextProvider } from '../context/EntityContext';
 import { EntityDashboard, AdminUserDashboard, BannerDashboard } from '.';
 
-const AdminDashboards = () => {
+const AdminDashboards = ({ userId }) => {
   const formData = useContext(EntityContext);
 
   return (
@@ -11,11 +12,11 @@ const AdminDashboards = () => {
         Use this portal to manage administrators, entities, users, and more.
       </p>
       <div className="flex flex-col flex-1 items-center justify-start mf:mt-0 mt-10">
-        <BannerDashboard />
+        <BannerDashboard userId={userId} />
         <EntityContextProvider formData={formData}>
-          <EntityDashboard />
+          <EntityDashboard userId={userId} />
         </EntityContextProvider>
-        <AdminUserDashboard />
+        <AdminUserDashboard userId={userId} />
       </div>
     </>
   );

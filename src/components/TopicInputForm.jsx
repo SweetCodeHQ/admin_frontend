@@ -1,33 +1,20 @@
 import { useState } from 'react';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
+import { callMutation } from '../utils/callMutation';
+import { CREATE_TOPIC } from '../graphql/mutations';
 import { Input } from '.';
-
-const CREATE_TOPIC = gql`
-  mutation CreateTopic($userId: ID!, $text: String!) {
-    createTopic(input: { userId: $userId, text: $text }) {
-      id
-      text
-    }
-  }
-`;
 
 const TopicInputForm = ({ userId, refetch }) => {
   const [formData, setFormData] = useState({ text: '' });
 
   const inputStyles =
-    'w-4/5 rounded-lg p-2 outline-none text-white bg-[#4E376A]/75 placeholder-gray-400 border-sm text-sm shadow-inner shadow-lg mt-5';
+    'w-4/5 rounded-lg p-2 outline-none text-white bg-[#4E376A]/75 placeholder-gray-400 border-sm text-sm shadow-inner shadow-lg mt-5 hover:border-violet-500';
 
   const [topicCreationData, { loading, error }] = useMutation(CREATE_TOPIC, {
-    context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+    context: { headers: { authorization: `${process.env.MUTATION_KEY}`, user: userId } },
     onCompleted: refetch,
     onError: (error) => console.log(error),
   });
-
-  const createTopicMutation = (text) => {
-    const input = { userId, text };
-
-    topicCreationData({ variables: input });
-  };
 
   const handleChange = (e, name) => {
     setFormData((prevState) => ({ ...prevState, [name]: e.target.value }));
@@ -37,7 +24,7 @@ const TopicInputForm = ({ userId, refetch }) => {
     if (formData.text === '') return alert('Please input the topic text.');
 
     setFormData({ text: 'Saved! Write another?' });
-    createTopicMutation(formData.text);
+    callMutation({ text: formData.text }, topicCreationData)
   };
 
   return (
