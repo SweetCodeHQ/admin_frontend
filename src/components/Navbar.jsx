@@ -1,6 +1,7 @@
 import { useState, useContext } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_BANNERS } from '../graphql/queries';
+import { BsInbox } from 'react-icons/bs';
 import { UPDATE_USER_BANNER_DATE } from '../graphql/mutations'
 import { UserContext } from '../context';
 
@@ -10,6 +11,7 @@ import {
   BlanketNotification,
   BasicAlert,
   InboxIcon,
+  Tooltip
 } from '.';
 
 const TITLES = [
@@ -98,6 +100,13 @@ const Navbar = () => {
           <>
             <Button text="Sign Out" handleClick={logUserOut} />
             {showBanners()}
+            <div className="group relative flex">
+              <BsInbox className="text-4xl cursor-pointer text-gray-500"/>
+              <span className="absolute inset-0 scale-0 transition-all rounded bg-gray-800 p-2 text-xs text-white group-hover:scale-100 text-center w-[250px] h-[50px]">
+                <p>CurioStream: Create while you're away!</p>
+                <p>Coming Soon!</p>
+              </span>
+            </div>
             {/* <InboxIcon /> */}
             <CartIcon isAdmin={megaphoneUserInfo?.isAdmin} />
           </>
