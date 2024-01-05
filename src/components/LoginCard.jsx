@@ -4,6 +4,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { EnvelopeIcon, EnvelopeOpenIcon } from '@heroicons/react/20/solid';
 import { GoogleLoginButton, Input } from '.';
 import { UserContext } from '../context';
+import { callMutation } from '../utils/callMutation';
 
 const Waitlist = ({ clickedEmail, setClickedEmail, handleClickJoin }) => {
   const [waitlistForm, setWaitlistForm] = useState({ email: '' });
@@ -68,11 +69,11 @@ const LoginCard = ({ loginCallback }) => {
 
   const [clickedSignup, setClickedSignup] = useState(false);
 
-  const { createUserMutation } = useContext(UserContext);
+  const { createWaitlistUser } = useContext(UserContext);
 
   const handleClickJoin = async (email) => {
     try {
-      await createUserMutation(email);
+      await callMutation({ email }, createWaitlistUser);
       setClickedJoin(true);
     } catch (e) {
       console.log(e);

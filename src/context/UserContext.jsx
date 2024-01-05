@@ -22,6 +22,11 @@ export const UserContextProvider = ({ children }) => {
     return initialValue || null;
   });
 
+  const [createWaitlistUser] = useMutation(CREATE_USER, {
+    context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
+    onError: (error) => console.log(error)
+  });
+
   const [createUser] = useMutation(CREATE_USER, {
     context: { headers: { authorization: `${process.env.MUTATION_KEY}` } },
     onCompleted: (data) => setMegaphoneUserInfo(data.createUser),
@@ -74,6 +79,8 @@ export const UserContextProvider = ({ children }) => {
     <UserContext.Provider
       value={{
         handleSignOut,
+        createUser,
+        createWaitlistUser,
         userCallback,
         googleUser,
         megaphoneUserInfo,
